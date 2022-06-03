@@ -1,4 +1,4 @@
-import { ResultData, TimeList, TimeListRest } from "../types";
+import { ResultData, TimeList, TimeListRest, ResultDataRest } from "../types";
 import { filterCount } from "../utils/utils.list";
 
 const parseTime = (): TimeList[] => {
@@ -7,21 +7,23 @@ const parseTime = (): TimeList[] => {
     );
     const timeList: TimeList[] = tableRow
         .map((row: Element) => {
-            const cell = row.getElementsByClassName("PJLV c-fhRguj");
+            const timeCell = row.getElementsByClassName("PJLV c-fhRguj");
             const date =
-                cell[0].getElementsByClassName("c-gqmpwD")[0].textContent || "";
-            const holiday = cell[0].getElementsByClassName(
+                timeCell[0].getElementsByClassName("c-gqmpwD")[0].textContent ||
+                "";
+            const holiday = timeCell[0].getElementsByClassName(
                 "c-cOeAxU c-cOeAxU-kvhqpa-isCustomerHoliday-true"
             )[0];
 
-            const time =
-                cell[0].getElementsByClassName("c-juWfbq")[0].textContent || "";
-            const timeType = Array.from(row.getElementsByTagName("span"));
-            const full = timeType.find((v) => v.textContent === "연차");
-            const half = timeType.find((v) => v.textContent === "반차");
+            const workingTime =
+                timeCell[0].getElementsByClassName("c-juWfbq")[0].textContent ||
+                "";
+            const timeTrackingType = Array.from(row.getElementsByTagName("span"));
+            const full = timeTrackingType.find((v) => v.textContent === "연차");
+            const half = timeTrackingType.find((v) => v.textContent === "반차");
 
             const rest: TimeListRest = full ? "full" : half ? "half" : "none";
-            return { date, time, rest, isHoliday: !!holiday };
+            return { date, time: workingTime, rest, isHoliday: !!holiday };
         })
         .filter(({ date, isHoliday }) => {
             if (isHoliday) {
@@ -53,8 +55,8 @@ const calculateTime = (timeList: TimeList[]): ResultData => {
         []
     );
 
-    const fullTimeRestCount = filterCount(rests, ({ type }) => type === "full");
-    const halfTimeRestCount = filterCount(rests, ({ type }) => type === "half");
+    const fullTimeRestCount = filterCount<ResultDataRest>(rests, ({ type }) => type === "full");
+    const halfTimeRestCount = filterCount<ResultDataRest>(rests, ({ type }) => type === "half");
 
     const shouldWorkingDay = timeList.length - fullTimeRestCount;
     const remainWorkingDay = filterCount(
