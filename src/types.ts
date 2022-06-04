@@ -13,7 +13,7 @@ type TimeListRest = "full" | "half" | "none";
 export interface TimeList {
     date: string;
     time: string;
-    rest: TimeListRest;
+    restType: TimeListRest;
     isHoliday?: boolean;
 }
 

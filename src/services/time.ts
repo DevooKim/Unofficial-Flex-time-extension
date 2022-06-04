@@ -1,6 +1,28 @@
 import { ResultData, TimeList, TimeListRest, ResultDataRest } from "../types";
 import { filterCount } from "../utils/utils.list";
 
+const getTimetrackingTypes = (
+    timetrackingBlock: Element
+): (string | null)[] => {
+    const childNodes = Array.from(timetrackingBlock.childNodes);
+    const trackingTypes = childNodes.map((v) => v.textContent);
+    return trackingTypes;
+};
+
+const anlyzTrackingType = (types: (string | null)[]): TimeListRest => {
+    const isOnlyWorkingDay = types.every(
+        (type) => type === "근무" || type === "휴게"
+    );
+
+    if (isOnlyWorkingDay) {
+        return "none";
+    }
+
+    const isHalfWorkingDay = !!filterCount(types, (type) => type === "근무");
+
+    return isHalfWorkingDay ? "half" : "full";
+};
+
 const parseTime = (): TimeList[] => {
     const tableRow = Array.from(
         document.getElementsByClassName("c-fEAhcH c-fTYJiF")
@@ -18,12 +40,17 @@ const parseTime = (): TimeList[] => {
             const workingTime =
                 timeCell[0].getElementsByClassName("c-juWfbq")[0].textContent ||
                 "";
-            const timeTrackingType = Array.from(row.getElementsByTagName("span"));
-            const full = timeTrackingType.find((v) => v.textContent === "연차");
-            const half = timeTrackingType.find((v) => v.textContent === "반차");
+            const timeBlock = row.getElementsByClassName("c-houiWd");
+            const timeTrackingTypes = getTimetrackingTypes(timeBlock[0]);
 
-            const rest: TimeListRest = full ? "full" : half ? "half" : "none";
-            return { date, time: workingTime, rest, isHoliday: !!holiday };
+            const restType = anlyzTrackingType(timeTrackingTypes);
+
+            return {
+                date,
+                time: workingTime,
+                restType,
+                isHoliday: !!holiday,
+            };
         })
         .filter(({ date, isHoliday }) => {
             if (isHoliday) {
@@ -41,22 +68,28 @@ const parseTime = (): TimeList[] => {
 const calculateTime = (timeList: TimeList[]): ResultData => {
     const rests = timeList.reduce(
         (prev: { date: string; type: string }[], cur: TimeList) => {
-            if (cur.rest === "none") {
+            if (cur.restType === "none") {
                 return prev;
             }
             return [
                 ...prev,
                 {
                     date: cur.date,
-                    type: cur.rest,
+                    type: cur.restType,
                 },
             ];
         },
         []
     );
 
-    const fullTimeRestCount = filterCount<ResultDataRest>(rests, ({ type }) => type === "full");
-    const halfTimeRestCount = filterCount<ResultDataRest>(rests, ({ type }) => type === "half");
+    const fullTimeRestCount = filterCount<ResultDataRest>(
+        rests,
+        ({ type }) => type === "full"
+    );
+    const halfTimeRestCount = filterCount<ResultDataRest>(
+        rests,
+        ({ type }) => type === "half"
+    );
 
     const shouldWorkingDay = timeList.length - fullTimeRestCount;
     const remainWorkingDay = filterCount(
@@ -68,14 +101,14 @@ const calculateTime = (timeList: TimeList[]): ResultData => {
 
     const currentWorkingTime: number = timeList.reduce(
         (workingTime: number, item: TimeList) => {
-            const { time: timeString, rest } = item;
+            const { time: timeString, restType } = item;
             const time: number = +timeString.slice(0, -1);
 
             //근무를 안했거나 연차인 경우 계산을 안한다.
-            if (time === 0 || rest === "full") {
+            if (time === 0 || restType === "full") {
                 return workingTime;
             }
-            return workingTime + time - (rest === "half" ? 4 : 0); //반차인 경우 실 근무시간에서 4시간을 뺀다.
+            return workingTime + time - (restType === "half" ? 4 : 0); //반차인 경우 실 근무시간에서 4시간을 뺀다.
         },
         0
     );
@@ -98,4 +131,4 @@ const calculateTime = (timeList: TimeList[]): ResultData => {
     };
 };
 
-export { parseTime, calculateTime };
+export { parseTime, calculateTime, anlyzTrackingType };
