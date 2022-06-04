@@ -1,15 +1,15 @@
 import { ResultData, TimeList, TimeListRest, ResultDataRest } from "../types";
 import { filterCount } from "../utils/utils.list";
 
-const getTimetrackingTypes = (
-    timetrackingBlock: Element
+const getTimeTrackingTypes = (
+    timeTrackingBlock: Element
 ): (string | null)[] => {
-    const childNodes = Array.from(timetrackingBlock.childNodes);
+    const childNodes = Array.from(timeTrackingBlock.childNodes);
     const trackingTypes = childNodes.map((v) => v.textContent);
     return trackingTypes;
 };
 
-const anlyzTrackingType = (types: (string | null)[]): TimeListRest => {
+const analyzeTrackingType = (types: (string | null)[]): TimeListRest => {
     const isOnlyWorkingDay = types.every(
         (type) => type === "근무" || type === "휴게"
     );
@@ -41,9 +41,9 @@ const parseTime = (): TimeList[] => {
                 timeCell[0].getElementsByClassName("c-juWfbq")[0].textContent ||
                 "";
             const timeBlock = row.getElementsByClassName("c-houiWd");
-            const timeTrackingTypes = getTimetrackingTypes(timeBlock[0]);
+            const timeTrackingTypes = getTimeTrackingTypes(timeBlock[0]);
 
-            const restType = anlyzTrackingType(timeTrackingTypes);
+            const restType = analyzeTrackingType(timeTrackingTypes);
 
             return {
                 date,
@@ -131,4 +131,4 @@ const calculateTime = (timeList: TimeList[]): ResultData => {
     };
 };
 
-export { parseTime, calculateTime, anlyzTrackingType };
+export { parseTime, calculateTime, analyzeTrackingType };

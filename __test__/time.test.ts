@@ -1,4 +1,4 @@
-import { calculateTime, anlyzTrackingType } from "../src/services/time";
+import { calculateTime, analyzeTrackingType } from "../src/services/time";
 import { TimeList } from "../src/types";
 
 describe("시간 계산이 잘 되는가", () => {
@@ -65,7 +65,7 @@ describe("시간 계산이 잘 되는가", () => {
         },
     ];
 
-    const calcedTime = calculateTime(dummyTimeList);
+    const calculatedTime = calculateTime(dummyTimeList);
     const {
         shouldWorkingDay,
         remainWorkingDay,
@@ -75,7 +75,7 @@ describe("시간 계산이 잘 되는가", () => {
         remainWorkingTime,
         remainWorkingTimeAvg,
         rests,
-    } = calcedTime;
+    } = calculatedTime;
 
     it("shouldWorkingDay", () => {
         expect(shouldWorkingDay).toBe(8);
@@ -123,19 +123,19 @@ describe("시간 계산이 잘 되는가", () => {
 describe("연차 계산이 잘 되는가", () => {
     it("일반적인 근무일 때 type은 none", () => {
         const dummy = ["근무", "휴게", "근무", "근무"];
-        const result = anlyzTrackingType(dummy);
+        const result = analyzeTrackingType(dummy);
         expect(result).toBe("none");
     });
 
     it("근무가 없을 때 type은 full", () => {
         const dummy = ["여러 종류의 연차1", "여러 종류의 연차2"];
-        const result = anlyzTrackingType(dummy);
+        const result = analyzeTrackingType(dummy);
         expect(result).toBe("full");
     });
 
     it("근무와 휴게외 또다른 무언가가 있다면 half", () => {
         const dummy = ["근무", "휴게", "여러 종류의 연차"];
-        const result = anlyzTrackingType(dummy);
+        const result = analyzeTrackingType(dummy);
         expect(result).toBe("half");
     });
 });
