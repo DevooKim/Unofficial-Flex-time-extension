@@ -1,4 +1,7 @@
-import { calculateTime, analyzeTrackingType } from "../src/services/time";
+import {
+    calculateTime,
+    analyzeTrackingType,
+} from "../src/chrome/services/time";
 import { TimeList } from "../src/types";
 
 describe("시간 계산이 잘 되는가", () => {
