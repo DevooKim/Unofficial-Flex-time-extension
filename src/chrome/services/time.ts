@@ -1,4 +1,9 @@
-import { ResultData, TimeList, TimeListRest, ResultDataRest } from "../../types";
+import {
+    ResultData,
+    TimeList,
+    TimeListRest,
+    ResultDataRest,
+} from "../../types";
 import { filterCount } from "../../utils/utils.list";
 
 const getTimeTrackingTypes = (
@@ -116,7 +121,7 @@ const calculateTime = (timeList: TimeList[]): ResultData => {
     const currentWorkingTimeAvg =
         currentWorkingTime / (shouldWorkingDay - remainWorkingDay);
 
-    const remainWorkingTime = minWorkingTime - currentWorkingTime;
+    const remainWorkingTime = Math.max(minWorkingTime - currentWorkingTime, 0);
     const remainWorkingTimeAvg = remainWorkingTime / remainWorkingDay;
 
     return {
@@ -126,7 +131,9 @@ const calculateTime = (timeList: TimeList[]): ResultData => {
         currentWorkingTime,
         currentWorkingTimeAvg: +currentWorkingTimeAvg.toFixed(2),
         remainWorkingTime,
-        remainWorkingTimeAvg: +remainWorkingTimeAvg.toFixed(2),
+        remainWorkingTimeAvg: isFinite(remainWorkingTimeAvg)
+            ? +remainWorkingTimeAvg.toFixed(2)
+            : 0,
         rests,
     };
 };

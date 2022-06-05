@@ -18,9 +18,14 @@ export const getCurrentTabUId = (
     });
 };
 
+export type tabStatus = {
+    isWorkingInfoTab: boolean;
+    isComplete: boolean;
+};
+
 export const activeTabHandler = (
     tab: chrome.tabs.Tab,
-    callback: (isActive: boolean) => void
+    callback: (status: tabStatus) => void
 ) => {
     const isWorkingInfoTab = !!tab.url?.startsWith(
         "https://flex.team/time-tracking/work-record/my"
@@ -31,5 +36,6 @@ export const activeTabHandler = (
         ? chrome.action.enable(tab.id)
         : chrome.action.disable(tab.id);
 
-    callback(isWorkingInfoTab && isComplete);
+    callback({ isWorkingInfoTab, isComplete });
 };
+

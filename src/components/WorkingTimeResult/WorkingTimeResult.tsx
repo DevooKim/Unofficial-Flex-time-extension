@@ -1,45 +1,48 @@
-import { useEffect, useState } from "react";
-import {
-    Divider,
-    List,
-    ListItemText,
-    Paper,
-    Stack,
-    Tooltip,
-} from "@mui/material";
-import { Box } from "@mui/system";
+import React, { useEffect, useState } from "react";
+import { Divider, List, Paper, Tooltip } from "@mui/material";
+import { Box, SxProps } from "@mui/system";
 import InfoIcon from "@mui/icons-material/Info";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { getCurrentTabUId } from "../../chrome/utils";
-import { ChromeMessage, Sender } from "../../types";
-import { getUserName } from "../../chrome/services/user";
+import { activeTabHandler, getCurrentTabUId } from "../../chrome/utils";
+import { ChromeMessage, ResultData, Sender } from "../../types";
+import { yellow } from "@mui/material/colors";
 
-const dummyMonth = "5월";
-const dummyToday = "6월 6일 12시 30분";
-const dummy = {
-    shouldWorkingDay: 20,
-    remainWorkingDay: 0,
-    minWorkingTime: 160,
-    currentWorkingTime: 161.7,
-    currentWorkingTimeAvg: 8.08,
-    remainWorkingTime: 0, //-1.6999999999999886,
-    remainWorkingTimeAvg: 0, //null,
-    rests: [
-        {
-            date: "5. 6 (금)",
-            type: "full",
-        },
-        {
-            date: "5. 7 (토)",
-            type: "half",
-        },
-    ],
+const currentTimeFormat = () => {
+    const date = new Date();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+
+    return `${month}월 ${day}일 ${hour}시 ${minute}분`;
 };
 
-const WorkingTimeResult = ({ isActive }: { isActive: boolean }) => {
-    const [test, setTest] = useState<boolean>(false);
-    const [analyzedWorkingTime, setAnalyzedWorkingTime] = useState({});
+const ItemText = ({
+    children,
+    sx,
+}: {
+    children: React.ReactNode;
+    sx?: SxProps;
+}) => (
+    <Box sx={{ fontSize: "1rem", lineHeight: 1.5, px: 1, py: 0.5, ...sx }}>
+        {children}
+    </Box>
+);
+
+const WorkingTimeResult = () => {
+    const [analyzedWorkingTime, setAnalyzedWorkingTime] = useState<ResultData>({
+        shouldWorkingDay: 0,
+        minWorkingTime: 0,
+        currentWorkingTime: 0,
+        currentWorkingTimeAvg: 0,
+        remainWorkingDay: 0,
+        remainWorkingTime: 0,
+        remainWorkingTimeAvg: 0,
+        rests: [],
+    });
+    const [targetMonth, setTargetMonth] = useState(0);
     const [userName, setUserName] = useState("");
+
     const sendParseWorkingTime = () => {
         const message: ChromeMessage = {
             from: Sender.React,
@@ -69,86 +72,113 @@ const WorkingTimeResult = ({ isActive }: { isActive: boolean }) => {
         });
     };
 
-    useEffect(() => {
-        if (isActive) {
-            sendParseWorkingTime();
-            sendUserName();
+    const getTargetMonth = (tab: chrome.tabs.Tab) => {
+        const url = tab.url || "";
+        const queryString = url.split("?");
+        const UrlSearch = new URLSearchParams(queryString[1]);
+        const ts = UrlSearch.get("ts");
+
+        let targetDate = new Date();
+        if (ts) {
+            targetDate = new Date(parseInt(ts as string, 10));
         }
-    }, [isActive]);
+
+        setTargetMonth(targetDate.getMonth() + 1);
+    };
+
+    useEffect(() => {
+        chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+            activeTabHandler(tab, ({ isComplete }) => {
+                if (isComplete) {
+                    getTargetMonth(tab);
+                    sendParseWorkingTime();
+                    sendUserName();
+                }
+            });
+        });
+    }, []);
+
+    useEffect(() => {
+        const queryInfo = { active: true, currentWindow: true };
+        chrome.tabs?.query(queryInfo, (tabs) => {
+            getTargetMonth(tabs[0]);
+        });
+        sendParseWorkingTime();
+        sendUserName();
+    }, []);
 
     return (
         <>
-            <h3>
-                {userName}님의 {dummyMonth} 근무 정보 - 기준일 : {dummyToday}
-            </h3>
-            {isActive && <div>isActive</div>}
-            <Paper sx={{ p: 2 }} elevation={3}>
-                <List>
-                    <Divider />
-                    <ListItemText>
-                        남은 근무일: {dummy.remainWorkingDay}일
-                    </ListItemText>
-                    <Divider />
-                    <ListItemText>
-                        소정 근무시간: {dummy.currentWorkingTime}시간
-                    </ListItemText>
-                    <Divider />
-                    <ListItemText>
-                        하루 평균 근무시간: {dummy.currentWorkingTimeAvg}
-                        시간
-                    </ListItemText>
-                    <Divider />
-                    <ListItemText>
-                        남은 최소 근무시간: {dummy.remainWorkingTime}시간
-                    </ListItemText>
-                    <Divider />
-                    <ListItemText>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            <span>
-                                남은 하루 평균 근무시간:{" "}
-                                {dummy.remainWorkingTimeAvg}
-                                시간
-                            </span>
-                            <Tooltip title="반차 출근일 포함" arrow>
-                                <InfoIcon
-                                    sx={{ fontSize: "1.2rem", pl: 0.5 }}
-                                />
-                            </Tooltip>
-                        </Box>
-                    </ListItemText>
-                    <Divider />
-                    <ListItemText>
-                        <ListItemText>연차 정보</ListItemText>
-                        <Box sx={{ pl: 4 }}>
-                            {dummy.rests.map((rest) => (
-                                <ListItemText key={rest.date}>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <FiberManualRecordIcon
-                                            sx={{
-                                                fontSize: "0.625rem",
-                                                mr: 0.5,
-                                            }}
-                                        />
-                                        <span>
-                                            {rest.date} - {rest.type}
-                                        </span>
-                                    </Box>
-                                </ListItemText>
-                            ))}
-                        </Box>
-                    </ListItemText>
-                </List>
+            <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
+                <Box sx={{ fontSize: "1.2rem", lineHeight: 1.5, mb: "0.5rem" }}>
+                    {userName}님의 {targetMonth}월 근무 정보
+                </Box>
+                <ItemText sx={{ p: 0 }}>
+                    기준일 : {currentTimeFormat()}
+                </ItemText>
             </Paper>
+            <Box sx={{ p: 2 }}>
+                <List>
+                    <ItemText>
+                        남은 근무일: {analyzedWorkingTime.remainWorkingDay}일
+                    </ItemText>
+                    <Divider />
+                    <ItemText>
+                        소정 근무시간: {analyzedWorkingTime.currentWorkingTime}
+                        시간
+                    </ItemText>
+                    <Divider />
+                    <ItemText>
+                        하루 평균 근무시간:{" "}
+                        {analyzedWorkingTime.currentWorkingTimeAvg}
+                        시간
+                    </ItemText>
+                    <Divider />
+                    <ItemText>
+                        남은 최소 근무시간:{" "}
+                        {analyzedWorkingTime.remainWorkingTime}시간
+                    </ItemText>
+                    <Divider />
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <ItemText>
+                            남은 하루 평균 근무시간:{" "}
+                            {analyzedWorkingTime.remainWorkingTimeAvg}
+                            시간
+                        </ItemText>
+                        <Tooltip title="반차 출근일 포함" arrow>
+                            <InfoIcon sx={{ fontSize: "1.2rem", pl: 0.5 }} />
+                        </Tooltip>
+                    </Box>
+                    <Divider />
+                    <ItemText>연차 정보</ItemText>
+                    <Box sx={{ pl: 4 }}>
+                        {analyzedWorkingTime.rests.map((rest) => (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <FiberManualRecordIcon
+                                    sx={{
+                                        fontSize: "0.625rem",
+                                        mr: 0.5,
+                                    }}
+                                />
+                                <ItemText>
+                                    {rest.date} -{" "}
+                                    {rest.type === "full" ? "연차" : "반차"}
+                                </ItemText>
+                            </Box>
+                        ))}
+                    </Box>
+                </List>
+            </Box>
         </>
     );
 };
