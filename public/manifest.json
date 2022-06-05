@@ -8,9 +8,10 @@
         "default_title": "working time"
     },
     "permissions": ["tabs", "activeTab"],
+    "host_permissions": ["https://flex.team/time-tracking/work-record/my"],
     "content_scripts": [
         {
-            "matches": ["http://*/*", "https://*/*"],
+            "matches": ["https://flex.team/time-tracking/work-record/my"],
             "js": ["./static/js/content.js"]
         }
     ],

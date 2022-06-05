@@ -1,55 +1,28 @@
+import { Container } from "@mui/system";
 import { useEffect, useState } from "react";
-import { ChromeMessage, Sender, TimeList } from "./types";
-import { getCurrentTabUId } from "./chrome/utils";
+import WorkingTimeResult from "./components/WorkingTimeResult";
 
 function App() {
-    const [url, setUrl] = useState<string | undefined>("");
-    const [responseFromContent, setResponseFromContent] = useState<any>([{}]);
-
+    const [isActive, setIsActive] = useState(false);
     useEffect(() => {
         const queryInfo = { active: true, currentWindow: true };
-
         chrome.tabs?.query(queryInfo, (tabs: chrome.tabs.Tab[]): void => {
-            const _url = tabs[0].url;
-            setUrl(_url);
+            const isWorkingInfoTab =
+                tabs[0].url ===
+                "https://flex.team/time-tracking/work-record/my";
+            isWorkingInfoTab
+                ? chrome.action.enable(tabs[0].id)
+                : chrome.action.disable(tabs[0].id);
+
+            setIsActive(isWorkingInfoTab);
             return;
         });
     }, []);
-
-    const sendTest = () => {
-        const message: ChromeMessage = {
-            from: Sender.React,
-            message: "parseTime",
-        };
-        const options = {};
-        getCurrentTabUId((id: number | undefined): void => {
-            id &&
-                chrome.tabs.sendMessage(
-                    id,
-                    message,
-                    options,
-                    (responseFromContentScript) => {
-                        console.log("response: ", responseFromContentScript);
-                        setResponseFromContent(
-                            JSON.parse(responseFromContentScript)
-                        );
-                    }
-                );
-        });
-    };
-
-    console.log("res: ", responseFromContent);
     return (
-        <div className="App">
-            <header className="App-header">
-                <p>URL: {url}</p>
-                <button onClick={sendTest}>parse</button>
-                {/* <pre>{responseFromContent}</pre> */}
-                {responseFromContent.map((v: TimeList, index: number) => (
-                    <p key={index}>{JSON.stringify(v)}</p>
-                ))}
-            </header>
-        </div>
+        <Container sx={{ minWidth: "350px" }}>
+            {isActive && <div>active</div>}
+            <WorkingTimeResult />
+        </Container>
     );
 }
 

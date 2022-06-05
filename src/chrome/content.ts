@@ -17,9 +17,7 @@ const messgesFromReactAppListener = (
 
     if (isValidate && message.message === "parseTime") {
         const timeList: TimeList[] = parseTime();
-        console.log('timeList: ', timeList)
         const calcedTime: ResultData = calculateTime(timeList);
-        console.log(calcedTime);
         sendResponse(JSON.stringify(calcedTime));
         // response가 단순 비동기인 경우 return true; => 가비지 컬렉터
     }
