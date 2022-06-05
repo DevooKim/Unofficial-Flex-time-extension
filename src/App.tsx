@@ -5,7 +5,7 @@ import InActive from "./components/InActive";
 import WorkingTimeResult from "./components/WorkingTimeResult";
 
 function App() {
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState<boolean>(false);
 
     useEffect(() => {
         chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -22,7 +22,11 @@ function App() {
     }, []);
     return (
         <Container sx={{ minWidth: "350px" }}>
-            {isActive ? <WorkingTimeResult /> : <InActive />}
+            {isActive ? (
+                <WorkingTimeResult isActive={isActive} />
+            ) : (
+                <InActive />
+            )}
         </Container>
     );
 }

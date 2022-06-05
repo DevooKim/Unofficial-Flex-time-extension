@@ -12,6 +12,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { getCurrentTabUId } from "../../chrome/utils";
 import { ChromeMessage, Sender } from "../../types";
+import { getUserName } from "../../chrome/services/user";
 
 const dummyMonth = "5월";
 const dummyToday = "6월 6일 12시 30분";
@@ -35,9 +36,10 @@ const dummy = {
     ],
 };
 
-const WorkingTimeResult = () => {
+const WorkingTimeResult = ({ isActive }: { isActive: boolean }) => {
+    const [test, setTest] = useState<boolean>(false);
     const [analyzedWorkingTime, setAnalyzedWorkingTime] = useState({});
-
+    const [userName, setUserName] = useState("");
     const sendParseWorkingTime = () => {
         const message: ChromeMessage = {
             from: Sender.React,
@@ -52,15 +54,34 @@ const WorkingTimeResult = () => {
         });
     };
 
+    const sendUserName = () => {
+        const message: ChromeMessage = {
+            from: Sender.React,
+            message: "getUserName",
+        };
+
+        const options = {};
+        getCurrentTabUId((id: number | undefined): void => {
+            id &&
+                chrome.tabs.sendMessage(id, message, options, (response) => {
+                    setUserName(response);
+                });
+        });
+    };
+
     useEffect(() => {
-        // sendParseWorkingTime();
-    }, []);
+        if (isActive) {
+            sendParseWorkingTime();
+            sendUserName();
+        }
+    }, [isActive]);
 
     return (
         <>
             <h3>
-                {dummyMonth} 근무 정보 - 기준일 : {dummyToday}
+                {userName}님의 {dummyMonth} 근무 정보 - 기준일 : {dummyToday}
             </h3>
+            {isActive && <div>isActive</div>}
             <Paper sx={{ p: 2 }} elevation={3}>
                 <List>
                     <Divider />

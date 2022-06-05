@@ -1,5 +1,5 @@
-import { ResultData, TimeList, TimeListRest, ResultDataRest } from "../types";
-import { filterCount } from "../utils/utils.list";
+import { ResultData, TimeList, TimeListRest, ResultDataRest } from "../../types";
+import { filterCount } from "../../utils/utils.list";
 
 const getTimeTrackingTypes = (
     timeTrackingBlock: Element
