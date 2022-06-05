@@ -1,27 +1,28 @@
 import { Container } from "@mui/system";
 import { useEffect, useState } from "react";
+import { activeTabHandler } from "./chrome/utils";
+import InActive from "./components/InActive";
 import WorkingTimeResult from "./components/WorkingTimeResult";
 
 function App() {
     const [isActive, setIsActive] = useState(false);
+
+    useEffect(() => {
+        chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+            activeTabHandler(tab, setIsActive);
+        });
+    }, []);
+
     useEffect(() => {
         const queryInfo = { active: true, currentWindow: true };
         chrome.tabs?.query(queryInfo, (tabs: chrome.tabs.Tab[]): void => {
-            const isWorkingInfoTab =
-                tabs[0].url ===
-                "https://flex.team/time-tracking/work-record/my";
-            isWorkingInfoTab
-                ? chrome.action.enable(tabs[0].id)
-                : chrome.action.disable(tabs[0].id);
-
-            setIsActive(isWorkingInfoTab);
+            activeTabHandler(tabs[0], setIsActive);
             return;
         });
     }, []);
     return (
         <Container sx={{ minWidth: "350px" }}>
-            {isActive && <div>active</div>}
-            <WorkingTimeResult />
+            {isActive ? <WorkingTimeResult /> : <InActive />}
         </Container>
     );
 }

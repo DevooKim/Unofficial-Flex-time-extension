@@ -17,3 +17,16 @@ export const getCurrentTabUId = (
         callback(tabs[0].id);
     });
 };
+
+export const activeTabHandler = (
+    tab: chrome.tabs.Tab,
+    callback: (isActive: boolean) => void
+) => {
+    const isWorkingInfoTab =
+        tab.url === "https://flex.team/time-tracking/work-record/my";
+    isWorkingInfoTab
+        ? chrome.action.enable(tab.id)
+        : chrome.action.disable(tab.id);
+
+    callback(isWorkingInfoTab);
+};
