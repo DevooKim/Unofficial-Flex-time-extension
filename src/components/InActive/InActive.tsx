@@ -7,8 +7,17 @@ const InActive = () => {
         });
     };
     return (
-        <Box sx={{p: 3}}>
-            <Button variant="contained"onClick={openFlex}>플렉스 근무 페이지로 이동하기</Button>
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                p: 2,
+            }}
+        >
+            <Button variant="contained" onClick={openFlex}>
+                플렉스 근무 페이지로 이동하기
+            </Button>
         </Box>
     );
 };
