@@ -15,7 +15,6 @@ const messagesFromReactAppListener = (
     sendResponse: MessageResponse
 ) => {
     const isValidate = validateSender(message, sender);
-
     if (isValidate && message.message === "parseTime") {
         const timeList: TimeList[] = parseTime();
         const calculatedTime: ResultData = calculateTime(timeList);

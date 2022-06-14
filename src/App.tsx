@@ -24,6 +24,7 @@ function App() {
             return;
         });
     }, []);
+
     return (
         <Container sx={{ minWidth: "350px", p: 1.5, background: blueGrey[50] }}>
             {tabStatus.isWorkingInfoTab ? <WorkingTimeResult /> : <InActive />}

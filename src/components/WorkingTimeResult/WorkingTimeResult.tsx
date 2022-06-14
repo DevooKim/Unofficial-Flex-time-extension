@@ -6,6 +6,8 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { activeTabHandler, getCurrentTabUId } from "../../chrome/utils";
 import { ChromeMessage, ResultData, Sender } from "../../types";
 import { yellow } from "@mui/material/colors";
+import useFetchUserIdHash from "../../hooks/useFetchUserIdHash";
+import useFetchWorkingData from "../../hooks/useFetchWorkingData";
 
 const currentTimeFormat = () => {
     const date = new Date();
@@ -42,6 +44,9 @@ const WorkingTimeResult = () => {
     });
     const [targetMonth, setTargetMonth] = useState(0);
     const [userName, setUserName] = useState("");
+    const [timeStamp, setTimeStamp] = useState<string>("");
+    const hash: string = useFetchUserIdHash();
+    const workingData = useFetchWorkingData(hash, timeStamp);
 
     const sendParseWorkingTime = () => {
         const message: ChromeMessage = {
@@ -82,7 +87,7 @@ const WorkingTimeResult = () => {
         if (ts) {
             targetDate = new Date(parseInt(ts as string, 10));
         }
-
+        setTimeStamp(targetDate.getTime().toString());
         setTargetMonth(targetDate.getMonth() + 1);
     };
 
@@ -103,13 +108,20 @@ const WorkingTimeResult = () => {
         chrome.tabs?.query(queryInfo, (tabs) => {
             getTargetMonth(tabs[0]);
         });
-        sendParseWorkingTime();
         sendUserName();
     }, []);
 
     return (
         <>
+            <div>hash: {hash}</div>
+            <div>{JSON.stringify(workingData)}</div>
+        </>
+    );
+
+    return (
+        <>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
+                <div>hash: {hash}</div>
                 <Box sx={{ fontSize: "1.2rem", lineHeight: 1.5, mb: "0.5rem" }}>
                     {userName}님의 {targetMonth}월 근무 정보
                 </Box>

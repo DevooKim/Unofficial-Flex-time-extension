@@ -19,11 +19,21 @@
         "64": "./icons/icon64.png",
         "128": "./icons/icon128.png"
     },
-    "permissions": ["tabs", "activeTab"],
-    "host_permissions": ["https://flex.team/time-tracking/work-record/my*"],
+    "permissions": ["tabs", "activeTab", "webRequest"],
+    "host_permissions": [
+        "https://flex.team/time-tracking/work-record/my*",
+        "https://flex.team/api/v2/core/users/me/user-settings",
+        "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules",
+        "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules?*"
+    ],
     "content_scripts": [
         {
-            "matches": ["https://flex.team/time-tracking/work-record/my*"],
+            "matches": [
+                "https://flex.team/time-tracking/work-record/my*",
+                "https://flex.team/api/v2/core/users/me/user-settings",
+                "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules",
+                "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules?*"
+            ],
             "js": ["./static/js/content.js"]
         }
     ],

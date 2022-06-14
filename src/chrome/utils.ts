@@ -13,8 +13,8 @@ export const getCurrentTabUId = (
 ): void => {
     const queryInfo = { active: true, currentWindow: true };
 
-    chrome.tabs?.query(queryInfo, (tabs) => {
-        callback(tabs[0].id);
+    chrome.tabs?.query(queryInfo, async (tabs) => {
+        await callback(tabs[0].id);
     });
 };
 
@@ -38,4 +38,3 @@ export const activeTabHandler = (
 
     callback({ isWorkingInfoTab, isComplete });
 };
-
