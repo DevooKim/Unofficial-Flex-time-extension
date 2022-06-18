@@ -1,5 +1,5 @@
 import { flexDayInfo, flexPaidSummary, parsedWorkingDay } from "../types";
-import { dayToMinutes, safeDivision } from "../utils/utils.time";
+import { safeDivision } from "../utils/utils.time";
 
 const AVG_WEEK_OF_MONTH = 4.345; //월 평균 주
 
@@ -25,13 +25,19 @@ export const getWeekWorkingTimeAvg = (totalWorkingMinutes: number): number =>
 export const getCurrentWorkingMinutesAvg = ({
     workedMinutes,
     workedDay,
-}: any): number => safeDivision(workedMinutes, workedDay);
+}: {
+    workedMinutes: number;
+    workedDay: number;
+}): number => safeDivision(workedMinutes, workedDay);
 
 // 남은 최소 근무시간
 export const getMinRemainWorkingMinutes = ({
     minWorkingMinutes,
     workedMinutes,
-}: any): number => {
+}: {
+    minWorkingMinutes: number;
+    workedMinutes: number;
+}): number => {
     const result = minWorkingMinutes - workedMinutes;
     return result < 0 ? 0 : result;
 };
@@ -40,7 +46,10 @@ export const getMinRemainWorkingMinutes = ({
 export const getMinRemainWorkingMinutesAvg = ({
     minRemainWorkingMinutes,
     remainWorkingDay,
-}: any): number => safeDivision(minRemainWorkingMinutes, remainWorkingDay);
+}: {
+    minRemainWorkingMinutes: number;
+    remainWorkingDay: number;
+}): number => safeDivision(minRemainWorkingMinutes, remainWorkingDay);
 
 export const getDaysInfo = ({
     dayWorkingType,
