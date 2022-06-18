@@ -1,4 +1,4 @@
-import { flexDayInfo, flexPaidSummary } from "../types";
+import { flexDayInfo, flexPaidSummary, parsedWorkingDay } from "../types";
 import { dayToMinutes, safeDivision } from "../utils/utils.time";
 
 const AVG_WEEK_OF_MONTH = 4.345; //월 평균 주
@@ -6,8 +6,10 @@ const AVG_WEEK_OF_MONTH = 4.345; //월 평균 주
 // 이번달 해야하는 최소 근무시간
 export const getMinWorkingTime = ({
     baseWorkingMinutes,
-    holidayMinutes,
-}: flexPaidSummary): number => baseWorkingMinutes - holidayMinutes;
+    timeOffMinutes,
+    workingHolidayMinutes,
+}: flexPaidSummary): number =>
+    baseWorkingMinutes - timeOffMinutes - workingHolidayMinutes;
 
 // 인정(?) 근로시간 = 소정 근무시간 + 연차 시간
 export const getTotalWorkingTime = ({
@@ -27,9 +29,12 @@ export const getCurrentWorkingMinutesAvg = ({
 
 // 남은 최소 근무시간
 export const getMinRemainWorkingMinutes = ({
-    remainWorkingDay,
+    minWorkingMinutes,
     workedMinutes,
-}: any): number => dayToMinutes(remainWorkingDay) - workedMinutes;
+}: any): number => {
+    const result = minWorkingMinutes - workedMinutes;
+    return result < 0 ? 0 : result;
+};
 
 // 남은 최소 근무시간 평균
 export const getMinRemainWorkingMinutesAvg = ({
@@ -41,11 +46,11 @@ export const getDaysInfo = ({
     dayWorkingType,
     customHoliday,
     timeOffs,
-}: flexDayInfo) => {
+}: flexDayInfo): parsedWorkingDay => {
     if (
         customHoliday ||
         dayWorkingType === "WEEKLY_UNPAID_HOLIDAY" ||
-        dayWorkingType === "WEEKLY_PAID_HOLIDAY`"
+        dayWorkingType === "WEEKLY_PAID_HOLIDAY"
     ) {
         return { isWorkingDay: false, timeOffType: "FULL" };
     }
@@ -60,20 +65,30 @@ export const getDaysInfo = ({
     );
 
     return {
-        isWorkingDay: isDayOff || isHalfDayOff,
+        isWorkingDay: !(isDayOff || isHalfDayOff),
         timeOffType: isDayOff ? "FULL" : isHalfDayOff ? "HALF" : "NONE",
     };
 };
 
-/* 근무일 (반차 포함) */
-export const parseWorkingDay = (days: flexDayInfo) => {
-    const { isWorkingDay, timeOffType } = getDaysInfo(days);
+/* 근무 정보 */
+export const parseWorkingDay = (day: flexDayInfo): parsedWorkingDay => {
+    const { isWorkingDay, timeOffType } = getDaysInfo(day);
 
     return {
-        date: days.date,
+        date: day.date,
         isWorkingDay,
         timeOffType,
     };
+};
+
+export const getWorkingDayCount = (parsedDays: parsedWorkingDay[]): number => {
+    const workingDays = parsedDays.filter(({ isWorkingDay }) => isWorkingDay);
+
+    const halfTimeOffDay = parsedDays.filter(
+        ({ timeOffType }) => timeOffType === "HALF"
+    );
+
+    return workingDays.length + halfTimeOffDay.length * 0.5;
 };
 
 /* TODO: 초과시간 */

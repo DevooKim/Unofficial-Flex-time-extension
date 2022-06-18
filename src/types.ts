@@ -12,14 +12,17 @@ export type TimeListRest = "FULL" | "HALF" | "NONE";
 
 export type flexPaidSummary = {
     baseWorkingMinutes: number;
-    holidayMinutes: number;
+    workingHolidayMinutes: number;
     actualWorkingMinutes: number;
     timeOffMinutes: number;
 };
 
 export type flexDayInfo = {
     date: string;
-    dayWorkingType: string;
+    dayWorkingType:
+        | "WORKING_DAY"
+        | "WEEKLY_UNPAID_HOLIDAY"
+        | "WEEKLY_PAID_HOLIDAY";
     customHoliday: boolean;
     timeOffs: {
         timeOffRegisterUnit: string;
@@ -29,4 +32,10 @@ export type flexDayInfo = {
 export interface flexInfo {
     paidSummary: flexPaidSummary;
     days: flexDayInfo[];
+}
+
+export type parsedWorkingDay = {
+    date?: string;
+    isWorkingDay: boolean;
+    timeOffType: TimeListRest
 }
