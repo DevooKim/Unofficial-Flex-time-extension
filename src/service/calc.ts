@@ -23,19 +23,19 @@ export const getWeekWorkingTimeAvg = (totalWorkingMinutes: number): number =>
 export const getCurrentWorkingMinutesAvg = ({
     workedMinutes,
     workedDay,
-}): number => safeDivision(workedMinutes, workedDay);
+}: any): number => safeDivision(workedMinutes, workedDay);
 
 // 남은 최소 근무시간
 export const getMinRemainWorkingMinutes = ({
     remainWorkingDay,
     workedMinutes,
-}): number => dayToMinutes(remainWorkingDay) - workedMinutes;
+}: any): number => dayToMinutes(remainWorkingDay) - workedMinutes;
 
 // 남은 최소 근무시간 평균
 export const getMinRemainWorkingMinutesAvg = ({
     minRemainWorkingMinutes,
     remainWorkingDay,
-}): number => safeDivision(minRemainWorkingMinutes, remainWorkingDay);
+}: any): number => safeDivision(minRemainWorkingMinutes, remainWorkingDay);
 
 export const getDaysInfo = ({
     dayWorkingType,
