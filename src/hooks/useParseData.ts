@@ -10,10 +10,10 @@ import {
     getWorkingMinutesWeekAvg,
     minutesToHour,
 } from "../service/calc";
-import { flexInfo, parsedData } from "../types";
+import { flexInfo } from "../types";
 
-const useParseData = (flexData: flexInfo): parsedData => {
-    const [data, setData] = useState({} as parsedData);
+const useParseData = (flexData: flexInfo) => {
+    const [data, setData] = useState({});
 
     useEffect(() => {
         if (isEmpty(flexData)) {
