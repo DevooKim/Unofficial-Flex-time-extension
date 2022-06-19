@@ -1,24 +1,20 @@
-import { flexDayInfo, flexPaidSummary, parsedDay } from "../types";
+import { flexDayInfo, flexPaidSummary, parsedDay, workingDay } from "../types";
 import { safeDivision } from "../utils/utils.time";
 
 const AVG_WEEK_OF_MONTH = 4.345; //월 평균 주
 
 // 이번달 해야하는 최소 근무시간
-export const getMinWorkingTime = ({
-    baseWorkingMinutes,
-    timeOffMinutes,
-    workingHolidayMinutes,
-}: flexPaidSummary): number =>
-    baseWorkingMinutes - timeOffMinutes - workingHolidayMinutes;
+export const getMinWorkingMinutes = (actualWorkingDayCount: number): number =>
+    actualWorkingDayCount * 8 * 60;
 
 // 인정(?) 근로시간 = 소정 근무시간 + 연차 시간
-export const getTotalWorkingTime = ({
+export const getTotalWorkingMinutes = ({
     actualWorkingMinutes,
     timeOffMinutes,
 }: flexPaidSummary): number => actualWorkingMinutes + timeOffMinutes;
 
 // 월 평균 주 근무 시간 (주)
-export const getWeekWorkingTimeAvg = (totalWorkingMinutes: number): number =>
+export const getWorkingMinutesWeekAvg = (totalWorkingMinutes: number): number =>
     safeDivision(totalWorkingMinutes, AVG_WEEK_OF_MONTH);
 
 // 현재 평균 소정 근무시간 (일)
@@ -45,11 +41,12 @@ export const getMinRemainWorkingMinutes = ({
 // 남은 최소 근무시간 평균
 export const getMinRemainWorkingMinutesAvg = ({
     minRemainWorkingMinutes,
-    remainWorkingDay,
+    remainActualWorkingDayCount,
 }: {
     minRemainWorkingMinutes: number;
-    remainWorkingDay: number;
-}): number => safeDivision(minRemainWorkingMinutes, remainWorkingDay);
+    remainActualWorkingDayCount: number;
+}): number =>
+    safeDivision(minRemainWorkingMinutes, remainActualWorkingDayCount);
 
 export const getDaysInfo = ({
     date,
@@ -118,7 +115,7 @@ export const isWorkedDay = (
     return includeToday ? today >= workingDay.date : today > workingDay.date;
 };
 
-export const getWorkingDay = (days: flexDayInfo[]) => {
+export const getWorkingDay = (days: flexDayInfo[]): workingDay => {
     const parsedDays = days.map((day) => getDaysInfo(day));
 
     // 근무일(연차 포함)
@@ -148,7 +145,6 @@ export const getWorkingDay = (days: flexDayInfo[]) => {
     const actualWorkedDays = workedDays.filter(
         ({ actualWorkingDay }) => actualWorkingDay
     );
-    console.log(actualWorkedDays);
     const actualWorkedDayCount = getWorkingDayCount(actualWorkedDays);
 
     return {
@@ -163,4 +159,7 @@ export const getWorkingDay = (days: flexDayInfo[]) => {
         actualWorkedDayCount,
     };
 };
+
+export const minutesToHour = (minutes: number): number => minutes / 60;
+
 /* TODO: 초과시간 */

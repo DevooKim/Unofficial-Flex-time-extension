@@ -1,18 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {
-    getCurrentWorkingMinutesAvg,
-    getMinWorkingTime,
-    getTotalWorkingTime,
-    getWeekWorkingTimeAvg,
-    getWorkingDayCount,
-    parseWorkingDay,
-    getMinRemainWorkingMinutes,
-    getMinRemainWorkingMinutesAvg,
-} from "../service/calc";
-import { flexInfo } from "../types";
 
-const fetch = async (
+const fetch = async <T>(
     userIdHash: string,
     timeStamp: string,
     callback: (res: any) => void
@@ -20,36 +9,17 @@ const fetch = async (
     const { data } = await axios.get(
         `https://flex.team/api/v2/time-tracking/users/${userIdHash}/periods/work-schedules?timeStampFrom=${timeStamp}&timeStampTo=${timeStamp}`
     );
-    const flexData: flexInfo = data.workScheduleResults[0];
+    const flexData: T = data.workScheduleResults[0];
 
-    const minWorkingMinutes = getMinWorkingTime(flexData.paidSummary);
-    const totalWorkingMinutes = getTotalWorkingTime(flexData.paidSummary);
-    const weekWorkingMinutesAvg = getWeekWorkingTimeAvg(totalWorkingMinutes);
-
-    // const actualWorkingMinutes = flexData.paidSummary.actualWorkingMinutes;
-    // const actualWorkingMinutesAvg = getCurrentWorkingMinutesAvg({
-    //     workedDay: workedDayCount,
-    //     workedMinutes: actualWorkingMinutes,
-    // });
-
-    // const minRemainWorkingMinutes = getMinRemainWorkingMinutes({
-    //     minWorkingMinutes,
-    //     workedMinutes: totalWorkingMinutes,
-    // });
-    // const minRemainWorkingMinutesAvg = getMinRemainWorkingMinutesAvg({
-    //     minRemainWorkingMinutes,
-    //     remainWorkingDay: workingDayCount - workedDayCount,
-    // });
-
-    // callback(data.workScheduleResults[0]);
+    callback(flexData);
 };
 
-const useFetchWorkingData = (userIdHash: string, timeStamp: string) => {
-    const [workingData, setWorkingData] = useState({});
+const useFetchWorkingData = <T>(userIdHash: string, timeStamp: string): T => {
+    const [workingData, setWorkingData] = useState<T>({} as T);
 
     useEffect(() => {
         if (userIdHash && timeStamp) {
-            fetch(userIdHash, timeStamp, setWorkingData);
+            fetch<T>(userIdHash, timeStamp, setWorkingData);
         }
     }, [userIdHash, timeStamp]);
 

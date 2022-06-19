@@ -29,14 +29,26 @@ export type flexDayInfo = {
     }[];
 };
 
-export interface flexInfo {
+export type flexInfo = {
     paidSummary: flexPaidSummary;
     days: flexDayInfo[];
-}
+};
 
 export type parsedDay = {
     date: string;
     workingDay: boolean;
     actualWorkingDay: boolean;
     timeOffType: TimeListRest;
+};
+
+export type workingDay = {
+    workingDays: parsedDay[];
+    workingDayCount: number;
+    timeOffDays: parsedDay[];
+    actualWorkingDays: parsedDay[];
+    actualWorkingDayCount: number;
+    workedDays: parsedDay[];
+    workedDayCount: number;
+    actualWorkedDays: parsedDay[];
+    actualWorkedDayCount: number;
 };
