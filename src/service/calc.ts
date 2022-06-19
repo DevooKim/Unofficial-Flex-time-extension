@@ -115,7 +115,10 @@ export const isWorkedDay = (
     return includeToday ? today >= workingDay.date : today > workingDay.date;
 };
 
-export const getWorkingDay = (days: flexDayInfo[]): workingDay => {
+export const getWorkingDay = (
+    days: flexDayInfo[],
+    includeToday: boolean = false
+): workingDay => {
     const parsedDays = days.map((day) => getDaysInfo(day));
 
     // 근무일(연차 포함)
@@ -137,7 +140,7 @@ export const getWorkingDay = (days: flexDayInfo[]): workingDay => {
 
     // 근무한 일 (연차 포함)
     const workedDays = workingDays.filter((workedDay) =>
-        isWorkedDay(workedDay)
+        isWorkedDay(workedDay, includeToday)
     );
     const workedDayCount = workedDays.length;
 

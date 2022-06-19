@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Divider, List, Paper, Tooltip } from "@mui/material";
+import {
+    Divider,
+    FormControlLabel,
+    List,
+    Paper,
+    Switch,
+    Tooltip,
+} from "@mui/material";
 import { Box, SxProps } from "@mui/system";
 import InfoIcon from "@mui/icons-material/Info";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -36,9 +43,14 @@ const WorkingTimeResult = () => {
     const [targetMonth, setTargetMonth] = useState(0);
     const [userName, setUserName] = useState("");
     const [timeStamp, setTimeStamp] = useState<string>("");
+    const [finishToday, setFinishToday] = useState(false);
     const hash: string = useFetchUserIdHash();
     const flexData = useFetchWorkingData<flexInfo>(hash, timeStamp);
-    const parsedData = useParseData(flexData);
+    const parsedData = useParseData(flexData, finishToday);
+
+    const handleFinishToday = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFinishToday(!event.target.checked);
+    };
 
     const sendUserName = () => {
         const message: ChromeMessage = {
@@ -96,6 +108,15 @@ const WorkingTimeResult = () => {
                 <ItemText sx={{ p: 0 }}>
                     기준일 : {currentTimeFormat()}
                 </ItemText>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={!finishToday}
+                            onChange={handleFinishToday}
+                        />
+                    }
+                    label={finishToday ? "퇴근" : "근무 중"}
+                />
             </Paper>
             <Box sx={{ pt: 2 }}>
                 <List>

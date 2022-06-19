@@ -12,7 +12,10 @@ import {
 } from "../service/calc";
 import { flexInfo, parsedData } from "../types";
 
-const useParseData = (flexData: flexInfo): parsedData => {
+const useParseData = (
+    flexData: flexInfo,
+    includeToday: boolean
+): parsedData => {
     const [data, setData] = useState({} as parsedData);
 
     useEffect(() => {
@@ -27,7 +30,7 @@ const useParseData = (flexData: flexInfo): parsedData => {
             actualWorkingDayCount,
             workedDayCount,
             actualWorkedDayCount,
-        } = getWorkingDay(days);
+        } = getWorkingDay(days, includeToday);
         const remainActualWorkingDayCount =
             actualWorkingDayCount - actualWorkedDayCount;
 
@@ -62,7 +65,7 @@ const useParseData = (flexData: flexInfo): parsedData => {
             minRemainWorkingTime: minutesToHour(minRemainWorkingMinutes),
             minRemainWorkingTimeAvg: minutesToHour(minRemainWorkingMinutesAvg),
         });
-    }, [flexData]);
+    }, [flexData, includeToday]);
 
     return data;
 };
