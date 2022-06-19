@@ -160,6 +160,7 @@ export const getWorkingDay = (days: flexDayInfo[]): workingDay => {
     };
 };
 
-export const minutesToHour = (minutes: number): number => minutes / 60;
+export const minutesToHour = (minutes: number): number =>
+    Number((minutes / 60).toFixed(2));
 
 /* TODO: 초과시간 */
