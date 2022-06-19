@@ -9,3 +9,6 @@
 5. 우측 상단에 있는 개발자 모드를 켠다.
 6. **압축해제된 확장 프로그램을 로드합니다.** 를 클릭하여 3번의 `build` 폴더를 선택한다.
 7. 사용한다.
+
+# 또는
+[다운로드](https://www.icloud.com/iclouddrive/08co6htB-BdEW6yjOWbZxZ7Og#flex_extension_v2)
