@@ -28,7 +28,7 @@ export const activeTabHandler = (
     callback: (status: tabStatus) => void
 ) => {
     const isWorkingInfoTab = !!tab.url?.startsWith(
-        "https://flex.team/time-tracking/work-record/my"
+        "https://flex.team"
     );
     const isComplete = tab.status === "complete";
 

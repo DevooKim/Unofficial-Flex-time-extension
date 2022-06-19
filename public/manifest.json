@@ -21,7 +21,7 @@
     },
     "permissions": ["tabs", "activeTab", "webRequest", "storage"],
     "host_permissions": [
-        "https://flex.team/time-tracking/work-record/my*",
+        "https://flex.team*",
         "https://flex.team/api/v2/core/users/me/user-settings",
         "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules",
         "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules?*"
@@ -29,7 +29,7 @@
     "content_scripts": [
         {
             "matches": [
-                "https://flex.team/time-tracking/work-record/my*",
+                "https://flex.team*",
                 "https://flex.team/api/v2/core/users/me/user-settings",
                 "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules",
                 "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules?*"
