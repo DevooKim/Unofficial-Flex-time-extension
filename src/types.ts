@@ -8,7 +8,7 @@ export interface ChromeMessage {
     message: any;
 }
 
-export type TimeListRest = "FULL" | "HALF" | "NONE";
+export type TimeListRest = "FULL" | "HALF" | "HOLIDAY" | "NONE";
 
 export type flexPaidSummary = {
     baseWorkingMinutes: number;
@@ -34,8 +34,9 @@ export interface flexInfo {
     days: flexDayInfo[];
 }
 
-export type parsedWorkingDay = {
-    date?: string;
-    isWorkingDay: boolean;
-    timeOffType: TimeListRest
-}
+export type parsedDay = {
+    date: string;
+    workingDay: boolean;
+    actualWorkingDay: boolean;
+    timeOffType: TimeListRest;
+};

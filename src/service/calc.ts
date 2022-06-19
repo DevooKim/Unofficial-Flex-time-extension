@@ -1,4 +1,4 @@
-import { flexDayInfo, flexPaidSummary, parsedWorkingDay } from "../types";
+import { flexDayInfo, flexPaidSummary, parsedDay } from "../types";
 import { safeDivision } from "../utils/utils.time";
 
 const AVG_WEEK_OF_MONTH = 4.345; //월 평균 주
@@ -52,16 +52,22 @@ export const getMinRemainWorkingMinutesAvg = ({
 }): number => safeDivision(minRemainWorkingMinutes, remainWorkingDay);
 
 export const getDaysInfo = ({
+    date,
     dayWorkingType,
     customHoliday,
     timeOffs,
-}: flexDayInfo): parsedWorkingDay => {
+}: flexDayInfo): parsedDay => {
     if (
         customHoliday ||
         dayWorkingType === "WEEKLY_UNPAID_HOLIDAY" ||
         dayWorkingType === "WEEKLY_PAID_HOLIDAY"
     ) {
-        return { isWorkingDay: false, timeOffType: "FULL" };
+        return {
+            date,
+            workingDay: false,
+            actualWorkingDay: false,
+            timeOffType: "HOLIDAY",
+        };
     }
 
     const isDayOff = timeOffs.some(
@@ -74,30 +80,87 @@ export const getDaysInfo = ({
     );
 
     return {
-        isWorkingDay: !(isDayOff || isHalfDayOff),
+        date,
+        workingDay: true,
+        actualWorkingDay: !isDayOff, // 반차는 출근일로 계산
         timeOffType: isDayOff ? "FULL" : isHalfDayOff ? "HALF" : "NONE",
     };
 };
 
 /* 근무 정보 */
-export const parseWorkingDay = (day: flexDayInfo): parsedWorkingDay => {
-    const { isWorkingDay, timeOffType } = getDaysInfo(day);
+export const parseWorkingDay = (day: flexDayInfo): parsedDay => {
+    const { workingDay, actualWorkingDay, timeOffType } = getDaysInfo(day);
 
     return {
         date: day.date,
-        isWorkingDay,
+        workingDay,
+        actualWorkingDay,
         timeOffType,
     };
 };
 
-export const getWorkingDayCount = (parsedDays: parsedWorkingDay[]): number => {
-    const workingDays = parsedDays.filter(({ isWorkingDay }) => isWorkingDay);
+// 이번달 실 출근일 (연차제외 반차: 0.5)
+export const getWorkingDayCount = (parsedDays: parsedDay[]): number => {
+    const workingDays = parsedDays.filter(({ workingDay }) => workingDay);
 
     const halfTimeOffDay = parsedDays.filter(
         ({ timeOffType }) => timeOffType === "HALF"
     );
 
-    return workingDays.length + halfTimeOffDay.length * 0.5;
+    return workingDays.length - halfTimeOffDay.length * 0.5;
 };
 
+export const isWorkedDay = (
+    workingDay: parsedDay,
+    includeToday: boolean = false
+): boolean => {
+    const today = new Date().toISOString().split("T")[0];
+    return includeToday ? today >= workingDay.date : today > workingDay.date;
+};
+
+export const getWorkingDay = (days: flexDayInfo[]) => {
+    const parsedDays = days.map((day) => getDaysInfo(day));
+
+    // 근무일(연차 포함)
+    const workingDays = parsedDays.filter(
+        ({ timeOffType }) => timeOffType !== "HOLIDAY"
+    );
+    const workingDayCount = workingDays.length;
+
+    // 연차
+    const timeOffDays = workingDays.filter(
+        ({ timeOffType }) => timeOffType !== "NONE"
+    );
+
+    // 출근일 (연차 제외))
+    const actualWorkingDays = parsedDays.filter(
+        ({ actualWorkingDay }) => actualWorkingDay
+    );
+    const actualWorkingDayCount = getWorkingDayCount(actualWorkingDays);
+
+    // 근무한 일 (연차 포함)
+    const workedDays = workingDays.filter((workedDay) =>
+        isWorkedDay(workedDay)
+    );
+    const workedDayCount = workedDays.length;
+
+    // 출근한 일 (연차 제외)
+    const actualWorkedDays = workedDays.filter(
+        ({ actualWorkingDay }) => actualWorkingDay
+    );
+    console.log(actualWorkedDays);
+    const actualWorkedDayCount = getWorkingDayCount(actualWorkedDays);
+
+    return {
+        workingDays,
+        workingDayCount,
+        timeOffDays,
+        actualWorkingDays,
+        actualWorkingDayCount,
+        workedDays,
+        workedDayCount,
+        actualWorkedDays,
+        actualWorkedDayCount,
+    };
+};
 /* TODO: 초과시간 */

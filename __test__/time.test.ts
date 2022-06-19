@@ -5,8 +5,7 @@ import {
     getMinWorkingTime,
     getTotalWorkingTime,
     getWeekWorkingTimeAvg,
-    getWorkingDayCount,
-    parseWorkingDay,
+    getWorkingDay,
 } from "../src/service/calc";
 import { data } from "./dummyData";
 
@@ -64,12 +63,28 @@ describe("시간 계산이 잘 되는가", () => {
         expect(resultAvg).toBe(400);
     });
 
-    it("근무일 계산", () => {
-        const days = data.days;
-        const workingDays = days.map((day) => parseWorkingDay(day));
-        const result = getWorkingDayCount(workingDays);
+    it("근무일 정보", () => {
+        jest.useFakeTimers().setSystemTime(new Date("2022-05-07"));
 
-        expect(result).toBe(19.5);
+        const days = data.days;
+        const {
+            workingDayCount,
+            actualWorkingDayCount,
+            workedDayCount,
+            actualWorkedDayCount,
+        } = getWorkingDay(days);
+
+        expect(workingDayCount).toBe(21);
+        expect(actualWorkingDayCount).toBe(19.5);
+        expect(workedDayCount).toBe(4);
+        expect(actualWorkedDayCount).toBe(2.5);
+
+        console.log({
+            workingDayCount,
+            actualWorkingDayCount,
+            workedDayCount,
+            actualWorkedDayCount,
+        });
     });
 });
 

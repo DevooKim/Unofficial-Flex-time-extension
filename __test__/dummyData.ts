@@ -1,5 +1,6 @@
 import { flexInfo } from "../src/types";
 
+// 공휴일 1일, 연차 1일, 반차 1일
 export const data: flexInfo = {
     paidSummary: {
         baseWorkingMinutes: 10560,
