@@ -13,8 +13,8 @@ export const getCurrentTabUId = (
 ): void => {
     const queryInfo = { active: true, currentWindow: true };
 
-    chrome.tabs?.query(queryInfo, (tabs) => {
-        callback(tabs[0].id);
+    chrome.tabs?.query(queryInfo, async (tabs) => {
+        await callback(tabs[0].id);
     });
 };
 
@@ -28,7 +28,7 @@ export const activeTabHandler = (
     callback: (status: tabStatus) => void
 ) => {
     const isWorkingInfoTab = !!tab.url?.startsWith(
-        "https://flex.team/time-tracking/work-record/my"
+        "https://flex.team"
     );
     const isComplete = tab.status === "complete";
 
@@ -38,4 +38,3 @@ export const activeTabHandler = (
 
     callback({ isWorkingInfoTab, isComplete });
 };
-

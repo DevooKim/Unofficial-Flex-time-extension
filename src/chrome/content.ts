@@ -1,5 +1,4 @@
-import { ChromeMessage, ResultData, Sender, TimeList } from "../types";
-import { calculateTime, parseTime } from "./services/time";
+import { ChromeMessage, Sender } from "../types";
 import { getUserName } from "./services/user";
 
 type MessageResponse = (response?: any) => void;
@@ -15,13 +14,6 @@ const messagesFromReactAppListener = (
     sendResponse: MessageResponse
 ) => {
     const isValidate = validateSender(message, sender);
-
-    if (isValidate && message.message === "parseTime") {
-        const timeList: TimeList[] = parseTime();
-        const calculatedTime: ResultData = calculateTime(timeList);
-        sendResponse(JSON.stringify(calculatedTime));
-        // response가 단순 비동기인 경우 return true; => 가비지 컬렉터
-    }
 
     if (isValidate && message.message === "getUserName") {
         const userName = getUserName();
