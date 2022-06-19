@@ -19,7 +19,7 @@
         "64": "./icons/icon64.png",
         "128": "./icons/icon128.png"
     },
-    "permissions": ["tabs", "activeTab", "webRequest"],
+    "permissions": ["tabs", "activeTab", "webRequest", "storage"],
     "host_permissions": [
         "https://flex.team/time-tracking/work-record/my*",
         "https://flex.team/api/v2/core/users/me/user-settings",

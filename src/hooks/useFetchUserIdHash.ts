@@ -7,13 +7,21 @@ const fetch = async (callback: (res: string) => void) => {
     );
     const { userIdHash } = data.setting;
 
-    callback(userIdHash);
+    chrome.storage.local.set({ userIdHash }, () => {
+        callback(userIdHash);
+    });
 };
 const useFetchUserIdHash = (): string => {
     const [userIdHash, setUserIdHash] = useState<string>("");
 
     useEffect(() => {
-        fetch(setUserIdHash);
+        chrome.storage.local.get(["userIdHash"], (result) => {
+            if (result.userIdHash) {
+                setUserIdHash(result.userIdHash);
+            } else {
+                fetch(setUserIdHash);
+            }
+        });
     }, []);
 
     return userIdHash;

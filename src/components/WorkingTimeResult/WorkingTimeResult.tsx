@@ -89,7 +89,6 @@ const WorkingTimeResult = () => {
 
     return (
         <>
-        <h1>{hash}</h1>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
                 <Box sx={{ fontSize: "1.2rem", lineHeight: 1.5, mb: "0.5rem" }}>
                     {userName}님의 {targetMonth}월 근무 정보
