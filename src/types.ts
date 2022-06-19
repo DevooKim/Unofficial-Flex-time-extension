@@ -52,3 +52,16 @@ export type workingDay = {
     actualWorkedDays: parsedDay[];
     actualWorkedDayCount: number;
 };
+
+export type parsedData = {
+    actualWorkingDayCount: number;
+    remainActualWorkingDayCount: number;
+    timeOffDays: parsedDay[];
+    minWorkingTime: number;
+    totalWorkingTime: number;
+    workingTimeWeekAvg: number;
+    actualWorkingTime: number;
+    actualWorkingTimeAvg: number;
+    minRemainWorkingTime: number;
+    minRemainWorkingTimeAvg: number;
+};
