@@ -113,6 +113,7 @@ const WorkingTimeResult = () => {
                         <Switch
                             checked={!finishToday}
                             onChange={handleFinishToday}
+                            size="small"
                         />
                     }
                     label={finishToday ? "퇴근" : "근무 중"}

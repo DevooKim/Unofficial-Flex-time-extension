@@ -111,7 +111,11 @@ export const isWorkedDay = (
     workingDay: parsedDay,
     includeToday: boolean = false
 ): boolean => {
-    const today = new Date().toISOString().split("T")[0];
+    // const today = new Date().toISOString().split("T")[0];
+    const date = new Date();
+    const today = `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
     return includeToday ? today >= workingDay.date : today > workingDay.date;
 };
 
