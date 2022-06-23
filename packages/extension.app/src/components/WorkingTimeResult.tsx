@@ -1,5 +1,4 @@
 import {
-    Divider,
     FormControlLabel,
     List,
     Paper,
@@ -8,8 +7,8 @@ import {
 } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
-import { flexInfo } from '../types'
 import { yellow, pink, lightBlue, lightGreen } from '@mui/material/colors'
+
 import {
     useFetchUserIdHash,
     useFetchWorkingData,
@@ -18,6 +17,8 @@ import {
     useToggle,
     useGetUserName,
 } from '../hooks'
+import { flexInfo } from '../types'
+
 import TimeResult, { IItem } from './TimeResult'
 
 const currentTimeFormat = () => {
@@ -120,8 +121,6 @@ const WorkingTimeResult = () => {
                             />
                         ))}
                     </TimeResult>
-
-                    <Divider />
                     <Box pt={0.5}>
                         <Box fontSize="1rem" lineHeight={1.5} px={1} py={0.5}>
                             연차 정보
