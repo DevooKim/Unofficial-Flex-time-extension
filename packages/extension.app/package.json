@@ -17,7 +17,7 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "build": "INLINE_RUNTIME_CHUNK=false craco build",
+        "build": "INLINE_RUNTIME_CHUNK=false craco build && rm -rf ../../build && mv build ../../",
         "test": "jest"
     },
     "eslintConfig": {

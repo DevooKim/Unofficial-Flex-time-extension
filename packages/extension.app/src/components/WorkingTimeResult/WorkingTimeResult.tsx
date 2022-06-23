@@ -6,6 +6,7 @@ import {
     Paper,
     Switch,
     Tooltip,
+    Typography,
 } from '@mui/material'
 import { Box, SxProps } from '@mui/system'
 import InfoIcon from '@mui/icons-material/Info'
@@ -16,6 +17,7 @@ import { yellow, pink, lightBlue, lightGreen } from '@mui/material/colors'
 import useFetchUserIdHash from '../../hooks/useFetchUserIdHash'
 import useFetchWorkingData from '../../hooks/useFetchWorkingData'
 import useParseData from '../../hooks/useParseData'
+import TimeResult, { IItem } from '../TimeResult'
 
 const currentTimeFormat = () => {
     const date = new Date()
@@ -26,18 +28,6 @@ const currentTimeFormat = () => {
 
     return `${month}월 ${day}일 ${hour}시 ${minute}분`
 }
-
-const ItemText = ({
-    children,
-    sx,
-}: {
-    children: React.ReactNode
-    sx?: SxProps
-}) => (
-    <Box sx={{ fontSize: '1rem', lineHeight: 1.5, px: 1, py: 0.5, ...sx }}>
-        {children}
-    </Box>
-)
 
 const WorkingTimeResult = () => {
     const [targetMonth, setTargetMonth] = useState(0)
@@ -99,15 +89,48 @@ const WorkingTimeResult = () => {
         sendUserName()
     }, [])
 
+    const overallData: IItem[] = [
+        {
+            info: `총 근무시간: ${parsedData.totalWorkingTime}시간`,
+            tooltipTitle: '연차, 반차 시간 포함',
+        },
+        {
+            info: `월 평균 주 근무시간: ${parsedData.workingTimeWeekAvg}시간`,
+            tooltipTitle: '총 근무시간 / 4.345주',
+        },
+    ]
+
+    const actualData: IItem[] = [
+        {
+            info: `소정 근무시간: ${parsedData.actualWorkingTime}시간`,
+        },
+        {
+            info: `하루 평균 근무시간: ${parsedData.actualWorkingTimeAvg}시간`,
+        },
+    ]
+
+    const remainData: IItem[] = [
+        {
+            info: `남은 근무일: ${parsedData.remainActualWorkingDayCount}일`,
+        },
+        {
+            info: `남은 최소 근무시간: ${parsedData.minRemainWorkingTime}시간`,
+        },
+        {
+            info: `남은 하루 평균 근무시간: ${parsedData.minRemainWorkingTimeAvg}시간`,
+            tooltipTitle: '반차 출근일 포함',
+        },
+    ]
+
     return (
         <>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
-                <Box sx={{ fontSize: '1.2rem', lineHeight: 1.5, mb: '0.5rem' }}>
+                <Box fontSize="1.2rem" lineHeight={1.5} mb={0.5}>
                     {userName}님의 {targetMonth}월 근무 정보
                 </Box>
-                <ItemText sx={{ p: 0 }}>
+                <Box fontSize="1rem" lineHeight={1.5}>
                     기준일 : {currentTimeFormat()}
-                </ItemText>
+                </Box>
                 <FormControlLabel
                     control={
                         <Switch
@@ -119,127 +142,56 @@ const WorkingTimeResult = () => {
                     label={finishToday ? '퇴근' : '근무 중'}
                 />
             </Paper>
-            <Box sx={{ pt: 2 }}>
+            <Box pt={2}>
                 <List>
-                    <Box
-                        sx={{
-                            background: pink[100],
-                            borderBottom: '2px solid black',
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <ItemText>
-                                총 근무시간: {parsedData.totalWorkingTime}
-                                시간
-                            </ItemText>
-                            <Tooltip title="연차, 반차 시간 포함" arrow>
-                                <InfoIcon
-                                    sx={{ fontSize: '1.2rem', pl: 0.5 }}
-                                />
-                            </Tooltip>
-                        </Box>
-                        <Divider />
+                    <TimeResult backgroundColor={pink[100]}>
+                        {overallData.map(({ info, tooltipTitle }, index) => (
+                            <TimeResult.Item
+                                key={index}
+                                info={info}
+                                tooltipTitle={tooltipTitle}
+                            />
+                        ))}
+                    </TimeResult>
+                    <TimeResult backgroundColor={lightBlue[100]}>
+                        {actualData.map(({ info, tooltipTitle }, index) => (
+                            <TimeResult.Item
+                                key={index}
+                                info={info}
+                                tooltipTitle={tooltipTitle}
+                            />
+                        ))}
+                    </TimeResult>
+                    <TimeResult backgroundColor={lightGreen[100]}>
+                        {remainData.map(({ info, tooltipTitle }, index) => (
+                            <TimeResult.Item
+                                key={index}
+                                info={info}
+                                tooltipTitle={tooltipTitle}
+                            />
+                        ))}
+                    </TimeResult>
 
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <ItemText>
-                                월 평균 주 근무시간:{' '}
-                                {parsedData.workingTimeWeekAvg}
-                                시간
-                            </ItemText>
-                            <Tooltip title="총 근무시간 / 4.345주" arrow>
-                                <InfoIcon
-                                    sx={{ fontSize: '1.2rem', pl: 0.5 }}
-                                />
-                            </Tooltip>
-                        </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            background: lightBlue[100],
-                            borderBottom: '2px solid black',
-                        }}
-                    >
-                        <Divider />
-                        <ItemText>
-                            소정 근무시간: {parsedData.actualWorkingTime}
-                            시간
-                        </ItemText>
-                        <Divider />
-                        <ItemText>
-                            하루 평균 근무시간:{' '}
-                            {parsedData.actualWorkingTimeAvg}
-                            시간
-                        </ItemText>
-                    </Box>
-                    <Box
-                        sx={{
-                            background: lightGreen[100],
-                            borderBottom: '2px solid black',
-                        }}
-                    >
-                        <Divider />
-                        <ItemText>
-                            남은 근무일:{' '}
-                            {parsedData.remainActualWorkingDayCount}일
-                        </ItemText>
-                        <Divider />
-                        <ItemText>
-                            남은 최소 근무시간:{' '}
-                            {parsedData.minRemainWorkingTime}
-                            시간
-                        </ItemText>
-                        <Divider />
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <ItemText>
-                                남은 하루 평균 근무시간:{' '}
-                                {parsedData.minRemainWorkingTimeAvg}
-                                시간
-                            </ItemText>
-                            <Tooltip title="반차 출근일 포함" arrow>
-                                <InfoIcon
-                                    sx={{ fontSize: '1.2rem', pl: 0.5 }}
-                                />
-                            </Tooltip>
-                        </Box>
-                    </Box>
                     <Divider />
-                    <Box sx={{ pt: 0.5 }}>
-                        <ItemText>연차 정보</ItemText>
-                        <Box sx={{ pl: 4 }}>
+                    <Box pt={0.5}>
+                        <Box fontSize="1rem" lineHeight={1.5} px={1} py={0.5}>
+                            연차 정보
+                        </Box>
+                        <Box pl={4}>
                             {parsedData.timeOffDays?.map((timeOffDay) => (
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    }}
-                                >
+                                <Box display="flex" alignItems="center">
                                     <FiberManualRecordIcon
                                         sx={{
                                             fontSize: '0.625rem',
                                             mr: 0.5,
                                         }}
                                     />
-                                    <ItemText>
+                                    <Typography variant="body1">
                                         {timeOffDay.date} -{' '}
                                         {timeOffDay.timeOffType === 'FULL'
                                             ? '연차'
                                             : '반차'}
-                                    </ItemText>
+                                    </Typography>
                                 </Box>
                             ))}
                         </Box>
