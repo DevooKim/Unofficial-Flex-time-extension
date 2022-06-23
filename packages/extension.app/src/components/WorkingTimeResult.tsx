@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from 'react'
 import {
     Divider,
     FormControlLabel,
     List,
     Paper,
     Switch,
-    Tooltip,
     Typography,
 } from '@mui/material'
-import { Box, SxProps } from '@mui/system'
-import InfoIcon from '@mui/icons-material/Info'
+import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
-import { activeTabHandler, getCurrentTabUId } from '../../chrome/utils'
-import { ChromeMessage, flexInfo, Sender } from '../../types'
+import { flexInfo } from '../types'
 import { yellow, pink, lightBlue, lightGreen } from '@mui/material/colors'
-import useFetchUserIdHash from '../../hooks/useFetchUserIdHash'
-import useFetchWorkingData from '../../hooks/useFetchWorkingData'
-import useParseData from '../../hooks/useParseData'
-import TimeResult, { IItem } from '../TimeResult'
+import {
+    useFetchUserIdHash,
+    useFetchWorkingData,
+    useParseData,
+    useGetTargetDate,
+    useToggle,
+    useGetUserName,
+} from '../hooks'
+import TimeResult, { IItem } from './TimeResult'
 
 const currentTimeFormat = () => {
     const date = new Date()
@@ -30,64 +31,12 @@ const currentTimeFormat = () => {
 }
 
 const WorkingTimeResult = () => {
-    const [targetMonth, setTargetMonth] = useState(0)
-    const [userName, setUserName] = useState('')
-    const [timeStamp, setTimeStamp] = useState<string>('')
-    const [finishToday, setFinishToday] = useState(false)
+    const [finishToday, setFinishToday] = useToggle()
+    const { targetMonth, targetTimeStamp } = useGetTargetDate()
+    const userName = useGetUserName()
     const hash: string = useFetchUserIdHash()
-    const flexData = useFetchWorkingData<flexInfo>(hash, timeStamp)
+    const flexData = useFetchWorkingData<flexInfo>(hash, targetTimeStamp)
     const parsedData = useParseData(flexData, finishToday)
-
-    const handleFinishToday = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFinishToday(!event.target.checked)
-    }
-
-    const sendUserName = () => {
-        const message: ChromeMessage = {
-            from: Sender.React,
-            message: 'getUserName',
-        }
-
-        const options = {}
-        getCurrentTabUId((id: number | undefined): void => {
-            id &&
-                chrome.tabs.sendMessage(id, message, options, (response) => {
-                    setUserName(response)
-                })
-        })
-    }
-
-    const getTargetMonth = (tab: chrome.tabs.Tab) => {
-        const url = tab.url || ''
-        const queryString = url.split('?')
-        const UrlSearch = new URLSearchParams(queryString[1])
-        const ts = UrlSearch.get('ts')
-
-        let targetDate = new Date()
-        if (ts) {
-            targetDate = new Date(parseInt(ts as string, 10))
-        }
-        setTimeStamp(targetDate.getTime().toString())
-        setTargetMonth(targetDate.getMonth() + 1)
-    }
-
-    useEffect(() => {
-        chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-            activeTabHandler(tab, ({ isComplete }) => {
-                if (isComplete) {
-                    getTargetMonth(tab)
-                }
-            })
-        })
-    }, [])
-
-    useEffect(() => {
-        const queryInfo = { active: true, currentWindow: true }
-        chrome.tabs?.query(queryInfo, (tabs) => {
-            getTargetMonth(tabs[0])
-        })
-        sendUserName()
-    }, [])
 
     const overallData: IItem[] = [
         {
@@ -135,7 +84,7 @@ const WorkingTimeResult = () => {
                     control={
                         <Switch
                             checked={!finishToday}
-                            onChange={handleFinishToday}
+                            onChange={setFinishToday}
                             size="small"
                         />
                     }
