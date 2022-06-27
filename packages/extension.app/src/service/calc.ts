@@ -20,11 +20,11 @@ export const getWorkingMinutesWeekAvg = (totalWorkingMinutes: number): number =>
 // 현재 평균 소정 근무시간 (일)
 export const getCurrentWorkingMinutesAvg = ({
     workedMinutes,
-    workedDay,
+    actualWorkedDay,
 }: {
     workedMinutes: number
-    workedDay: number
-}): number => safeDivision(workedMinutes, workedDay)
+    actualWorkedDay: number
+}): number => safeDivision(workedMinutes, actualWorkedDay)
 
 // 남은 최소 근무시간
 export const getMinRemainWorkingMinutes = ({
@@ -47,6 +47,14 @@ export const getMinRemainWorkingMinutesAvg = ({
     remainActualWorkingDayCount: number
 }): number => safeDivision(minRemainWorkingMinutes, remainActualWorkingDayCount)
 
+const isDayOff = (timeOffs: { timeOffRegisterUnit: string }[]) =>
+    timeOffs.some(({ timeOffRegisterUnit }) => timeOffRegisterUnit === 'DAY')
+const isHalfDayOff = (timeOffs: { timeOffRegisterUnit: string }[]) =>
+    timeOffs.some(
+        ({ timeOffRegisterUnit }) =>
+            timeOffRegisterUnit === 'HALF_DAY_PM' ||
+            timeOffRegisterUnit === 'HALF_DAY_AM'
+    )
 export const getDaysInfo = ({
     date,
     dayWorkingType,
@@ -66,20 +74,14 @@ export const getDaysInfo = ({
         }
     }
 
-    const isDayOff = timeOffs.some(
-        ({ timeOffRegisterUnit }) => timeOffRegisterUnit === 'DAY'
-    )
-    const isHalfDayOff = timeOffs.some(
-        ({ timeOffRegisterUnit }) =>
-            timeOffRegisterUnit === 'HALF_DAY_PM' ||
-            timeOffRegisterUnit === 'HALF_DAY_AM'
-    )
+    const datOff = isDayOff(timeOffs)
+    const halfDayOff = isHalfDayOff(timeOffs)
 
     return {
         date,
         workingDay: true,
-        actualWorkingDay: !isDayOff, // 반차는 출근일로 계산
-        timeOffType: isDayOff ? 'FULL' : isHalfDayOff ? 'HALF' : 'NONE',
+        actualWorkingDay: !datOff, // 반차는 출근일로 계산
+        timeOffType: datOff ? 'FULL' : halfDayOff ? 'HALF' : 'NONE',
     }
 }
 
@@ -106,22 +108,46 @@ export const getWorkingDayCount = (parsedDays: parsedDay[]): number => {
     return workingDays.length - halfTimeOffDay.length * 0.5
 }
 
+const getFormattedDate = (date = new Date()) =>
+    `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+
 export const isWorkedDay = (
     workingDay: parsedDay,
     includeToday: boolean = false
 ): boolean => {
-    // const today = new Date().toISOString().split("T")[0];
-    const date = new Date()
-    const today = `${date.getFullYear()}-${(date.getMonth() + 1)
-        .toString()
-        .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+    const today = getFormattedDate()
     return includeToday ? today >= workingDay.date : today > workingDay.date
 }
 
-export const getWorkingDay = (
-    days: flexDayInfo[],
-    includeToday: boolean = false
-): workingDay => {
+// 휴일, 연차, 근무 정보에 기록이 있으면 true
+export const isFinishToday = (workDay: flexDayInfo): boolean => {
+    const { customHoliday, dayWorkingType, workRecords, timeOffs } = workDay
+    if (
+        customHoliday ||
+        dayWorkingType === 'WEEKLY_UNPAID_HOLIDAY' ||
+        dayWorkingType === 'WEEKLY_PAID_HOLIDAY'
+    ) {
+        return true
+    }
+
+    if (workRecords.length > 0) {
+        return true
+    }
+
+    if (isDayOff(timeOffs)) {
+        return true
+    }
+
+    if (workRecords.length > 0 && isHalfDayOff(timeOffs)) {
+        return true
+    }
+
+    return false
+}
+
+export const getWorkingDay = (days: flexDayInfo[]): workingDay => {
     const parsedDays = days.map((day) => getDaysInfo(day))
 
     // 근무일(연차 포함)
@@ -141,9 +167,12 @@ export const getWorkingDay = (
     )
     const actualWorkingDayCount = getWorkingDayCount(actualWorkingDays)
 
+    const today = days.find((day) => day.date === getFormattedDate())
+    const finishToday = today ? isFinishToday(today) : true
+
     // 근무한 일 (연차 포함)
     const workedDays = workingDays.filter((workedDay) =>
-        isWorkedDay(workedDay, includeToday)
+        isWorkedDay(workedDay, finishToday)
     )
     const workedDayCount = workedDays.length
 
@@ -163,6 +192,7 @@ export const getWorkingDay = (
         workedDayCount,
         actualWorkedDays,
         actualWorkedDayCount,
+        finishToday,
     }
 }
 

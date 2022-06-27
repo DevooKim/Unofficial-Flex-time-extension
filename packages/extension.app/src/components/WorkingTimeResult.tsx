@@ -1,10 +1,4 @@
-import {
-    FormControlLabel,
-    List,
-    Paper,
-    Switch,
-    Typography,
-} from '@mui/material'
+import { List, Paper, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import { yellow, pink, lightBlue, lightGreen } from '@mui/material/colors'
@@ -14,7 +8,6 @@ import {
     useFetchWorkingData,
     useParseData,
     useGetTargetDate,
-    useToggle,
     useGetUserName,
 } from '../hooks'
 import { flexInfo } from '../types'
@@ -32,12 +25,11 @@ const currentTimeFormat = () => {
 }
 
 const WorkingTimeResult = () => {
-    const [finishToday, setFinishToday] = useToggle()
     const { targetMonth, targetTimeStamp } = useGetTargetDate()
     const userName = useGetUserName()
     const hash: string = useFetchUserIdHash()
     const flexData = useFetchWorkingData<flexInfo>(hash, targetTimeStamp)
-    const parsedData = useParseData(flexData, finishToday)
+    const { finishToday, ...parsedData } = useParseData(flexData)
 
     const overallData: IItem[] = [
         {
@@ -79,18 +71,9 @@ const WorkingTimeResult = () => {
                     {userName}님의 {targetMonth}월 근무 정보
                 </Box>
                 <Box fontSize="1rem" lineHeight={1.5}>
-                    기준일 : {currentTimeFormat()}
+                    기준일 : {currentTimeFormat()} - (
+                    {finishToday ? '퇴근' : '근무 중'})
                 </Box>
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={!finishToday}
-                            onChange={setFinishToday}
-                            size="small"
-                        />
-                    }
-                    label={finishToday ? '퇴근' : '근무 중'}
-                />
             </Paper>
             <Box pt={2}>
                 <List>

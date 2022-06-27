@@ -24,6 +24,7 @@ export type flexDayInfo = {
         | 'WEEKLY_UNPAID_HOLIDAY'
         | 'WEEKLY_PAID_HOLIDAY'
     customHoliday: boolean
+    workRecords: any[]
     timeOffs: {
         timeOffRegisterUnit: string
     }[]
@@ -51,6 +52,7 @@ export type workingDay = {
     workedDayCount: number
     actualWorkedDays: parsedDay[]
     actualWorkedDayCount: number
+    finishToday: boolean
 }
 
 export type parsedData = {
@@ -64,4 +66,5 @@ export type parsedData = {
     actualWorkingTimeAvg: number
     minRemainWorkingTime: number
     minRemainWorkingTimeAvg: number
+    finishToday: boolean
 }
