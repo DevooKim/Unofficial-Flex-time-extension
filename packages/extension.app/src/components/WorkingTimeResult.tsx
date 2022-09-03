@@ -1,14 +1,21 @@
-import { List, Paper, Typography } from '@mui/material'
+import { List, Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
-import { yellow, pink, lightBlue, lightGreen } from '@mui/material/colors'
+import {
+    yellow,
+    pink,
+    lightBlue,
+    lightGreen,
+    lime,
+    deepOrange,
+} from '@mui/material/colors'
+import InfoIcon from '@mui/icons-material/Info'
 
 import {
     useFetchUserIdHash,
     useFetchWorkingData,
     useParseData,
     useGetTargetDate,
-    useGetUserName,
 } from '../hooks'
 import { flexInfo } from '../types'
 
@@ -26,41 +33,34 @@ const currentTimeFormat = () => {
 
 const WorkingTimeResult = () => {
     const { targetMonth, targetTimeStamp } = useGetTargetDate()
-    const userName = useGetUserName()
     const hash: string = useFetchUserIdHash()
     const flexData = useFetchWorkingData<flexInfo>(hash, targetTimeStamp)
-    const { finishToday, ...parsedData } = useParseData(flexData)
+    const { ...parsedData } = useParseData(flexData)
 
-    const overallData: IItem[] = [
+    const monthInfo: IItem[] = [
         {
-            info: `총 근무시간: ${parsedData.totalWorkingTime}시간`,
-            tooltipTitle: '연차, 반차 시간 포함',
+            info: `워킹데이: ${parsedData.workingDaysOfMonth}일`,
         },
         {
-            info: `월 평균 주 근무시간: ${parsedData.workingTimeWeekAvg}시간`,
-            tooltipTitle: '총 근무시간 / 4.345주',
+            info: `이번달 최소 근무시간: ${parsedData.minWorkingHoursOfMonth}`,
+        },
+    ]
+    const overallData: IItem[] = [
+        {
+            info: `총 근무시간: ${parsedData.currentTotalWorkingHours}`,
+            tooltipTitle: '연차 시간 포함',
         },
     ]
 
     const actualData: IItem[] = [
         {
-            info: `소정 근무시간: ${parsedData.actualWorkingTime}시간`,
-        },
-        {
-            info: `하루 평균 근무시간: ${parsedData.actualWorkingTimeAvg}시간`,
+            info: `소정 근무시간: ${parsedData.actualWorkingHours}`,
         },
     ]
 
     const remainData: IItem[] = [
         {
-            info: `남은 근무일: ${parsedData.remainActualWorkingDayCount}일`,
-        },
-        {
-            info: `남은 최소 근무시간: ${parsedData.minRemainWorkingTime}시간`,
-        },
-        {
-            info: `남은 하루 평균 근무시간: ${parsedData.minRemainWorkingTimeAvg}시간`,
-            tooltipTitle: '반차 출근일 포함',
+            info: `남은 최소 근무시간: ${parsedData.minRemainWorkingHours}`,
         },
     ]
 
@@ -68,16 +68,32 @@ const WorkingTimeResult = () => {
         <>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
                 <Box fontSize="1.2rem" lineHeight={1.5} mb={0.5}>
-                    {userName}님의 {targetMonth}월 근무 정보
+                    {targetMonth}월 근무 정보
                 </Box>
-                <Box fontSize="1rem" lineHeight={1.5}>
-                    기준일 : {currentTimeFormat()} - (
-                    {finishToday ? '퇴근' : '근무 중'})
+                <Box display="flex" alignItems="center">
+                    <Box fontSize="1rem" lineHeight={1.5}>
+                        기준일 : {currentTimeFormat()}
+                    </Box>
+                    <Tooltip
+                        title="오늘 근무 정보는 퇴근 후에 반영됩니다."
+                        arrow
+                    >
+                        <InfoIcon sx={{ fontSize: '1.2rem', pl: 0.5 }} />
+                    </Tooltip>
                 </Box>
             </Paper>
             <Box pt={2}>
                 <List>
                     <TimeResult backgroundColor={pink[100]}>
+                        {monthInfo.map(({ info, tooltipTitle }, index) => (
+                            <TimeResult.Item
+                                key={index}
+                                info={info}
+                                tooltipTitle={tooltipTitle}
+                            />
+                        ))}
+                    </TimeResult>
+                    <TimeResult backgroundColor={lime[100]}>
                         {overallData.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item
                                 key={index}
@@ -104,25 +120,59 @@ const WorkingTimeResult = () => {
                             />
                         ))}
                     </TimeResult>
-                    <Box pt={0.5}>
-                        <Box fontSize="1rem" lineHeight={1.5} px={1} py={0.5}>
+                    <Box pt={0.5} sx={{ backgroundColor: deepOrange[100] }}>
+                        <Box
+                            fontSize="1rem"
+                            lineHeight={1.5}
+                            px={1}
+                            py={0.5}
+                            borderBottom={1}
+                        >
                             연차 정보
                         </Box>
-                        <Box pl={4}>
-                            {parsedData.timeOffDays?.map((timeOffDay) => (
-                                <Box display="flex" alignItems="center">
-                                    <FiberManualRecordIcon
-                                        sx={{
-                                            fontSize: '0.625rem',
-                                            mr: 0.5,
-                                        }}
-                                    />
-                                    <Typography variant="body1">
-                                        {timeOffDay.date} -{' '}
-                                        {timeOffDay.timeOffType === 'FULL'
-                                            ? '연차'
-                                            : '반차'}
-                                    </Typography>
+                        <Box
+                            pl={2}
+                            pt={1}
+                            display="flex"
+                            flexDirection="column"
+                            gap={0.5}
+                        >
+                            {parsedData.timeOffs?.map((timeOff) => (
+                                <Box display="flex" flexDirection="column">
+                                    <Box display="flex">
+                                        <FiberManualRecordIcon
+                                            sx={{
+                                                fontSize: '0.625rem',
+                                                mr: 0.5,
+                                            }}
+                                        />
+                                        <Box
+                                            sx={{
+                                                fontSize: '1rem',
+                                                fontWeight: 700,
+                                            }}
+                                        >
+                                            {timeOff.date}
+                                        </Box>
+                                    </Box>
+
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        paddingLeft="1rem"
+                                        sx={{ fontSize: '1rem' }}
+                                    >
+                                        {timeOff.infos.map((info) => (
+                                            <>
+                                                <div>
+                                                    {info.name} - {info.hours}
+                                                </div>
+                                            </>
+                                        ))}
+                                        <Box fontWeight={600}>
+                                            총합 - {timeOff.totalHours}
+                                        </Box>
+                                    </Box>
                                 </Box>
                             ))}
                         </Box>

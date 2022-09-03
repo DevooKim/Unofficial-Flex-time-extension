@@ -6,7 +6,7 @@
     ],
     "version": "1.0.0",
     "repository": "git@github.com:DevooKim/Flex-time-extension.git",
-    "author": "Kim Hyun Woo <khwoo8026@gmail.com>",
+    "author": "DevooKim <khwoo8026@gmail.com>",
     "license": "MIT",
     "devDependencies": {
         "husky": "^8.0.1",

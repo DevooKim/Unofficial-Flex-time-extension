@@ -3,7 +3,6 @@ import useFetchWorkingData from './useFetchWorkingData'
 import useParseData from './useParseData'
 import useGetTargetDate from './useGetTargetDate'
 import useToggle from './useToggle'
-import useGetUserName from './useGetUserName'
 
 export {
     useFetchUserIdHash,
@@ -11,5 +10,4 @@ export {
     useParseData,
     useGetTargetDate,
     useToggle,
-    useGetUserName,
 }

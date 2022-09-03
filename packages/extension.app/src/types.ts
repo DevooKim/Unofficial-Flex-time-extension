@@ -8,9 +8,8 @@ export interface ChromeMessage {
     message: any
 }
 
-export type TimeListRest = 'FULL' | 'HALF' | 'HOLIDAY' | 'NONE'
-
 export type flexPaidSummary = {
+    baseWeeklyPaidHolidayMinutes: number
     baseWorkingMinutes: number
     workingHolidayMinutes: number
     actualWorkingMinutes: number
@@ -26,45 +25,37 @@ export type flexDayInfo = {
     customHoliday: boolean
     workRecords: any[]
     timeOffs: {
-        timeOffRegisterUnit: string
+        timeOffPolicyId: string
+        usedMinutes: string
     }[]
+}
+
+export type timeOffResult = {
+    timeOffPolicyId: string
+    name: string
 }
 
 export type flexInfo = {
     paidSummary: flexPaidSummary
+    timeOffSummary: { timeOffResults: timeOffResult[] }
     days: flexDayInfo[]
-}
-
-export type parsedDay = {
-    date: string
-    workingDay: boolean
-    actualWorkingDay: boolean
-    timeOffType: TimeListRest
-}
-
-export type workingDay = {
-    workingDays: parsedDay[]
-    workingDayCount: number
-    timeOffDays: parsedDay[]
-    actualWorkingDays: parsedDay[]
-    actualWorkingDayCount: number
-    workedDays: parsedDay[]
-    workedDayCount: number
-    actualWorkedDays: parsedDay[]
-    actualWorkedDayCount: number
-    finishToday: boolean
+    period: { to: string }
 }
 
 export type parsedData = {
-    actualWorkingDayCount: number
-    remainActualWorkingDayCount: number
-    timeOffDays: parsedDay[]
-    minWorkingTime: number
-    totalWorkingTime: number
-    workingTimeWeekAvg: number
-    actualWorkingTime: number
-    actualWorkingTimeAvg: number
-    minRemainWorkingTime: number
-    minRemainWorkingTimeAvg: number
-    finishToday: boolean
+    workingDaysOfMonth: number
+    minWorkingHoursOfMonth: string
+    actualWorkingHours: string
+    currentTotalWorkingHours: string
+    minRemainWorkingHours: string
+    timeOffs: {
+        date: string
+        infos: {
+            name: string
+            minutes: number
+            hours?: string
+        }[]
+        totalMinutes: number
+        totalHours?: string
+    }[]
 }

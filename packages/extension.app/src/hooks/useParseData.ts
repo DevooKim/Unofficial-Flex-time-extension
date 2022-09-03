@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react'
 import isEmpty from 'lodash/isEmpty'
+
 import {
-    getMinRemainWorkingMinutesAvg,
-    getCurrentWorkingMinutesAvg,
-    getMinRemainWorkingMinutes,
-    getWorkingDay,
-    getMinWorkingMinutes,
-    getTotalWorkingMinutes,
-    getWorkingMinutesWeekAvg,
-    minutesToHour,
+    getMinRemainWorkingHours,
+    getTimeOffIdMap,
+    getTimeOffInfo,
+    getWorkingDaysOfMonth,
+    getWorkingInfoUntilNow,
 } from '../service/calc'
+
 import { flexInfo, parsedData } from '../types'
 
-const useParseData = (flexData: flexInfo): parsedData => {
+const hourToString = (time: number): string => {
+    const hour = Math.floor(time)
+    const min = Math.round(+(time % 1).toFixed(2) * 60)
+    return `${hour}시간 ${min}분`
+}
+
+const useParseData = (flexData: flexInfo) => {
     const [data, setData] = useState({} as parsedData)
 
     useEffect(() => {
@@ -20,48 +25,52 @@ const useParseData = (flexData: flexInfo): parsedData => {
             return
         }
         const days = flexData.days
+        const period = flexData.period
         const summary = flexData.paidSummary
+        const timeOffResults = flexData.timeOffSummary.timeOffResults
 
-        const {
-            timeOffDays,
-            actualWorkingDayCount,
-            actualWorkedDayCount,
-            finishToday,
-        } = getWorkingDay(days)
-        const remainActualWorkingDayCount =
-            actualWorkingDayCount - actualWorkedDayCount
+        /** 이번달 워킹데이 */
+        const workingDaysOfMonth = getWorkingDaysOfMonth(days, period.to)
 
-        const minWorkingMinutes = getMinWorkingMinutes(actualWorkingDayCount)
-        const totalWorkingMinutes = getTotalWorkingMinutes(summary)
-        const workingMinutesWeekAvg =
-            getWorkingMinutesWeekAvg(totalWorkingMinutes)
-        const actualWorkingMinutes = summary.actualWorkingMinutes
-        const actualWorkingMinutesAvg = getCurrentWorkingMinutesAvg({
-            actualWorkedDay: actualWorkedDayCount,
-            workedMinutes: actualWorkingMinutes,
+        /** 근무시간 정보 */
+        const { actualWorkingHours, timeOffHours } =
+            getWorkingInfoUntilNow(summary)
+
+        /** 지금까지 총 근무시간 */
+        const currentTotalWorkingHours = actualWorkingHours + timeOffHours
+
+        /** 남은 최소 근무시간 */
+        const minRemainWorkingHours = getMinRemainWorkingHours({
+            workingDaysOfMonth,
+            currentTotalWorkingHours,
         })
 
-        const minRemainWorkingMinutes = getMinRemainWorkingMinutes({
-            minWorkingMinutes,
-            workedMinutes: actualWorkingMinutes,
-        })
-        const minRemainWorkingMinutesAvg = getMinRemainWorkingMinutesAvg({
-            minRemainWorkingMinutes,
-            remainActualWorkingDayCount,
-        })
+        const timeOffIdMap = getTimeOffIdMap(timeOffResults)
+        const getTimeOffInfoWrapper = getTimeOffInfo(timeOffIdMap)
+
+        const timeOffs = days
+            .filter(({ timeOffs }) => !isEmpty(timeOffs))
+            .map((day) => {
+                const { date, infos, totalMinutes } = getTimeOffInfoWrapper(day)
+                const _infos = infos.map((info) => ({
+                    ...info,
+                    hours: hourToString(info.minutes / 60),
+                }))
+                return {
+                    date,
+                    infos: _infos,
+                    totalMinutes,
+                    totalHours: hourToString(totalMinutes / 60),
+                }
+            })
 
         setData({
-            actualWorkingDayCount,
-            remainActualWorkingDayCount,
-            timeOffDays,
-            minWorkingTime: minutesToHour(minWorkingMinutes),
-            totalWorkingTime: minutesToHour(totalWorkingMinutes),
-            workingTimeWeekAvg: minutesToHour(workingMinutesWeekAvg),
-            actualWorkingTime: minutesToHour(actualWorkingMinutes),
-            actualWorkingTimeAvg: minutesToHour(actualWorkingMinutesAvg),
-            minRemainWorkingTime: minutesToHour(minRemainWorkingMinutes),
-            minRemainWorkingTimeAvg: minutesToHour(minRemainWorkingMinutesAvg),
-            finishToday,
+            workingDaysOfMonth,
+            minWorkingHoursOfMonth: hourToString(workingDaysOfMonth * 8),
+            actualWorkingHours: hourToString(actualWorkingHours),
+            currentTotalWorkingHours: hourToString(currentTotalWorkingHours),
+            minRemainWorkingHours: hourToString(minRemainWorkingHours),
+            timeOffs,
         })
     }, [flexData])
 
