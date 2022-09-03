@@ -7,7 +7,7 @@ import {
     getTimeOffInfo,
     getWorkingDaysOfMonth,
     getWorkingInfoUntilNow,
-} from '../service/calc'
+} from '../service/workingCalc'
 
 import { flexInfo, parsedData } from '../types'
 
