@@ -20,24 +20,28 @@ import {
 } from '../hooks'
 import { flexInfo } from '../types'
 
-import TargetDate from './TargetDate'
+import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
 import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
 
 const currentTimeFormat = () => {
     const date = new Date()
-    const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()
     const hour = date.getHours()
     const minute = date.getMinutes()
 
-    return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`
+    return `${month}월 ${day}일 ${hour}시 ${minute}분`
 }
 
 const WorkingTimeResult = () => {
-    const { targetDate, targetTimeStamp, setNextMonth, setPrevMonth } =
-        useGetTargetDate()
+    const {
+        targetDate,
+        targetTimeStamp,
+        setNextMonth,
+        setPrevMonth,
+        setDateByDayjs,
+    } = useGetTargetDate()
     const hash: string = useFetchUserIdHash()
     const flexData = useFetchWorkingData<flexInfo>(hash, targetTimeStamp)
     const { ...parsedData } = useParseData(flexData)
@@ -71,19 +75,16 @@ const WorkingTimeResult = () => {
 
     return (
         <>
-            {/* <TargetDate /> */}
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
                 <Box
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
                     lineHeight={1.5}
-                    mb={0.5}
+                    mb={1}
                 >
-                    <Box fontSize="1.2rem">
-                        {targetDate.get('year')}년 {targetDate.get('month') + 1}
-                        월 근무 정보
-                    </Box>
+                    <DatePicker value={targetDate} setValue={setDateByDayjs} />
+
                     <Box display="flex" alignItems="center">
                         <IconButton onClick={setPrevMonth} size="small">
                             <ArrowBackIosNew
@@ -106,7 +107,7 @@ const WorkingTimeResult = () => {
 
                 <Box display="flex" alignItems="center">
                     <Box fontSize="1rem" lineHeight={1.5}>
-                        기준일 : {currentTimeFormat()}
+                        마지막 업데이트 : {currentTimeFormat()}
                     </Box>
                     <Tooltip
                         title="오늘 근무 정보는 퇴근 후에 반영됩니다."

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { activeTabHandler } from '../chrome/utils'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
 const getTimeStampFromQuery = (tab: chrome.tabs.Tab): string | null => {
     const url = tab.url || ''
@@ -15,9 +15,14 @@ const useGetTargetDate = () => {
     const [targetDate, setTargetDate] = useState(dayjs())
     const [targetTimeStamp, setTargetTimeStamp] = useState<string>('')
 
-    const setDate = (timestamp: string) => {
+    const setDateByTimestamp = (timestamp: string) => {
         setTargetTimeStamp(timestamp)
         setTargetDate(dayjs(parseInt(timestamp as string, 10)))
+    }
+
+    const setDateByDayjs = (day: Dayjs) => {
+        setTargetDate(day)
+        setTargetTimeStamp(day.valueOf().toString())
     }
 
     useEffect(() => {
@@ -26,7 +31,7 @@ const useGetTargetDate = () => {
                 if (isComplete) {
                     const ts = getTimeStampFromQuery(tab)
                     if (ts) {
-                        setDate(ts)
+                        setDateByTimestamp(ts)
                     }
                 }
             })
@@ -38,24 +43,29 @@ const useGetTargetDate = () => {
         chrome.tabs?.query(queryInfo, (tabs) => {
             const ts = getTimeStampFromQuery(tabs[0])
             if (ts) {
-                setDate(ts)
+                setDateByTimestamp(ts)
             }
         })
     }, [])
 
     const setNextMonth = () => {
-        const newDate = dayjs().month(targetDate.get('month') + 1)
-        console.log(newDate.valueOf())
+        const newDate = targetDate.clone().month(targetDate.get('month') + 1)
         setTargetDate(newDate)
         setTargetTimeStamp(newDate.valueOf().toString())
     }
     const setPrevMonth = () => {
-        const newDate = dayjs().month(targetDate.get('month') - 1)
+        const newDate = targetDate.clone().month(targetDate.get('month') - 1)
         setTargetDate(newDate)
         setTargetTimeStamp(newDate.valueOf().toString())
     }
 
-    return { targetDate, targetTimeStamp, setNextMonth, setPrevMonth }
+    return {
+        targetDate,
+        targetTimeStamp,
+        setNextMonth,
+        setPrevMonth,
+        setDateByDayjs,
+    }
 }
 
 export default useGetTargetDate
