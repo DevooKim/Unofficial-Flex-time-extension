@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { activeTabHandler } from '../chrome/utils'
+import dayjs from 'dayjs'
 
 const getTimeStampFromQuery = (tab: chrome.tabs.Tab): string | null => {
     const url = tab.url || ''
@@ -11,12 +12,12 @@ const getTimeStampFromQuery = (tab: chrome.tabs.Tab): string | null => {
 }
 
 const useGetTargetDate = () => {
-    const [targetDate, setTargetDate] = useState(new Date())
+    const [targetDate, setTargetDate] = useState(dayjs())
     const [targetTimeStamp, setTargetTimeStamp] = useState<string>('')
 
     const setDate = (timestamp: string) => {
         setTargetTimeStamp(timestamp)
-        setTargetDate(new Date(parseInt(timestamp as string, 10)))
+        setTargetDate(dayjs(parseInt(timestamp as string, 10)))
     }
 
     useEffect(() => {
@@ -43,16 +44,15 @@ const useGetTargetDate = () => {
     }, [])
 
     const setNextMonth = () => {
-        const newDate = targetDate
-        newDate.setMonth(targetDate.getMonth() + 1)
+        const newDate = dayjs().month(targetDate.get('month') + 1)
+        console.log(newDate.valueOf())
         setTargetDate(newDate)
-        setTargetTimeStamp(newDate.getTime().toString())
+        setTargetTimeStamp(newDate.valueOf().toString())
     }
     const setPrevMonth = () => {
-        const newDate = targetDate
-        newDate.setMonth(targetDate.getMonth() - 1)
+        const newDate = dayjs().month(targetDate.get('month') - 1)
         setTargetDate(newDate)
-        setTargetTimeStamp(newDate.getTime().toString())
+        setTargetTimeStamp(newDate.valueOf().toString())
     }
 
     return { targetDate, targetTimeStamp, setNextMonth, setPrevMonth }

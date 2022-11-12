@@ -20,12 +20,9 @@ import {
 } from '../hooks'
 import { flexInfo } from '../types'
 
+import TargetDate from './TargetDate'
 import TimeResult, { IItem } from './TimeResult'
-import {
-    ArrowBackIos,
-    ArrowBackIosNew,
-    ArrowForwardIos,
-} from '@mui/icons-material'
+import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
 
 const currentTimeFormat = () => {
     const date = new Date()
@@ -74,6 +71,7 @@ const WorkingTimeResult = () => {
 
     return (
         <>
+            {/* <TargetDate /> */}
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
                 <Box
                     display="flex"
@@ -83,7 +81,7 @@ const WorkingTimeResult = () => {
                     mb={0.5}
                 >
                     <Box fontSize="1.2rem">
-                        {targetDate.getFullYear()}년 {targetDate.getMonth() + 1}
+                        {targetDate.get('year')}년 {targetDate.get('month') + 1}
                         월 근무 정보
                     </Box>
                     <Box display="flex" alignItems="center">
