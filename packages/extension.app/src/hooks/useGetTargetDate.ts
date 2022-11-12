@@ -1,34 +1,32 @@
 import { useEffect, useState } from 'react'
 import { activeTabHandler } from '../chrome/utils'
 
-const getTargetDate = (tab: chrome.tabs.Tab): Date => {
+const getTimeStampFromQuery = (tab: chrome.tabs.Tab): string | null => {
     const url = tab.url || ''
     const queryString = url.split('?')
     const UrlSearch = new URLSearchParams(queryString[1])
     const ts = UrlSearch.get('ts')
 
-    let targetDate = new Date()
-    if (ts) {
-        targetDate = new Date(parseInt(ts as string, 10))
-    }
-    return targetDate
+    return ts
 }
 
 const useGetTargetDate = () => {
-    const [targetMonth, setTargetMonth] = useState(0)
+    const [targetDate, setTargetDate] = useState(new Date())
     const [targetTimeStamp, setTargetTimeStamp] = useState<string>('')
 
-    const setDate = (targetDate: Date) => {
-        setTargetTimeStamp(targetDate.getTime().toString())
-        setTargetMonth(targetDate.getMonth() + 1)
+    const setDate = (timestamp: string) => {
+        setTargetTimeStamp(timestamp)
+        setTargetDate(new Date(parseInt(timestamp as string, 10)))
     }
 
     useEffect(() => {
         chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             activeTabHandler(tab, ({ isComplete }) => {
                 if (isComplete) {
-                    const targetDate = getTargetDate(tab)
-                    setDate(targetDate)
+                    const ts = getTimeStampFromQuery(tab)
+                    if (ts) {
+                        setDate(ts)
+                    }
                 }
             })
         })
@@ -37,12 +35,27 @@ const useGetTargetDate = () => {
     useEffect(() => {
         const queryInfo = { active: true, currentWindow: true }
         chrome.tabs?.query(queryInfo, (tabs) => {
-            const targetDate = getTargetDate(tabs[0])
-            setDate(targetDate)
+            const ts = getTimeStampFromQuery(tabs[0])
+            if (ts) {
+                setDate(ts)
+            }
         })
     }, [])
 
-    return { targetMonth, targetTimeStamp }
+    const setNextMonth = () => {
+        const newDate = targetDate
+        newDate.setMonth(targetDate.getMonth() + 1)
+        setTargetDate(newDate)
+        setTargetTimeStamp(newDate.getTime().toString())
+    }
+    const setPrevMonth = () => {
+        const newDate = targetDate
+        newDate.setMonth(targetDate.getMonth() - 1)
+        setTargetDate(newDate)
+        setTargetTimeStamp(newDate.getTime().toString())
+    }
+
+    return { targetDate, targetTimeStamp, setNextMonth, setPrevMonth }
 }
 
 export default useGetTargetDate

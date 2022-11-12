@@ -1,4 +1,4 @@
-import { List, Paper, Tooltip } from '@mui/material'
+import { IconButton, List, Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import {
@@ -8,6 +8,7 @@ import {
     lightGreen,
     lime,
     deepOrange,
+    blue,
 } from '@mui/material/colors'
 import InfoIcon from '@mui/icons-material/Info'
 
@@ -20,19 +21,26 @@ import {
 import { flexInfo } from '../types'
 
 import TimeResult, { IItem } from './TimeResult'
+import {
+    ArrowBackIos,
+    ArrowBackIosNew,
+    ArrowForwardIos,
+} from '@mui/icons-material'
 
 const currentTimeFormat = () => {
     const date = new Date()
+    const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()
     const hour = date.getHours()
     const minute = date.getMinutes()
 
-    return `${month}월 ${day}일 ${hour}시 ${minute}분`
+    return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`
 }
 
 const WorkingTimeResult = () => {
-    const { targetMonth, targetTimeStamp } = useGetTargetDate()
+    const { targetDate, targetTimeStamp, setNextMonth, setPrevMonth } =
+        useGetTargetDate()
     const hash: string = useFetchUserIdHash()
     const flexData = useFetchWorkingData<flexInfo>(hash, targetTimeStamp)
     const { ...parsedData } = useParseData(flexData)
@@ -67,9 +75,37 @@ const WorkingTimeResult = () => {
     return (
         <>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
-                <Box fontSize="1.2rem" lineHeight={1.5} mb={0.5}>
-                    {targetMonth}월 근무 정보
+                <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    lineHeight={1.5}
+                    mb={0.5}
+                >
+                    <Box fontSize="1.2rem">
+                        {targetDate.getFullYear()}년 {targetDate.getMonth() + 1}
+                        월 근무 정보
+                    </Box>
+                    <Box display="flex" alignItems="center">
+                        <IconButton onClick={setPrevMonth} size="small">
+                            <ArrowBackIosNew
+                                sx={{
+                                    fontSize: '1.2rem',
+                                    color: blue['A700'],
+                                }}
+                            />
+                        </IconButton>
+                        <IconButton onClick={setNextMonth} size="small">
+                            <ArrowForwardIos
+                                sx={{
+                                    fontSize: '1.2rem',
+                                    color: blue['A700'],
+                                }}
+                            />
+                        </IconButton>
+                    </Box>
                 </Box>
+
                 <Box display="flex" alignItems="center">
                     <Box fontSize="1rem" lineHeight={1.5}>
                         기준일 : {currentTimeFormat()}
