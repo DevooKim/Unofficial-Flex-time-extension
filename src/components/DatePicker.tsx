@@ -26,11 +26,8 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, setValue }) => (
                     params.inputProps.value = `${value.get('year')}년 ${
                         value.get('month') + 1
                     }월`
+                    params.inputProps.readOnly = true
                 }
-                // if (params.InputProps) {
-                //     params.InputProps.readOnly = true
-                // }
-                console.log(params.InputProps)
 
                 return <TextField size="small" {...params} />
             }}
