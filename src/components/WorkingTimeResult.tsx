@@ -43,7 +43,7 @@ const WorkingTimeResult = () => {
         setDateByDayjs,
     } = useGetTargetDate()
     const hash: string = useFetchUserIdHash()
-    const flexData = useFetchWorkingData<flexInfo>(hash, targetTimeStamp)
+    const flexData = useFetchWorkingData(hash, targetTimeStamp)
     const { ...parsedData } = useParseData(flexData)
 
     const monthInfo: IItem[] = [
