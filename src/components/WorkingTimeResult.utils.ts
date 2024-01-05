@@ -4,26 +4,20 @@ import { flexDayInfo, flexInfo, flexPaidSummary, parsedData } from '../types'
 
 const convertMinuteToHours = (minute: number): number => minute / 60
 
-const 워킹데이계산하기 = (days: flexInfo['days'], endDate: string) => {
-    /** 이번달 휴일 */
-    const holidayLength = days.filter(({ customHoliday, dayWorkingType }) => {
+const 워킹데이계산하기 = (days: flexInfo['days']) => {
+    const 워킹데이목록 = days.filter(({ customHoliday, dayWorkingType }) => {
         if (customHoliday) {
-            return true
+            return false
         }
 
-        if (
-            dayWorkingType === 'WEEKLY_PAID_HOLIDAY' ||
-            dayWorkingType === 'WEEKLY_UNPAID_HOLIDAY'
-        ) {
+        if (dayWorkingType === 'WORKING_DAY') {
             return true
         }
 
         return false
-    }).length
+    })
 
-    /** 이번달 일 수 */
-    const dayLength = new Date(endDate).getDate()
-    return dayLength - holidayLength
+    return 워킹데이목록.length
 }
 
 /**
@@ -101,7 +95,7 @@ export const parseData = (flexData: flexInfo): parsedData => {
     const timeOffResults = flexData.timeOffSummary.timeOffResults
 
     /** 이번달 워킹데이 */
-    const 워킹데이 = 워킹데이계산하기(days, period.to)
+    const 워킹데이 = 워킹데이계산하기(days)
 
     /** 근무시간 정보 */
     const { 실제근무시간, 연차시간 } = 근무시간계산하기(summary)
@@ -127,15 +121,24 @@ export const parseData = (flexData: flexInfo): parsedData => {
         .filter(({ timeOffs }) => !isEmpty(timeOffs))
         .map((day) => 휴가정보구하기(휴가IdMap, day))
 
+    const now = new Date()
+    const 남은워킹데이 = 워킹데이계산하기(
+        days.filter(({ date }) => new Date(date).getTime() >= now.getTime())
+    )
+    const 오늘이후휴가일수 = 휴가list
+        .filter(({ date }) => new Date(date).getTime() >= now.getTime())
+        .reduce((acc, cur) => acc + cur.totalHours / 8, 0)
+
+    const 남은근무일 = 남은워킹데이 - 오늘이후휴가일수
+    const 남은평균근무시간 = 남은근무시간 / 남은근무일 || 0
+
     return {
-        워킹데이: 워킹데이,
-        // 이번달최소근무시간: hourToString(이번달워킹데이 * 8),
+        워킹데이,
         최소근무시간: 워킹데이 * 8,
-        // actualWorkingHours: hourToString(실제근무시간),
-        // 현재근무시간: hourToString(현재근무한시간),
         근무시간총합,
-        // 남은최소근무시간: hourToString(남은근무시간),
+        남은근무일,
         남은근무시간,
+        남은평균근무시간,
         휴가정보list: 휴가list,
     }
 }

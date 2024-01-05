@@ -1,11 +1,9 @@
-import { useMemo } from 'react'
 import { IconButton, List, Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import {
     yellow,
     pink,
-    lightBlue,
     lightGreen,
     lime,
     deepOrange,
@@ -20,7 +18,6 @@ import {
     useGetTargetDate,
 } from '../hooks'
 
-import { parseData } from './WorkingTimeResult.utils'
 import { hourToString } from '../utils/utils.time'
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
@@ -50,9 +47,6 @@ const WorkingTimeResult = () => {
     )
 
     if (loading) return <div>loading...</div>
-    // const { ...parsedData } = useParseData(flexData)
-
-    // const parsedData = useMemo(() => parseData(flexData), [flexData])
 
     const monthInfo: IItem[] = [
         {
@@ -66,20 +60,23 @@ const WorkingTimeResult = () => {
     ]
     const overallData: IItem[] = [
         {
-            info: `총 근무시간: ${hourToString(parsedData.근무시간총합)}`,
-            tooltipTitle: '연차 시간 포함',
+            info: `총 근무한 시간: ${hourToString(parsedData.근무시간총합)}`,
+            tooltipTitle: '연차 시간이 포함됨',
         },
     ]
 
-    // const actualData: IItem[] = [
-    //     {
-    //         info: `소정 근무시간: ${parsedData.actualWorkingHours}`,
-    //     },
-    // ]
-
     const remainData: IItem[] = [
         {
+            info: `남은 근무일: ${parsedData.남은근무일}일`,
+            tooltipTitle: '연차 1일, 반차 0.5일이 제외됨',
+        },
+        {
             info: `남은 근무시간: ${hourToString(parsedData.남은근무시간)}`,
+        },
+        {
+            info: `남은 평균 근무시간: ${hourToString(
+                parsedData.남은평균근무시간
+            )}`,
         },
     ]
 
@@ -147,15 +144,6 @@ const WorkingTimeResult = () => {
                             />
                         ))}
                     </TimeResult>
-                    {/* <TimeResult backgroundColor={lightBlue[100]}>
-                        {actualData.map(({ info, tooltipTitle }, index) => (
-                            <TimeResult.Item
-                                key={index}
-                                info={info}
-                                tooltipTitle={tooltipTitle}
-                            />
-                        ))}
-                    </TimeResult> */}
                     <TimeResult backgroundColor={lightGreen[100]}>
                         {remainData.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item

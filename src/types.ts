@@ -45,9 +45,10 @@ export type flexInfo = {
 export type parsedData = {
     워킹데이: number
     최소근무시간: number
-    // actualWorkingHours: string
     근무시간총합: number
+    남은근무일: number
     남은근무시간: number
+    남은평균근무시간: number
     휴가정보list: {
         date: string
         infos: {

@@ -61,8 +61,6 @@ const useGetTargetDate = () => {
         setTargetTimeStamp(newDate.valueOf().toString())
     }
 
-    console.log({ targetTimeStamp })
-
     return {
         targetDate,
         targetTimeStamp,
