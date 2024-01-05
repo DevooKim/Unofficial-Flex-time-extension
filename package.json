@@ -22,8 +22,9 @@
         "build": "rm -rf ./build && craco build",
         "test": "jest",
         "prepare": "husky install",
-        "release:minor": "standard-version -- --release-as minor",
-        "release:patch": "standard-version -- --release-as patch"
+        "release": "standard-version",
+        "release:minor": "standard-version -- --release-as minor --skip.changelog",
+        "release:patch": "standard-version -- --release-as patch --skip.changelog"
     },
     "eslintConfig": {
         "extends": [
