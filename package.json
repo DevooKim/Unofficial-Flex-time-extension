@@ -21,7 +21,9 @@
         "start": "react-scripts start",
         "build": "rm -rf ./build && craco build",
         "test": "jest",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "release:minor": "standard-version -- --release-as minor",
+        "release:patch": "standard-version -- --release-as patch"
     },
     "eslintConfig": {
         "extends": [
@@ -41,6 +43,7 @@
         "jest": "^28.1.0",
         "lint-staged": "^13.0.2",
         "prettier": "^2.7.1",
+        "standard-version": "^9.5.0",
         "ts-jest": "^28.0.4"
     },
     "browserslist": {
