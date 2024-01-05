@@ -23,8 +23,13 @@
         "test": "jest",
         "prepare": "husky install",
         "release": "standard-version",
-        "release:minor": "standard-version -- --release-as minor --skip.changelog",
-        "release:patch": "standard-version -- --release-as patch --skip.changelog"
+        "release:minor": "standard-version -- --release-as minor",
+        "release:patch": "standard-version -- --release-as patch"
+    },
+    "standard-version": {
+        "skip": {
+            "changelog": true
+        }
     },
     "eslintConfig": {
         "extends": [
