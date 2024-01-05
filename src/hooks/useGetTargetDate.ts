@@ -13,7 +13,9 @@ const getTimeStampFromQuery = (tab: chrome.tabs.Tab): string | null => {
 
 const useGetTargetDate = () => {
     const [targetDate, setTargetDate] = useState(dayjs())
-    const [targetTimeStamp, setTargetTimeStamp] = useState<string>('')
+    const [targetTimeStamp, setTargetTimeStamp] = useState<string>(
+        dayjs().endOf('month').valueOf().toString()
+    )
 
     const setDateByTimestamp = (timestamp: string) => {
         setTargetTimeStamp(timestamp)

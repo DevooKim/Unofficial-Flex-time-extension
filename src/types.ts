@@ -43,19 +43,20 @@ export type flexInfo = {
 }
 
 export type parsedData = {
-    workingDaysOfMonth: number
-    minWorkingHoursOfMonth: string
-    actualWorkingHours: string
-    currentTotalWorkingHours: string
-    minRemainWorkingHours: string
-    timeOffs: {
+    워킹데이: number
+    최소근무시간: number
+    근무시간총합: number
+    남은근무일: number
+    남은근무시간: number
+    남은평균근무시간: number
+    휴가정보list: {
         date: string
         infos: {
             name: string
             minutes: number
-            hours?: string
+            hours: number
         }[]
         totalMinutes: number
-        totalHours?: string
+        totalHours: number
     }[]
 }

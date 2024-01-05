@@ -4,25 +4,23 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import {
     yellow,
     pink,
-    lightBlue,
     lightGreen,
     lime,
-    deepOrange,
+    lightBlue,
     blue,
 } from '@mui/material/colors'
+import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
 import InfoIcon from '@mui/icons-material/Info'
 
 import {
     useFetchUserIdHash,
     useFetchWorkingData,
-    useParseData,
     useGetTargetDate,
 } from '../hooks'
-import { flexInfo } from '../types'
 
+import { hourToString } from '../utils/utils.time'
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
-import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
 
 const currentTimeFormat = () => {
     const date = new Date()
@@ -43,33 +41,42 @@ const WorkingTimeResult = () => {
         setDateByDayjs,
     } = useGetTargetDate()
     const hash: string = useFetchUserIdHash()
-    const flexData = useFetchWorkingData<flexInfo>(hash, targetTimeStamp)
-    const { ...parsedData } = useParseData(flexData)
+    const { loading, data: parsedData } = useFetchWorkingData(
+        hash,
+        targetTimeStamp
+    )
+
+    if (loading) return <div>loading...</div>
 
     const monthInfo: IItem[] = [
         {
-            info: `워킹데이: ${parsedData.workingDaysOfMonth}일`,
+            info: `워킹데이: ${parsedData.워킹데이}일`,
         },
         {
-            info: `이번달 최소 근무시간: ${parsedData.minWorkingHoursOfMonth}`,
+            info: `이번달 최소 근무시간: ${hourToString(
+                parsedData.최소근무시간
+            )}`,
         },
     ]
     const overallData: IItem[] = [
         {
-            info: `총 근무시간: ${parsedData.currentTotalWorkingHours}`,
-            tooltipTitle: '연차 시간 포함',
-        },
-    ]
-
-    const actualData: IItem[] = [
-        {
-            info: `소정 근무시간: ${parsedData.actualWorkingHours}`,
+            info: `총 근무한 시간: ${hourToString(parsedData.근무시간총합)}`,
+            tooltipTitle: '연차 시간이 포함됨',
         },
     ]
 
     const remainData: IItem[] = [
         {
-            info: `남은 최소 근무시간: ${parsedData.minRemainWorkingHours}`,
+            info: `남은 근무일: ${parsedData.남은근무일}일`,
+            tooltipTitle: '연차 1일, 반차 0.5일이 제외됨',
+        },
+        {
+            info: `남은 근무시간: ${hourToString(parsedData.남은근무시간)}`,
+        },
+        {
+            info: `남은 평균 근무시간: ${hourToString(
+                parsedData.남은평균근무시간
+            )}`,
         },
     ]
 
@@ -81,7 +88,7 @@ const WorkingTimeResult = () => {
                     justifyContent="space-between"
                     alignItems="center"
                     lineHeight={1.5}
-                    mb={1}
+                    mb={0.5}
                 >
                     <DatePicker value={targetDate} setValue={setDateByDayjs} />
 
@@ -117,8 +124,14 @@ const WorkingTimeResult = () => {
                     </Tooltip>
                 </Box>
             </Paper>
-            <Box pt={2}>
-                <List>
+            <Box pt={1}>
+                <List
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.5rem',
+                    }}
+                >
                     <TimeResult backgroundColor={pink[100]}>
                         {monthInfo.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item
@@ -137,15 +150,6 @@ const WorkingTimeResult = () => {
                             />
                         ))}
                     </TimeResult>
-                    <TimeResult backgroundColor={lightBlue[100]}>
-                        {actualData.map(({ info, tooltipTitle }, index) => (
-                            <TimeResult.Item
-                                key={index}
-                                info={info}
-                                tooltipTitle={tooltipTitle}
-                            />
-                        ))}
-                    </TimeResult>
                     <TimeResult backgroundColor={lightGreen[100]}>
                         {remainData.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item
@@ -155,63 +159,74 @@ const WorkingTimeResult = () => {
                             />
                         ))}
                     </TimeResult>
-                    <Box pt={0.5} sx={{ backgroundColor: deepOrange[100] }}>
-                        <Box
-                            fontSize="1rem"
-                            lineHeight={1.5}
-                            px={1}
-                            py={0.5}
-                            borderBottom={1}
-                        >
-                            연차 정보
-                        </Box>
-                        <Box
-                            pl={2}
-                            pt={1}
-                            display="flex"
-                            flexDirection="column"
-                            gap={0.5}
-                        >
-                            {parsedData.timeOffs?.map((timeOff) => (
-                                <Box display="flex" flexDirection="column">
-                                    <Box display="flex">
-                                        <FiberManualRecordIcon
-                                            sx={{
-                                                fontSize: '0.625rem',
-                                                mr: 0.5,
-                                            }}
-                                        />
-                                        <Box
-                                            sx={{
-                                                fontSize: '1rem',
-                                                fontWeight: 700,
-                                            }}
-                                        >
-                                            {timeOff.date}
-                                        </Box>
-                                    </Box>
 
-                                    <Box
-                                        display="flex"
-                                        flexDirection="column"
-                                        paddingLeft="1rem"
-                                        sx={{ fontSize: '1rem' }}
-                                    >
-                                        {timeOff.infos.map((info) => (
-                                            <>
-                                                <div>
-                                                    {info.name} - {info.hours}
-                                                </div>
-                                            </>
-                                        ))}
-                                        <Box fontWeight={600}>
-                                            총합 - {timeOff.totalHours}
+                    {parsedData.휴가정보list.length > 0 && (
+                        <Paper
+                            sx={{ backgroundColor: lightBlue[50] }}
+                            elevation={2}
+                        >
+                            <Box
+                                fontSize="1rem"
+                                px={1}
+                                py={0.5}
+                                borderBottom={1}
+                            >
+                                연차 정보
+                            </Box>
+                            <Box
+                                pl={2}
+                                py={0.5}
+                                display="flex"
+                                flexDirection="column"
+                                gap={0.5}
+                            >
+                                {parsedData.휴가정보list.map((timeOff) => (
+                                    <Box display="flex" flexDirection="column">
+                                        <Box display="flex">
+                                            <Box
+                                                sx={{
+                                                    fontSize: '0.875rem',
+                                                    fontWeight: 700,
+                                                }}
+                                            >
+                                                <FiberManualRecordIcon
+                                                    sx={{
+                                                        fontSize: '0.625rem',
+                                                        mr: 0.5,
+                                                    }}
+                                                />
+                                                {timeOff.date}
+                                            </Box>
+                                        </Box>
+
+                                        <Box
+                                            display="flex"
+                                            flexDirection="column"
+                                            pl="1rem"
+                                            sx={{ fontSize: '0.875rem' }}
+                                        >
+                                            {timeOff.infos.map((info) => (
+                                                <>
+                                                    <div>
+                                                        {info.name} -{' '}
+                                                        {hourToString(
+                                                            info.hours
+                                                        )}
+                                                    </div>
+                                                </>
+                                            ))}
+                                            <Box fontWeight={600}>
+                                                총합 -{' '}
+                                                {hourToString(
+                                                    timeOff.totalHours
+                                                )}
+                                            </Box>
                                         </Box>
                                     </Box>
-                                </Box>
-                            ))}
-                        </Box>
-                    </Box>
+                                ))}
+                            </Box>
+                        </Paper>
+                    )}
                 </List>
             </Box>
         </>
