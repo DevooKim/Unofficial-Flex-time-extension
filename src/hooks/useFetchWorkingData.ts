@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { flexInfo } from '../types'
+import { flexInfo, parsedData } from '../types'
+import { parseData } from '../components/WorkingTimeResult.utils'
 
 const fetch = async (
     userIdHash: string,
@@ -15,21 +16,27 @@ const fetch = async (
 const useFetchWorkingData = (
     userIdHash: string,
     timeStamp: string
-): flexInfo => {
-    const [workingData, setWorkingData] = useState<flexInfo>({} as flexInfo)
+): {
+    loading: boolean
+    data: parsedData
+} => {
+    const [loading, setLoading] = useState<boolean>(true)
+    const [workingData, setWorkingData] = useState<parsedData>({} as parsedData)
 
     useEffect(() => {
         if (userIdHash && timeStamp) {
             const fetchWorkingData = async () => {
                 const 근무정보 = await fetch(userIdHash, timeStamp)
-                setWorkingData(근무정보)
+                const parsedData = parseData(근무정보)
+                setWorkingData(parsedData)
+                setLoading(false)
             }
 
             fetchWorkingData()
         }
     }, [userIdHash, timeStamp])
 
-    return workingData
+    return { loading, data: workingData }
 }
 
 export default useFetchWorkingData

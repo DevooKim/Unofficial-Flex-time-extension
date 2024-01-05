@@ -7,3 +7,9 @@ export const safeDivision = (
     const result = Number((denominator / numerator).toFixed(2))
     return isFinite(result) ? result : 0
 }
+
+export const hourToString = (time: number): string => {
+    const hour = Math.floor(time)
+    const min = Math.round(+(time % 1).toFixed(2) * 60)
+    return `${hour}시간 ${min}분`
+}

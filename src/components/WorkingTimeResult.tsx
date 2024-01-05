@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { IconButton, List, Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
@@ -10,19 +11,19 @@ import {
     deepOrange,
     blue,
 } from '@mui/material/colors'
+import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
 import InfoIcon from '@mui/icons-material/Info'
 
 import {
     useFetchUserIdHash,
     useFetchWorkingData,
-    useParseData,
     useGetTargetDate,
 } from '../hooks'
-import { flexInfo } from '../types'
 
+import { parseData } from './WorkingTimeResult.utils'
+import { hourToString } from '../utils/utils.time'
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
-import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
 
 const currentTimeFormat = () => {
     const date = new Date()
@@ -43,33 +44,42 @@ const WorkingTimeResult = () => {
         setDateByDayjs,
     } = useGetTargetDate()
     const hash: string = useFetchUserIdHash()
-    const flexData = useFetchWorkingData(hash, targetTimeStamp)
-    const { ...parsedData } = useParseData(flexData)
+    const { loading, data: parsedData } = useFetchWorkingData(
+        hash,
+        targetTimeStamp
+    )
+
+    if (loading) return <div>loading...</div>
+    // const { ...parsedData } = useParseData(flexData)
+
+    // const parsedData = useMemo(() => parseData(flexData), [flexData])
 
     const monthInfo: IItem[] = [
         {
-            info: `워킹데이: ${parsedData.workingDaysOfMonth}일`,
+            info: `워킹데이: ${parsedData.워킹데이}일`,
         },
         {
-            info: `이번달 최소 근무시간: ${parsedData.minWorkingHoursOfMonth}`,
+            info: `이번달 최소 근무시간: ${hourToString(
+                parsedData.최소근무시간
+            )}`,
         },
     ]
     const overallData: IItem[] = [
         {
-            info: `총 근무시간: ${parsedData.currentTotalWorkingHours}`,
+            info: `총 근무시간: ${hourToString(parsedData.근무시간총합)}`,
             tooltipTitle: '연차 시간 포함',
         },
     ]
 
-    const actualData: IItem[] = [
-        {
-            info: `소정 근무시간: ${parsedData.actualWorkingHours}`,
-        },
-    ]
+    // const actualData: IItem[] = [
+    //     {
+    //         info: `소정 근무시간: ${parsedData.actualWorkingHours}`,
+    //     },
+    // ]
 
     const remainData: IItem[] = [
         {
-            info: `남은 최소 근무시간: ${parsedData.minRemainWorkingHours}`,
+            info: `남은 근무시간: ${hourToString(parsedData.남은근무시간)}`,
         },
     ]
 
@@ -137,7 +147,7 @@ const WorkingTimeResult = () => {
                             />
                         ))}
                     </TimeResult>
-                    <TimeResult backgroundColor={lightBlue[100]}>
+                    {/* <TimeResult backgroundColor={lightBlue[100]}>
                         {actualData.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item
                                 key={index}
@@ -145,7 +155,7 @@ const WorkingTimeResult = () => {
                                 tooltipTitle={tooltipTitle}
                             />
                         ))}
-                    </TimeResult>
+                    </TimeResult> */}
                     <TimeResult backgroundColor={lightGreen[100]}>
                         {remainData.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item
@@ -172,7 +182,7 @@ const WorkingTimeResult = () => {
                             flexDirection="column"
                             gap={0.5}
                         >
-                            {parsedData.timeOffs?.map((timeOff) => (
+                            {parsedData.휴가정보list?.map((timeOff) => (
                                 <Box display="flex" flexDirection="column">
                                     <Box display="flex">
                                         <FiberManualRecordIcon
@@ -200,12 +210,14 @@ const WorkingTimeResult = () => {
                                         {timeOff.infos.map((info) => (
                                             <>
                                                 <div>
-                                                    {info.name} - {info.hours}
+                                                    {info.name} -{' '}
+                                                    {hourToString(info.hours)}
                                                 </div>
                                             </>
                                         ))}
                                         <Box fontWeight={600}>
-                                            총합 - {timeOff.totalHours}
+                                            총합 -{' '}
+                                            {hourToString(timeOff.totalHours)}
                                         </Box>
                                     </Box>
                                 </Box>
