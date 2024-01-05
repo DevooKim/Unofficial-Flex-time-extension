@@ -21,16 +21,6 @@ const 워킹데이계산하기 = (days: flexInfo['days']) => {
 }
 
 /**
- * 이번달 근무해야하는 일 수
- * @param workingDaysOfMonth 이번달 워킹데이 수
- * @param holidayOfMonth 이번달 휴일 수
- */
-const getActualWorkingDaysOfMonth = (
-    workingDaysOfMonth: number,
-    holidaysOfMonth: number
-): number => workingDaysOfMonth - holidaysOfMonth
-
-/**
  * 지금까지의 근무시간 정보
  * @return actualWorkingHours: 실제 근무 시간, timeOffHours: 연차 시간
  */
@@ -69,6 +59,18 @@ const 휴가정보구하기 = (
 ): parsedData['휴가정보list'][number] => {
     const { date, timeOffs } = dayInfo
 
+    const 요일맵: { [key: string]: string } = {
+        0: '(일)',
+        1: '(월)',
+        2: '(화)',
+        3: '(수)',
+        4: '(목)',
+        5: '(금)',
+        6: '(토)',
+    }
+
+    const 요일 = 요일맵[new Date(date).getDay().toString()]
+
     const infos = timeOffs.map((timeOff) => {
         const minutes = Number(timeOff.usedMinutes)
         return {
@@ -81,7 +83,7 @@ const 휴가정보구하기 = (
     const totalMinutes = infos.reduce((prev, cur) => prev + cur.minutes, 0)
 
     return {
-        date,
+        date: `${date} ${요일}`,
         infos,
         totalMinutes,
         totalHours: totalMinutes / 60,

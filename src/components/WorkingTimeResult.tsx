@@ -6,7 +6,7 @@ import {
     pink,
     lightGreen,
     lime,
-    deepOrange,
+    lightBlue,
     blue,
 } from '@mui/material/colors'
 import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
@@ -88,7 +88,7 @@ const WorkingTimeResult = () => {
                     justifyContent="space-between"
                     alignItems="center"
                     lineHeight={1.5}
-                    mb={1}
+                    mb={0.5}
                 >
                     <DatePicker value={targetDate} setValue={setDateByDayjs} />
 
@@ -124,8 +124,14 @@ const WorkingTimeResult = () => {
                     </Tooltip>
                 </Box>
             </Paper>
-            <Box pt={2}>
-                <List>
+            <Box pt={1}>
+                <List
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.5rem',
+                    }}
+                >
                     <TimeResult backgroundColor={pink[100]}>
                         {monthInfo.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item
@@ -153,65 +159,74 @@ const WorkingTimeResult = () => {
                             />
                         ))}
                     </TimeResult>
-                    <Box pt={0.5} sx={{ backgroundColor: deepOrange[100] }}>
-                        <Box
-                            fontSize="1rem"
-                            lineHeight={1.5}
-                            px={1}
-                            py={0.5}
-                            borderBottom={1}
-                        >
-                            연차 정보
-                        </Box>
-                        <Box
-                            pl={2}
-                            pt={1}
-                            display="flex"
-                            flexDirection="column"
-                            gap={0.5}
-                        >
-                            {parsedData.휴가정보list?.map((timeOff) => (
-                                <Box display="flex" flexDirection="column">
-                                    <Box display="flex">
-                                        <FiberManualRecordIcon
-                                            sx={{
-                                                fontSize: '0.625rem',
-                                                mr: 0.5,
-                                            }}
-                                        />
-                                        <Box
-                                            sx={{
-                                                fontSize: '1rem',
-                                                fontWeight: 700,
-                                            }}
-                                        >
-                                            {timeOff.date}
-                                        </Box>
-                                    </Box>
 
-                                    <Box
-                                        display="flex"
-                                        flexDirection="column"
-                                        paddingLeft="1rem"
-                                        sx={{ fontSize: '1rem' }}
-                                    >
-                                        {timeOff.infos.map((info) => (
-                                            <>
-                                                <div>
-                                                    {info.name} -{' '}
-                                                    {hourToString(info.hours)}
-                                                </div>
-                                            </>
-                                        ))}
-                                        <Box fontWeight={600}>
-                                            총합 -{' '}
-                                            {hourToString(timeOff.totalHours)}
+                    {parsedData.휴가정보list.length > 0 && (
+                        <Paper
+                            sx={{ backgroundColor: lightBlue[50] }}
+                            elevation={2}
+                        >
+                            <Box
+                                fontSize="1rem"
+                                px={1}
+                                py={0.5}
+                                borderBottom={1}
+                            >
+                                연차 정보
+                            </Box>
+                            <Box
+                                pl={2}
+                                py={0.5}
+                                display="flex"
+                                flexDirection="column"
+                                gap={0.5}
+                            >
+                                {parsedData.휴가정보list.map((timeOff) => (
+                                    <Box display="flex" flexDirection="column">
+                                        <Box display="flex">
+                                            <Box
+                                                sx={{
+                                                    fontSize: '0.875rem',
+                                                    fontWeight: 700,
+                                                }}
+                                            >
+                                                <FiberManualRecordIcon
+                                                    sx={{
+                                                        fontSize: '0.625rem',
+                                                        mr: 0.5,
+                                                    }}
+                                                />
+                                                {timeOff.date}
+                                            </Box>
+                                        </Box>
+
+                                        <Box
+                                            display="flex"
+                                            flexDirection="column"
+                                            pl="1rem"
+                                            sx={{ fontSize: '0.875rem' }}
+                                        >
+                                            {timeOff.infos.map((info) => (
+                                                <>
+                                                    <div>
+                                                        {info.name} -{' '}
+                                                        {hourToString(
+                                                            info.hours
+                                                        )}
+                                                    </div>
+                                                </>
+                                            ))}
+                                            <Box fontWeight={600}>
+                                                총합 -{' '}
+                                                {hourToString(
+                                                    timeOff.totalHours
+                                                )}
+                                            </Box>
                                         </Box>
                                     </Box>
-                                </Box>
-                            ))}
-                        </Box>
-                    </Box>
+                                ))}
+                            </Box>
+                        </Paper>
+                    )}
                 </List>
             </Box>
         </>

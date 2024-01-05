@@ -1,30 +1,37 @@
 import React from 'react'
 import { Box } from '@mui/system'
-import { Divider, Tooltip } from '@mui/material'
+import { Paper, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 
 interface ITimeResult {
     children: React.ReactNode
     backgroundColor?: string
+    label?: string
 }
 export interface IItem {
     info: React.ReactNode
     tooltipTitle?: string
+    borderColor?: string
 }
 
-const TimeResult = ({ children, backgroundColor }: ITimeResult) => (
-    <Box
-        sx={{
-            backgroundColor,
-            borderBottom: '2px solid black',
-        }}
-    >
+const TimeResult = ({ children, backgroundColor, label }: ITimeResult) => (
+    <Paper sx={{ background: backgroundColor }} elevation={2}>
+        {label && <div>{label}</div>}
         {children}
-    </Box>
+    </Paper>
 )
-const Item = ({ info, tooltipTitle }: IItem) => (
+const Item = ({ info, tooltipTitle, borderColor = 'black' }: IItem) => (
     <>
-        <Box display="flex" alignItems="center">
+        <Box
+            display="flex"
+            alignItems="center"
+            sx={{
+                borderBottom: `1px solid ${borderColor}`,
+                ':last-child': {
+                    borderBottom: 'none',
+                },
+            }}
+        >
             <Box fontSize="1rem" lineHeight={1.5} px={1} py={0.5}>
                 {info}
             </Box>
@@ -34,7 +41,6 @@ const Item = ({ info, tooltipTitle }: IItem) => (
                 </Tooltip>
             )}
         </Box>
-        <Divider />
     </>
 )
 
