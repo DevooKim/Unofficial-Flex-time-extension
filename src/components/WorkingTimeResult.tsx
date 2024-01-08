@@ -69,7 +69,7 @@ const WorkingTimeResult = ({
     const myScheduleData = parseScheduleData({
         data: scheduleData,
         baseTimeData,
-        현재근무상태: myClockData.현재근무상태,
+        clockData: myClockData,
     })
 
     const monthInfo: IItem[] = [
@@ -110,8 +110,19 @@ const WorkingTimeResult = ({
         <>
             <div>
                 <div>근무상태: {myClockData.현재근무상태}</div>
-                <div>출근시간: {new Date(myClockData.출근시간).toString()}</div>
-                <div>퇴근시간: {new Date(myClockData.퇴근시간).toString()}</div>
+                <div>출근시간: {dayjs(myClockData.출근시간).toString()}</div>
+                <div>퇴근시간: {dayjs(myClockData.퇴근시간).toString()}</div>
+                <div>
+                    오늘일한시간: {hourToString(myClockData.오늘일한시간)}
+                </div>
+                <div>
+                    지금기준_남은근무시간:{' '}
+                    {hourToString(myScheduleData.지금기준.남은근무시간)}
+                </div>
+                <div>
+                    지금기준_남은평균근무시간:{' '}
+                    {hourToString(myScheduleData.지금기준.남은평균근무시간)}
+                </div>
             </div>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
                 <Box

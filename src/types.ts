@@ -68,6 +68,11 @@ export type myScheduleData = {
     }[]
     timestampTo: number
     timestampFrom: number
+    지금기준: {
+        남은근무일: number
+        남은근무시간: number
+        남은평균근무시간: number
+    }
 }
 
 export type flexClockData = {
@@ -113,4 +118,5 @@ export type myClockData = {
     현재근무상태: '출근 전' | '근무 중' | '퇴근'
     출근시간: number
     퇴근시간: number
+    오늘일한시간: number
 }

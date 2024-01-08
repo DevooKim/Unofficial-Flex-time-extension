@@ -101,11 +101,11 @@ const 휴가정보구하기 = (
 export const parseScheduleData = ({
     data,
     baseTimeData,
-    현재근무상태,
+    clockData,
 }: {
     data: flexScheduleData
     baseTimeData: BaseTimeData
-    현재근무상태: myClockData['현재근무상태']
+    clockData: myClockData
 }): myScheduleData => {
     const days = data.days
     const period = data.period
@@ -140,7 +140,7 @@ export const parseScheduleData = ({
         .map((day) => 휴가정보구하기(휴가IdMap, day))
 
     const { today } = baseTimeData
-    const offset = 현재근무상태 === '퇴근' ? 60 * 60 * 24 * 1000 : 0
+    const offset = clockData.현재근무상태 === '퇴근' ? 60 * 60 * 24 * 1000 : 0
 
     const filterDays = ({ date }: { date: string }) =>
         dayjs(date).valueOf() >= today - offset
@@ -153,6 +153,12 @@ export const parseScheduleData = ({
     const 남은근무일 = 남은워킹데이 - 오늘이후휴가일수
     const 남은평균근무시간 = 남은근무시간 / 남은근무일 || 0
 
+    const 남은근무일_지금기준 =
+        clockData.현재근무상태 === '근무 중' ? 남은근무일 - 1 : 남은근무일
+    const 남은근무시간_지금기준 = 남은근무시간 - clockData.오늘일한시간
+    const 남은평균근무시간_지금기준 =
+        남은근무시간_지금기준 / 남은근무일_지금기준
+
     return {
         워킹데이,
         최소근무시간: 워킹데이 * 8,
@@ -163,5 +169,10 @@ export const parseScheduleData = ({
         휴가정보list: 휴가list,
         timestampTo: period.applyTimeRangeTo,
         timestampFrom: period.applyTimeRangeFrom,
+        지금기준: {
+            남은근무일: 남은근무일_지금기준,
+            남은근무시간: 남은근무시간_지금기준,
+            남은평균근무시간: 남은평균근무시간_지금기준,
+        },
     }
 }
