@@ -8,6 +8,12 @@ export interface ChromeMessage {
     message: any
 }
 
+export interface BaseTimeData {
+    now: number
+    firstDay: number
+    lastDay: number
+}
+
 export type flexPaidSummary = {
     baseWeeklyPaidHolidayMinutes: number
     baseWorkingMinutes: number

@@ -1,4 +1,5 @@
 import { flexClockData, myClockData } from '../types'
+import dayjs, { Dayjs } from 'dayjs'
 
 const 현재근무정보구하기 = ({
     now,
@@ -8,9 +9,7 @@ const 현재근무정보구하기 = ({
     records: flexClockData['records']
 }) => {
     // 한국 시간으로 yyyy-mm-dd
-    const currentDate = new Date(now + 9 * 60 * 60 * 1000)
-        .toISOString()
-        .split('T')[0]
+    const currentDate = dayjs(now).format('YYYY-MM-DD')
 
     const todayRecords = records.find(
         ({ appliedDate }) => appliedDate === currentDate

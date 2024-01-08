@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { IconButton, List, Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
@@ -13,6 +12,8 @@ import {
 import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
 import InfoIcon from '@mui/icons-material/Info'
 
+import dayjs, { Dayjs } from 'dayjs'
+
 import {
     useFetchUserIdHash,
     useFetchScheduleData,
@@ -26,30 +27,24 @@ import { parseScheduleData } from '../utils/parseScheduleData'
 
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
+import { BaseTimeData } from '../types'
 
 const currentTimeFormat = () => {
-    const date = new Date()
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    const hour = date.getHours()
-    const minute = date.getMinutes()
+    const d: Dayjs = dayjs()
+    const month = d.month() + 1
+    const day = d.date()
+    const hour = d.hour()
+    const minute = d.minute()
 
     return `${month}월 ${day}일 ${hour}시 ${minute}분`
 }
 
-const d = new Date()
-const now = d.getTime()
-// 이번달의 처음 시간과 마지막 시간
-const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getTime()
-const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getTime()
-
-const date = {
-    now,
-    firstDay,
-    lastDay,
-}
-
-const WorkingTimeResult = () => {
+const WorkingTimeResult = ({
+    baseTimeData,
+}: {
+    baseTimeData: BaseTimeData
+}) => {
+    const { firstDay, lastDay, now } = baseTimeData
     const {
         targetDate,
         targetTimeStamp,
@@ -60,8 +55,8 @@ const WorkingTimeResult = () => {
     const hash: string = useFetchUserIdHash()
 
     const { loading: clockLoading, data: clockData } = useFetchClockData(hash, {
-        timeStampFrom: date.firstDay,
-        timeStampTo: date.lastDay,
+        timeStampFrom: firstDay,
+        timeStampTo: lastDay,
     })
 
     const { loading: scheduleLoading, data: scheduleData } =
@@ -69,10 +64,11 @@ const WorkingTimeResult = () => {
 
     if (clockLoading || scheduleLoading) return <div>loading...</div>
 
-    const myClockData = parseClockData({ data: clockData, now: date.now })
+    const myClockData = parseClockData({ data: clockData, now })
 
     const myScheduleData = parseScheduleData({
         data: scheduleData,
+        baseTimeData,
         현재근무상태: myClockData.현재근무상태,
     })
 

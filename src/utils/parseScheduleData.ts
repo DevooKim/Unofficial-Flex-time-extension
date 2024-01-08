@@ -1,4 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
+import dayjs, { Dayjs } from 'dayjs'
 
 import {
     flexDayInfo,
@@ -6,6 +7,7 @@ import {
     flexPaidSummary,
     myScheduleData,
     myClockData,
+    BaseTimeData,
 } from '../types'
 
 const convertMinuteToHours = (minute: number): number => minute / 60
@@ -75,7 +77,7 @@ const 휴가정보구하기 = (
         6: '(토)',
     }
 
-    const 요일 = 요일맵[new Date(date).getDay().toString()]
+    const 요일 = 요일맵[dayjs(date).day().toString()]
 
     const infos = timeOffs.map((timeOff) => {
         const minutes = Number(timeOff.usedMinutes)
@@ -98,9 +100,11 @@ const 휴가정보구하기 = (
 
 export const parseScheduleData = ({
     data,
+    baseTimeData,
     현재근무상태,
 }: {
     data: flexScheduleData
+    baseTimeData: BaseTimeData
     현재근무상태: myClockData['현재근무상태']
 }): myScheduleData => {
     const days = data.days
@@ -135,15 +139,13 @@ export const parseScheduleData = ({
         .filter(({ timeOffs }) => !isEmpty(timeOffs))
         .map((day) => 휴가정보구하기(휴가IdMap, day))
 
-    const now = new Date()
+    const { now } = baseTimeData
     const offset = 현재근무상태 === '근무 중' ? 60 * 60 * 24 * 1000 : 0
     const 남은워킹데이 = 워킹데이계산하기(
-        days.filter(
-            ({ date }) => new Date(date).getTime() > now.getTime() - offset
-        )
+        days.filter(({ date }) => dayjs(date).valueOf() > now - offset)
     )
     const 오늘이후휴가일수 = 휴가list
-        .filter(({ date }) => new Date(date).getTime() > now.getTime() - offset)
+        .filter(({ date }) => dayjs(date).valueOf() > now - offset)
         .reduce((acc, cur) => acc + cur.totalHours / 8, 0)
 
     const 남은근무일 = 남은워킹데이 - 오늘이후휴가일수
