@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { IconButton, List, Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
@@ -20,6 +21,9 @@ import {
 } from '../hooks'
 
 import { hourToString } from '../utils/utils.time'
+import { parseClockData } from '../utils/parseClockData'
+import { parseScheduleData } from '../utils/parseScheduleData'
+
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
 
@@ -33,6 +37,18 @@ const currentTimeFormat = () => {
     return `${month}월 ${day}일 ${hour}시 ${minute}분`
 }
 
+const d = new Date()
+const now = d.getTime()
+// 이번달의 처음 시간과 마지막 시간
+const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getTime()
+const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getTime()
+
+const date = {
+    now,
+    firstDay,
+    lastDay,
+}
+
 const WorkingTimeResult = () => {
     const {
         targetDate,
@@ -42,15 +58,23 @@ const WorkingTimeResult = () => {
         setDateByDayjs,
     } = useGetTargetDate()
     const hash: string = useFetchUserIdHash()
-    const { loading: scheduleLoading, data: myScheduleData } =
-        useFetchScheduleData(hash, targetTimeStamp)
 
     const { loading: clockLoading, data: clockData } = useFetchClockData(hash, {
-        timeStampFrom: myScheduleData.timestampFrom,
-        timeStampTo: myScheduleData.timestampTo,
+        timeStampFrom: date.firstDay,
+        timeStampTo: date.lastDay,
     })
 
-    if (scheduleLoading) return <div>loading...</div>
+    const { loading: scheduleLoading, data: scheduleData } =
+        useFetchScheduleData(hash, targetTimeStamp)
+
+    if (clockLoading || scheduleLoading) return <div>loading...</div>
+
+    const myClockData = parseClockData({ data: clockData, now: date.now })
+
+    const myScheduleData = parseScheduleData({
+        data: scheduleData,
+        현재근무상태: myClockData.현재근무상태,
+    })
 
     const monthInfo: IItem[] = [
         {
@@ -88,7 +112,7 @@ const WorkingTimeResult = () => {
 
     return (
         <>
-            <h1>{JSON.stringify(clockData)}</h1>
+            <h1>{JSON.stringify(myClockData)}</h1>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
                 <Box
                     display="flex"

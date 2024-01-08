@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { flexScheduleData, myScheduleData } from '../types'
-import { parseScheduleData } from '../utils/parseScheduleData'
+import { flexScheduleData } from '../types'
 
 const fetch = async (
     userIdHash: string,
@@ -18,19 +17,18 @@ const useFetchScheduleData = (
     timeStamp: string
 ): {
     loading: boolean
-    data: myScheduleData
+    data: flexScheduleData
 } => {
     const [loading, setLoading] = useState<boolean>(true)
-    const [workingData, setWorkingData] = useState<myScheduleData>(
-        {} as myScheduleData
+    const [workingData, setWorkingData] = useState<flexScheduleData>(
+        {} as flexScheduleData
     )
 
     useEffect(() => {
         if (userIdHash && timeStamp) {
             const fetchWorkingData = async () => {
                 const 근무정보 = await fetch(userIdHash, timeStamp)
-                const parsedScheduleData = parseScheduleData(근무정보)
-                setWorkingData(parsedScheduleData)
+                setWorkingData(근무정보)
                 setLoading(false)
             }
 

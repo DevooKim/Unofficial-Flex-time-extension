@@ -7,8 +7,10 @@ const 현재근무정보구하기 = ({
     now: number
     records: flexClockData['records']
 }) => {
-    // yyyy-mm-dd
-    const currentDate = new Date(now).toISOString().split('T')[0]
+    // 한국 시간으로 yyyy-mm-dd
+    const currentDate = new Date(now + 9 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0]
 
     const todayRecords = records.find(
         ({ appliedDate }) => appliedDate === currentDate
