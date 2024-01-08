@@ -14,8 +14,9 @@ import InfoIcon from '@mui/icons-material/Info'
 
 import {
     useFetchUserIdHash,
-    useFetchWorkingData,
+    useFetchScheduleData,
     useGetTargetDate,
+    useFetchClockData,
 } from '../hooks'
 
 import { hourToString } from '../utils/utils.time'
@@ -41,47 +42,53 @@ const WorkingTimeResult = () => {
         setDateByDayjs,
     } = useGetTargetDate()
     const hash: string = useFetchUserIdHash()
-    const { loading, data: parsedData } = useFetchWorkingData(
-        hash,
-        targetTimeStamp
-    )
+    const { loading: scheduleLoading, data: myScheduleData } =
+        useFetchScheduleData(hash, targetTimeStamp)
 
-    if (loading) return <div>loading...</div>
+    const { loading: clockLoading, data: clockData } = useFetchClockData(hash, {
+        timeStampFrom: myScheduleData.timestampFrom,
+        timeStampTo: myScheduleData.timestampTo,
+    })
+
+    if (scheduleLoading) return <div>loading...</div>
 
     const monthInfo: IItem[] = [
         {
-            info: `워킹데이: ${parsedData.워킹데이}일`,
+            info: `워킹데이: ${myScheduleData.워킹데이}일`,
         },
         {
             info: `이번달 최소 근무시간: ${hourToString(
-                parsedData.최소근무시간
+                myScheduleData.최소근무시간
             )}`,
         },
     ]
     const overallData: IItem[] = [
         {
-            info: `총 근무한 시간: ${hourToString(parsedData.근무시간총합)}`,
+            info: `총 근무한 시간: ${hourToString(
+                myScheduleData.근무시간총합
+            )}`,
             tooltipTitle: '연차 시간이 포함됨',
         },
     ]
 
     const remainData: IItem[] = [
         {
-            info: `남은 근무일: ${parsedData.남은근무일}일`,
+            info: `남은 근무일: ${myScheduleData.남은근무일}일`,
             tooltipTitle: '연차 1일, 반차 0.5일이 제외됨',
         },
         {
-            info: `남은 근무시간: ${hourToString(parsedData.남은근무시간)}`,
+            info: `남은 근무시간: ${hourToString(myScheduleData.남은근무시간)}`,
         },
         {
             info: `남은 평균 근무시간: ${hourToString(
-                parsedData.남은평균근무시간
+                myScheduleData.남은평균근무시간
             )}`,
         },
     ]
 
     return (
         <>
+            <h1>{JSON.stringify(clockData)}</h1>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
                 <Box
                     display="flex"
@@ -160,7 +167,7 @@ const WorkingTimeResult = () => {
                         ))}
                     </TimeResult>
 
-                    {parsedData.휴가정보list.length > 0 && (
+                    {myScheduleData.휴가정보list.length > 0 && (
                         <Paper
                             sx={{ backgroundColor: lightBlue[50] }}
                             elevation={2}
@@ -180,7 +187,7 @@ const WorkingTimeResult = () => {
                                 flexDirection="column"
                                 gap={0.5}
                             >
-                                {parsedData.휴가정보list.map((timeOff) => (
+                                {myScheduleData.휴가정보list.map((timeOff) => (
                                     <Box display="flex" flexDirection="column">
                                         <Box display="flex">
                                             <Box

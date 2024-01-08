@@ -35,14 +35,14 @@ export type timeOffResult = {
     name: string
 }
 
-export type flexInfo = {
+export type flexScheduleData = {
     paidSummary: flexPaidSummary
     timeOffSummary: { timeOffResults: timeOffResult[] }
     days: flexDayInfo[]
-    period: { to: string }
+    period: { applyTimeRangeTo: number; applyTimeRangeFrom: number }
 }
 
-export type parsedData = {
+export type myScheduleData = {
     워킹데이: number
     최소근무시간: number
     근무시간총합: number
@@ -59,4 +59,51 @@ export type parsedData = {
         totalMinutes: number
         totalHours: number
     }[]
+    timestampTo: number
+    timestampFrom: number
+}
+
+export type flexClockData = {
+    records: {
+        appliedDate: string
+        workClockRecordPacks: {
+            startRecord: {
+                eventType: string
+                targetTime: number
+                customerWorkFormId: string
+                recordType: string
+                zoneId: string
+            }
+            switchRecords: any[]
+            stopRecord: {
+                eventType: string
+                targetTime: number
+                recordType: string
+                zoneId: string
+            }
+            restRecords: {
+                restStartRecord: {
+                    eventType: string
+                    customerWorkFormId: string
+                    targetTime: number
+                    recordType: string
+                    zoneId: string
+                }
+                restStopRecord: {
+                    eventType: string
+                    targetTime: number
+                    recordType: string
+                    zoneId: string
+                }
+            }[]
+            onGoing: boolean
+        }[]
+        appliedZoneId: string
+    }[]
+}
+
+export type myClockData = {
+    현재근무상태: '출근 전' | '근무 중' | '퇴근'
+    출근시간: number
+    퇴근시간: number
 }

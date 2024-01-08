@@ -1,10 +1,15 @@
 import isEmpty from 'lodash/isEmpty'
 
-import { flexDayInfo, flexInfo, flexPaidSummary, parsedData } from '../types'
+import {
+    flexDayInfo,
+    flexScheduleData,
+    flexPaidSummary,
+    myScheduleData,
+} from '../types'
 
 const convertMinuteToHours = (minute: number): number => minute / 60
 
-const 워킹데이계산하기 = (days: flexInfo['days']) => {
+const 워킹데이계산하기 = (days: flexScheduleData['days']) => {
     const 워킹데이목록 = days.filter(({ customHoliday, dayWorkingType }) => {
         if (customHoliday) {
             return false
@@ -56,7 +61,7 @@ const 남은근무시간계산하기 = ({
 const 휴가정보구하기 = (
     timeOffPolicyIdMap: { [key: string]: string },
     dayInfo: flexDayInfo
-): parsedData['휴가정보list'][number] => {
+): myScheduleData['휴가정보list'][number] => {
     const { date, timeOffs } = dayInfo
 
     const 요일맵: { [key: string]: string } = {
@@ -90,7 +95,9 @@ const 휴가정보구하기 = (
     }
 }
 
-export const parseData = (flexData: flexInfo): parsedData => {
+export const parseScheduleData = (
+    flexData: flexScheduleData
+): myScheduleData => {
     const days = flexData.days
     const period = flexData.period
     const summary = flexData.paidSummary
@@ -142,5 +149,7 @@ export const parseData = (flexData: flexInfo): parsedData => {
         남은근무시간,
         남은평균근무시간,
         휴가정보list: 휴가list,
+        timestampTo: period.applyTimeRangeTo,
+        timestampFrom: period.applyTimeRangeFrom,
     }
 }
