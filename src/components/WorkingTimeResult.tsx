@@ -112,7 +112,11 @@ const WorkingTimeResult = () => {
 
     return (
         <>
-            <h1>{JSON.stringify(myClockData)}</h1>
+            <div>
+                <div>근무상태: {myClockData.현재근무상태}</div>
+                <div>출근시간: {new Date(myClockData.출근시간).toString()}</div>
+                <div>퇴근시간: {new Date(myClockData.퇴근시간).toString()}</div>
+            </div>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
                 <Box
                     display="flex"
