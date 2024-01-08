@@ -28,9 +28,9 @@ import { parseScheduleData } from '../utils/parseScheduleData'
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
 import { BaseTimeData } from '../types'
+import { useMemo } from 'react'
 
-const currentTimeFormat = () => {
-    const d: Dayjs = dayjs()
+const currentTimeFormat = (d: Dayjs) => {
     const month = d.month() + 1
     const day = d.date()
     const hour = d.hour()
@@ -61,6 +61,11 @@ const WorkingTimeResult = ({
 
     const { loading: scheduleLoading, data: scheduleData } =
         useFetchScheduleData(hash, targetTimeStamp)
+
+    const lastUpdateTime = useMemo(
+        () => currentTimeFormat(dayjs()),
+        [targetTimeStamp]
+    )
 
     if (clockLoading || scheduleLoading) return <div>loading...</div>
 
@@ -156,7 +161,7 @@ const WorkingTimeResult = ({
 
                 <Box display="flex" alignItems="center">
                     <Box fontSize="1rem" lineHeight={1.5}>
-                        마지막 업데이트 : {currentTimeFormat()}
+                        마지막 업데이트 : {lastUpdateTime}
                     </Box>
                     <Tooltip
                         title="오늘 근무 정보는 퇴근 후에 반영됩니다."
