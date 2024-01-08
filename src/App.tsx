@@ -22,6 +22,7 @@ function App() {
 
         return {
             now: Number(day.valueOf()),
+            today: Number(day.startOf('day').valueOf()),
             firstDay: Number(firstDay.valueOf()),
             lastDay: Number(lastDay.valueOf()),
         }

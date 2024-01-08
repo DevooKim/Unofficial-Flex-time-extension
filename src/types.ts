@@ -10,6 +10,7 @@ export interface ChromeMessage {
 
 export interface BaseTimeData {
     now: number
+    today: number
     firstDay: number
     lastDay: number
 }

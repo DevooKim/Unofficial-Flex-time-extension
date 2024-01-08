@@ -139,13 +139,15 @@ export const parseScheduleData = ({
         .filter(({ timeOffs }) => !isEmpty(timeOffs))
         .map((day) => 휴가정보구하기(휴가IdMap, day))
 
-    const { now } = baseTimeData
-    const offset = 현재근무상태 === '근무 중' ? 60 * 60 * 24 * 1000 : 0
-    const 남은워킹데이 = 워킹데이계산하기(
-        days.filter(({ date }) => dayjs(date).valueOf() > now - offset)
-    )
+    const { today } = baseTimeData
+    const offset = 현재근무상태 === '퇴근' ? 60 * 60 * 24 * 1000 : 0
+
+    const filterDays = ({ date }: { date: string }) =>
+        dayjs(date).valueOf() >= today - offset
+
+    const 남은워킹데이 = 워킹데이계산하기(days.filter(filterDays))
     const 오늘이후휴가일수 = 휴가list
-        .filter(({ date }) => dayjs(date).valueOf() > now - offset)
+        .filter(filterDays)
         .reduce((acc, cur) => acc + cur.totalHours / 8, 0)
 
     const 남은근무일 = 남은워킹데이 - 오늘이후휴가일수
