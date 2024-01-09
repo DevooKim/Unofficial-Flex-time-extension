@@ -75,7 +75,9 @@ const WorkingTimeResult = ({
 
     const myClockData = parseClockData({ data: clockData, now })
 
-    const 지금근무중인가 = myClockData.현재근무상태 === '근무 중'
+    const 지금근무중인가 = myClockData.현재근무상태 === '근무중'
+    const displayCurrentData =
+        dayjs(targetDate).isSame(dayjs(now), 'month') && 지금근무중인가
 
     const myScheduleData = parseScheduleData({
         data: scheduleData,
@@ -104,19 +106,19 @@ const WorkingTimeResult = ({
 
     const remainData: IItem[] = [
         {
-            info: 지금근무중인가
+            info: displayCurrentData
                 ? `남은 근무일: ${myScheduleData.남은근무일}일 (${myScheduleData.지금기준.남은근무일}일)`
                 : `남은 근무일: ${myScheduleData.남은근무일}일`,
         },
         {
-            info: 지금근무중인가
+            info: displayCurrentData
                 ? `남은 근무시간: ${hourToString(
                       myScheduleData.남은근무시간
                   )} (${hourToString(myScheduleData.지금기준.남은근무시간)})`
                 : `남은 근무시간: ${hourToString(myScheduleData.남은근무시간)}`,
         },
         {
-            info: 지금근무중인가
+            info: displayCurrentData
                 ? `남은 평균 근무시간: ${hourToString(
                       myScheduleData.남은평균근무시간
                   )} (${hourToString(
@@ -202,7 +204,7 @@ const WorkingTimeResult = ({
                                           .utc()
                                           .local()
                                           .format('HH시 mm분')
-                                    : '아직 퇴근하지 않았습니다.'}
+                                    : '퇴근하기 전 입니다.'}
                             </Box>
                             <Box>
                                 오늘 한 근무:{' '}

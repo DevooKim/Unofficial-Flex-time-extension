@@ -115,7 +115,7 @@ export type flexClockData = {
 }
 
 export type myClockData = {
-    현재근무상태: '출근 전' | '근무 중' | '퇴근'
+    현재근무상태: '출근전' | '근무중' | '퇴근'
     출근시간: number
     퇴근시간: number
     오늘일한시간: number

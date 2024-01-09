@@ -47,12 +47,6 @@ const 오늘일한시간구하기 = ({
         0
     )
 
-    console.log({
-        퇴근시간,
-        now,
-        휴계시간: 휴계시간,
-    })
-
     return (dayjs(key).diff(dayjs(출근시간), 'minute') - 휴계시간) / 60
 }
 
@@ -70,7 +64,7 @@ export const parseClockData = ({
 
     if (!현재근무정보) {
         return {
-            현재근무상태: '출근 전',
+            현재근무상태: '출근전',
             출근시간: 0,
             퇴근시간: 0,
             오늘일한시간: 0,
@@ -83,7 +77,7 @@ export const parseClockData = ({
     const 퇴근시간 = stopRecord?.targetTime
 
     const 현재근무상태: myClockData['현재근무상태'] = onGoing
-        ? '근무 중'
+        ? '근무중'
         : '퇴근'
 
     const 오늘일한시간 = 오늘일한시간구하기({
