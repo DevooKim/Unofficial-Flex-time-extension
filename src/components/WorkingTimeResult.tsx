@@ -71,6 +71,8 @@ const WorkingTimeResult = ({
 
     const myClockData = parseClockData({ data: clockData, now })
 
+    const 지금근무중인가 = myClockData.현재근무상태 === '근무 중'
+
     const myScheduleData = parseScheduleData({
         data: scheduleData,
         baseTimeData,
@@ -92,22 +94,33 @@ const WorkingTimeResult = ({
             info: `총 근무한 시간: ${hourToString(
                 myScheduleData.근무시간총합
             )}`,
-            tooltipTitle: '연차 시간이 포함됨',
+            tooltipTitle: '연차 시간이 포함되어 있습니다.',
         },
     ]
 
     const remainData: IItem[] = [
         {
-            info: `남은 근무일: ${myScheduleData.남은근무일}일`,
-            tooltipTitle: '연차 1일, 반차 0.5일이 제외됨',
+            info: 지금근무중인가
+                ? `남은 근무일: ${myScheduleData.남은근무일}일 (${myScheduleData.지금기준.남은근무일}일)`
+                : `남은 근무일: ${myScheduleData.남은근무일}일`,
         },
         {
-            info: `남은 근무시간: ${hourToString(myScheduleData.남은근무시간)}`,
+            info: 지금근무중인가
+                ? `남은 근무시간: ${hourToString(
+                      myScheduleData.남은근무시간
+                  )} (${hourToString(myScheduleData.지금기준.남은근무시간)})`
+                : `남은 근무시간: ${hourToString(myScheduleData.남은근무시간)}`,
         },
         {
-            info: `남은 평균 근무시간: ${hourToString(
-                myScheduleData.남은평균근무시간
-            )}`,
+            info: 지금근무중인가
+                ? `남은 평균 근무시간: ${hourToString(
+                      myScheduleData.남은평균근무시간
+                  )} (${hourToString(
+                      myScheduleData.지금기준.남은평균근무시간
+                  )})`
+                : `남은 평균 근무시간: ${hourToString(
+                      myScheduleData.남은평균근무시간
+                  )}`,
         },
     ]
 
@@ -120,22 +133,18 @@ const WorkingTimeResult = ({
                 <div>
                     오늘일한시간: {hourToString(myClockData.오늘일한시간)}
                 </div>
-                <div>
-                    지금기준_남은근무시간:{' '}
-                    {hourToString(myScheduleData.지금기준.남은근무시간)}
-                </div>
-                <div>
-                    지금기준_남은평균근무시간:{' '}
-                    {hourToString(myScheduleData.지금기준.남은평균근무시간)}
-                </div>
             </div>
             <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
+                <Box display="flex" alignItems="center" pb={1}>
+                    <Box fontSize="0.75rem" lineHeight={1.5}>
+                        마지막 업데이트 : {lastUpdateTime}
+                    </Box>
+                </Box>
                 <Box
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
                     lineHeight={1.5}
-                    mb={0.5}
                 >
                     <DatePicker value={targetDate} setValue={setDateByDayjs} />
 
@@ -157,18 +166,6 @@ const WorkingTimeResult = ({
                             />
                         </IconButton>
                     </Box>
-                </Box>
-
-                <Box display="flex" alignItems="center">
-                    <Box fontSize="1rem" lineHeight={1.5}>
-                        마지막 업데이트 : {lastUpdateTime}
-                    </Box>
-                    <Tooltip
-                        title="오늘 근무 정보는 퇴근 후에 반영됩니다."
-                        arrow
-                    >
-                        <InfoIcon sx={{ fontSize: '1.2rem', pl: 0.5 }} />
-                    </Tooltip>
                 </Box>
             </Paper>
             <Box pt={1}>
