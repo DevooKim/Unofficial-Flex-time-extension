@@ -1,6 +1,12 @@
 import { useMemo } from 'react'
 
-import { Divider, IconButton, List, Paper } from '@mui/material'
+import {
+    CircularProgress,
+    Divider,
+    IconButton,
+    List,
+    Paper,
+} from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import {
@@ -71,7 +77,12 @@ const WorkingTimeResult = ({
         [targetTimeStamp]
     )
 
-    if (clockLoading || scheduleLoading) return <div>loading...</div>
+    if (clockLoading || scheduleLoading)
+        return (
+            <Box display="flex" justifyContent="center">
+                <CircularProgress />
+            </Box>
+        )
 
     const myClockData = parseClockData({ data: clockData, now })
 
