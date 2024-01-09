@@ -83,14 +83,14 @@ export type flexClockData = {
                 eventType: string
                 targetTime: number
                 customerWorkFormId: string
-                recordType: string
+                recordType: 'RECORD' | 'PLAY_BY_AUTO'
                 zoneId: string
             }
             switchRecords: any[]
             stopRecord: {
                 eventType: string
                 targetTime: number
-                recordType: string
+                recordType: 'RECORD' | 'PLAY_BY_AUTO'
                 zoneId: string
             }
             restRecords: {
@@ -98,13 +98,13 @@ export type flexClockData = {
                     eventType: string
                     customerWorkFormId: string
                     targetTime: number
-                    recordType: string
+                    recordType: 'RECORD' | 'PLAY_BY_AUTO'
                     zoneId: string
                 }
                 restStopRecord: {
                     eventType: string
                     targetTime: number
-                    recordType: string
+                    recordType: 'RECORD' | 'PLAY_BY_AUTO'
                     zoneId: string
                 }
             }[]

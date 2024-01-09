@@ -33,8 +33,14 @@ const 오늘일한시간구하기 = ({
 
     const 휴계시간 = restRecords.reduce(
         (acc, { restStartRecord, restStopRecord }) => {
-            const start = restStartRecord.targetTime
-            const stop = restStopRecord?.targetTime || now
+            const { targetTime: startTargetTime, recordType: startRecordType } =
+                restStartRecord
+            const { targetTime: stopTargetTime, recordType: stopRecordType } =
+                restStopRecord || {}
+
+            const start = startRecordType !== 'RECORD' ? now : startTargetTime
+
+            const stop = stopRecordType !== 'RECORD' ? now : stopTargetTime
 
             return acc + dayjs(stop).diff(dayjs(start), 'minute')
         },
