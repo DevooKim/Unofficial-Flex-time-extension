@@ -1,4 +1,6 @@
-import { IconButton, List, Paper, Tooltip } from '@mui/material'
+import { useMemo } from 'react'
+
+import { Divider, IconButton, List, Paper } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import {
@@ -8,11 +10,12 @@ import {
     lime,
     lightBlue,
     blue,
+    indigo,
 } from '@mui/material/colors'
 import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
-import InfoIcon from '@mui/icons-material/Info'
 
 import dayjs, { Dayjs } from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 import {
     useFetchUserIdHash,
@@ -28,7 +31,8 @@ import { parseScheduleData } from '../utils/parseScheduleData'
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
 import { BaseTimeData } from '../types'
-import { useMemo } from 'react'
+
+dayjs.extend(utc)
 
 const currentTimeFormat = (d: Dayjs) => {
     const month = d.month() + 1
@@ -91,7 +95,7 @@ const WorkingTimeResult = ({
     ]
     const overallData: IItem[] = [
         {
-            info: `총 근무한 시간: ${hourToString(
+            info: `이번달 총 근무한 시간: ${hourToString(
                 myScheduleData.근무시간총합
             )}`,
             tooltipTitle: '연차 시간이 포함되어 있습니다.',
@@ -126,48 +130,6 @@ const WorkingTimeResult = ({
 
     return (
         <>
-            <div>
-                <div>근무상태: {myClockData.현재근무상태}</div>
-                <div>출근시간: {dayjs(myClockData.출근시간).toString()}</div>
-                <div>퇴근시간: {dayjs(myClockData.퇴근시간).toString()}</div>
-                <div>
-                    오늘일한시간: {hourToString(myClockData.오늘일한시간)}
-                </div>
-            </div>
-            <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
-                <Box display="flex" alignItems="center" pb={1}>
-                    <Box fontSize="0.75rem" lineHeight={1.5}>
-                        마지막 업데이트 : {lastUpdateTime}
-                    </Box>
-                </Box>
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    lineHeight={1.5}
-                >
-                    <DatePicker value={targetDate} setValue={setDateByDayjs} />
-
-                    <Box display="flex" alignItems="center">
-                        <IconButton onClick={setPrevMonth} size="small">
-                            <ArrowBackIosNew
-                                sx={{
-                                    fontSize: '1.2rem',
-                                    color: blue['A700'],
-                                }}
-                            />
-                        </IconButton>
-                        <IconButton onClick={setNextMonth} size="small">
-                            <ArrowForwardIos
-                                sx={{
-                                    fontSize: '1.2rem',
-                                    color: blue['A700'],
-                                }}
-                            />
-                        </IconButton>
-                    </Box>
-                </Box>
-            </Paper>
             <Box pt={1}>
                 <List
                     sx={{
@@ -176,6 +138,81 @@ const WorkingTimeResult = ({
                         gap: '0.5rem',
                     }}
                 >
+                    <Paper sx={{ p: 1, background: yellow[50] }} elevation={2}>
+                        <Box display="flex" alignItems="center" pb={1}>
+                            <Box fontSize="0.75rem" lineHeight={1.5}>
+                                마지막 업데이트 : {lastUpdateTime}
+                            </Box>
+                        </Box>
+                        <Box
+                            display="flex"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            lineHeight={1.5}
+                        >
+                            <DatePicker
+                                value={targetDate}
+                                setValue={setDateByDayjs}
+                            />
+
+                            <Box display="flex" alignItems="center">
+                                <IconButton onClick={setPrevMonth} size="small">
+                                    <ArrowBackIosNew
+                                        sx={{
+                                            fontSize: '1.2rem',
+                                            color: blue['A700'],
+                                        }}
+                                    />
+                                </IconButton>
+                                <IconButton onClick={setNextMonth} size="small">
+                                    <ArrowForwardIos
+                                        sx={{
+                                            fontSize: '1.2rem',
+                                            color: blue['A700'],
+                                        }}
+                                    />
+                                </IconButton>
+                            </Box>
+                        </Box>
+                    </Paper>
+                    <Paper sx={{ p: 1, background: indigo[100] }} elevation={2}>
+                        <List
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.5rem',
+                                fontWeight: 600,
+                                fontSize: '0.875rem',
+                            }}
+                        >
+                            <Box>근무상태: {myClockData.현재근무상태}</Box>
+                            <Box>
+                                출근시간:{' '}
+                                {myClockData.출근시간
+                                    ? dayjs(myClockData.출근시간)
+                                          .utc()
+                                          .local()
+                                          .format('HH시 mm분')
+                                    : '출근하기 전 입니다.'}
+                            </Box>
+                            <Box>
+                                퇴근시간:{' '}
+                                {myClockData.퇴근시간
+                                    ? dayjs(myClockData.퇴근시간)
+                                          .utc()
+                                          .local()
+                                          .format('HH시 mm분')
+                                    : '아직 퇴근하지 않았습니다.'}
+                            </Box>
+                            <Box>
+                                오늘 한 근무:{' '}
+                                {hourToString(myClockData.오늘일한시간)}
+                            </Box>
+                        </List>
+                    </Paper>
+
+                    <Divider sx={{ my: 1 }} />
+
                     <TimeResult backgroundColor={pink[100]}>
                         {monthInfo.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item

@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 
 import {
     flexDayInfo,
