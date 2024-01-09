@@ -143,7 +143,7 @@ export const parseScheduleData = ({
     const offset = clockData.현재근무상태 === '퇴근' ? 60 * 60 * 24 * 1000 : 0
 
     const filterDays = ({ date }: { date: string }) =>
-        dayjs(date).valueOf() >= today - offset
+        dayjs(date).valueOf() >= today + offset
 
     const 남은워킹데이 = 워킹데이계산하기(days.filter(filterDays))
     const 오늘이후휴가일수 = 휴가list
@@ -154,7 +154,7 @@ export const parseScheduleData = ({
     const 남은평균근무시간 = 남은근무시간 / 남은근무일 || 0
 
     const 남은근무일_지금기준 =
-        clockData.현재근무상태 === '근무 중' ? 남은근무일 - 1 : 남은근무일
+        clockData.현재근무상태 === '출근 전' ? 남은근무일 - 1 : 남은근무일
     const 남은근무시간_지금기준 = 남은근무시간 - clockData.오늘일한시간
     const 남은평균근무시간_지금기준 =
         남은근무시간_지금기준 / 남은근무일_지금기준 || 0
