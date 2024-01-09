@@ -1,10 +1,20 @@
 import isEmpty from 'lodash/isEmpty'
+import dayjs from 'dayjs'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import {
+    flexDayInfo,
+    flexScheduleData,
+    flexPaidSummary,
+    myScheduleData,
+    myClockData,
+    BaseTimeData,
+} from '../types'
 
-import { flexDayInfo, flexInfo, flexPaidSummary, parsedData } from '../types'
+dayjs.extend(isSameOrAfter)
 
 const convertMinuteToHours = (minute: number): number => minute / 60
 
-const 워킹데이계산하기 = (days: flexInfo['days']) => {
+const 워킹데이계산하기 = (days: flexScheduleData['days']) => {
     const 워킹데이목록 = days.filter(({ customHoliday, dayWorkingType }) => {
         if (customHoliday) {
             return false
@@ -56,7 +66,7 @@ const 남은근무시간계산하기 = ({
 const 휴가정보구하기 = (
     timeOffPolicyIdMap: { [key: string]: string },
     dayInfo: flexDayInfo
-): parsedData['휴가정보list'][number] => {
+): myScheduleData['휴가정보list'][number] => {
     const { date, timeOffs } = dayInfo
 
     const 요일맵: { [key: string]: string } = {
@@ -69,7 +79,7 @@ const 휴가정보구하기 = (
         6: '(토)',
     }
 
-    const 요일 = 요일맵[new Date(date).getDay().toString()]
+    const 요일 = 요일맵[dayjs(date).day().toString()]
 
     const infos = timeOffs.map((timeOff) => {
         const minutes = Number(timeOff.usedMinutes)
@@ -90,11 +100,19 @@ const 휴가정보구하기 = (
     }
 }
 
-export const parseData = (flexData: flexInfo): parsedData => {
-    const days = flexData.days
-    const period = flexData.period
-    const summary = flexData.paidSummary
-    const timeOffResults = flexData.timeOffSummary.timeOffResults
+export const parseScheduleData = ({
+    data,
+    baseTimeData,
+    clockData,
+}: {
+    data: flexScheduleData
+    baseTimeData: BaseTimeData
+    clockData: myClockData
+}): myScheduleData => {
+    const days = data.days
+    const period = data.period
+    const summary = data.paidSummary
+    const timeOffResults = data.timeOffSummary.timeOffResults
 
     /** 이번달 워킹데이 */
     const 워킹데이 = 워킹데이계산하기(days)
@@ -123,16 +141,28 @@ export const parseData = (flexData: flexInfo): parsedData => {
         .filter(({ timeOffs }) => !isEmpty(timeOffs))
         .map((day) => 휴가정보구하기(휴가IdMap, day))
 
-    const now = new Date()
-    const 남은워킹데이 = 워킹데이계산하기(
-        days.filter(({ date }) => new Date(date).getTime() >= now.getTime())
-    )
+    const { today } = baseTimeData
+    const offset = clockData.현재근무상태 === '퇴근' ? 60 * 60 * 24 * 1000 : 0
+
+    const filterDays = ({ date }: { date: string }) =>
+        dayjs(date).isSameOrAfter(today + offset)
+
+    const 남은워킹데이 = 워킹데이계산하기(days.filter(filterDays))
     const 오늘이후휴가일수 = 휴가list
-        .filter(({ date }) => new Date(date).getTime() >= now.getTime())
+        .filter(filterDays)
         .reduce((acc, cur) => acc + cur.totalHours / 8, 0)
 
     const 남은근무일 = 남은워킹데이 - 오늘이후휴가일수
     const 남은평균근무시간 = 남은근무시간 / 남은근무일 || 0
+
+    const 남은근무일_지금기준 =
+        clockData.현재근무상태 === '출근전' ? 남은근무일 - 1 : 남은근무일
+    const 남은근무시간_지금기준 =
+        clockData.현재근무상태 === '근무중'
+            ? 남은근무시간 - clockData.오늘일한시간
+            : 남은근무시간
+    const 남은평균근무시간_지금기준 =
+        남은근무시간_지금기준 / 남은근무일_지금기준 || 0
 
     return {
         워킹데이,
@@ -142,5 +172,12 @@ export const parseData = (flexData: flexInfo): parsedData => {
         남은근무시간,
         남은평균근무시간,
         휴가정보list: 휴가list,
+        timestampTo: period.applyTimeRangeTo,
+        timestampFrom: period.applyTimeRangeFrom,
+        지금기준: {
+            남은근무일: 남은근무일_지금기준,
+            남은근무시간: 남은근무시간_지금기준,
+            남은평균근무시간: 남은평균근무시간_지금기준,
+        },
     }
 }

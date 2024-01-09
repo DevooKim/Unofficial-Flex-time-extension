@@ -1,6 +1,6 @@
 {
     "name": "flex-time-extension",
-    "version": "1.1.0",
+    "version": "1.0.0",
     "private": true,
     "dependencies": {
         "@craco/craco": "^6.4.3",
@@ -21,15 +21,7 @@
         "start": "react-scripts start",
         "build": "rm -rf ./build && craco build",
         "test": "jest",
-        "prepare": "husky install",
-        "release": "standard-version",
-        "release:minor": "standard-version -- --release-as minor",
-        "release:patch": "standard-version -- --release-as patch"
-    },
-    "standard-version": {
-        "skip": {
-            "changelog": true
-        }
+        "prepare": "husky install"
     },
     "eslintConfig": {
         "extends": [

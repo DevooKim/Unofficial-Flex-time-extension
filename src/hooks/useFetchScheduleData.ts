@@ -1,34 +1,34 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { flexInfo, parsedData } from '../types'
-import { parseData } from '../components/WorkingTimeResult.utils'
+import { flexScheduleData } from '../types'
 
 const fetch = async (
     userIdHash: string,
     timeStamp: string
-): Promise<flexInfo> => {
+): Promise<flexScheduleData> => {
     const { data } = await axios.get(
         `https://flex.team/api/v2/time-tracking/users/${userIdHash}/periods/work-schedules?timeStampFrom=${timeStamp}&timeStampTo=${timeStamp}`
     )
     return data.workScheduleResults[0]
 }
 
-const useFetchWorkingData = (
+const useFetchScheduleData = (
     userIdHash: string,
     timeStamp: string
 ): {
     loading: boolean
-    data: parsedData
+    data: flexScheduleData
 } => {
     const [loading, setLoading] = useState<boolean>(true)
-    const [workingData, setWorkingData] = useState<parsedData>({} as parsedData)
+    const [workingData, setWorkingData] = useState<flexScheduleData>(
+        {} as flexScheduleData
+    )
 
     useEffect(() => {
         if (userIdHash && timeStamp) {
             const fetchWorkingData = async () => {
                 const 근무정보 = await fetch(userIdHash, timeStamp)
-                const parsedData = parseData(근무정보)
-                setWorkingData(parsedData)
+                setWorkingData(근무정보)
                 setLoading(false)
             }
 
@@ -39,4 +39,4 @@ const useFetchWorkingData = (
     return { loading, data: workingData }
 }
 
-export default useFetchWorkingData
+export default useFetchScheduleData

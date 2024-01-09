@@ -1,4 +1,6 @@
-import { IconButton, List, Paper, Tooltip } from '@mui/material'
+import { useMemo } from 'react'
+
+import { Divider, IconButton, List, Paper } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import {
@@ -8,31 +10,45 @@ import {
     lime,
     lightBlue,
     blue,
+    indigo,
 } from '@mui/material/colors'
 import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
-import InfoIcon from '@mui/icons-material/Info'
+
+import dayjs, { Dayjs } from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 import {
     useFetchUserIdHash,
-    useFetchWorkingData,
+    useFetchScheduleData,
     useGetTargetDate,
+    useFetchClockData,
 } from '../hooks'
 
 import { hourToString } from '../utils/utils.time'
+import { parseClockData } from '../utils/parseClockData'
+import { parseScheduleData } from '../utils/parseScheduleData'
+
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
+import { BaseTimeData } from '../types'
 
-const currentTimeFormat = () => {
-    const date = new Date()
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    const hour = date.getHours()
-    const minute = date.getMinutes()
+dayjs.extend(utc)
+
+const currentTimeFormat = (d: Dayjs) => {
+    const month = d.month() + 1
+    const day = d.date()
+    const hour = d.hour()
+    const minute = d.minute()
 
     return `${month}월 ${day}일 ${hour}시 ${minute}분`
 }
 
-const WorkingTimeResult = () => {
+const WorkingTimeResult = ({
+    baseTimeData,
+}: {
+    baseTimeData: BaseTimeData
+}) => {
+    const { firstDay, lastDay, now } = baseTimeData
     const {
         targetDate,
         targetTimeStamp,
@@ -41,89 +57,81 @@ const WorkingTimeResult = () => {
         setDateByDayjs,
     } = useGetTargetDate()
     const hash: string = useFetchUserIdHash()
-    const { loading, data: parsedData } = useFetchWorkingData(
-        hash,
-        targetTimeStamp
+
+    const { loading: clockLoading, data: clockData } = useFetchClockData(hash, {
+        timeStampFrom: firstDay,
+        timeStampTo: lastDay,
+    })
+
+    const { loading: scheduleLoading, data: scheduleData } =
+        useFetchScheduleData(hash, targetTimeStamp)
+
+    const lastUpdateTime = useMemo(
+        () => currentTimeFormat(dayjs()),
+        [targetTimeStamp]
     )
 
-    if (loading) return <div>loading...</div>
+    if (clockLoading || scheduleLoading) return <div>loading...</div>
+
+    const myClockData = parseClockData({ data: clockData, now })
+
+    const 지금근무중인가 = myClockData.현재근무상태 === '근무중'
+    const displayCurrentData =
+        dayjs(targetDate).isSame(dayjs(now), 'month') && 지금근무중인가
+
+    const myScheduleData = parseScheduleData({
+        data: scheduleData,
+        baseTimeData,
+        clockData: myClockData,
+    })
 
     const monthInfo: IItem[] = [
         {
-            info: `워킹데이: ${parsedData.워킹데이}일`,
+            info: `워킹데이: ${myScheduleData.워킹데이}일`,
         },
         {
             info: `이번달 최소 근무시간: ${hourToString(
-                parsedData.최소근무시간
+                myScheduleData.최소근무시간
             )}`,
         },
     ]
     const overallData: IItem[] = [
         {
-            info: `총 근무한 시간: ${hourToString(parsedData.근무시간총합)}`,
-            tooltipTitle: '연차 시간이 포함됨',
+            info: `이번달 총 근무한 시간: ${hourToString(
+                myScheduleData.근무시간총합
+            )}`,
+            tooltipTitle: '연차 시간이 포함되어 있습니다.',
         },
     ]
 
     const remainData: IItem[] = [
         {
-            info: `남은 근무일: ${parsedData.남은근무일}일`,
-            tooltipTitle: '연차 1일, 반차 0.5일이 제외됨',
+            info: displayCurrentData
+                ? `남은 근무일: ${myScheduleData.남은근무일}일 (${myScheduleData.지금기준.남은근무일}일)`
+                : `남은 근무일: ${myScheduleData.남은근무일}일`,
         },
         {
-            info: `남은 근무시간: ${hourToString(parsedData.남은근무시간)}`,
+            info: displayCurrentData
+                ? `남은 근무시간: ${hourToString(
+                      myScheduleData.남은근무시간
+                  )} (${hourToString(myScheduleData.지금기준.남은근무시간)})`
+                : `남은 근무시간: ${hourToString(myScheduleData.남은근무시간)}`,
         },
         {
-            info: `남은 평균 근무시간: ${hourToString(
-                parsedData.남은평균근무시간
-            )}`,
+            info: displayCurrentData
+                ? `남은 평균 근무시간: ${hourToString(
+                      myScheduleData.남은평균근무시간
+                  )} (${hourToString(
+                      myScheduleData.지금기준.남은평균근무시간
+                  )})`
+                : `남은 평균 근무시간: ${hourToString(
+                      myScheduleData.남은평균근무시간
+                  )}`,
         },
     ]
 
     return (
         <>
-            <Paper sx={{ p: 2, background: yellow[50] }} elevation={2}>
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    lineHeight={1.5}
-                    mb={0.5}
-                >
-                    <DatePicker value={targetDate} setValue={setDateByDayjs} />
-
-                    <Box display="flex" alignItems="center">
-                        <IconButton onClick={setPrevMonth} size="small">
-                            <ArrowBackIosNew
-                                sx={{
-                                    fontSize: '1.2rem',
-                                    color: blue['A700'],
-                                }}
-                            />
-                        </IconButton>
-                        <IconButton onClick={setNextMonth} size="small">
-                            <ArrowForwardIos
-                                sx={{
-                                    fontSize: '1.2rem',
-                                    color: blue['A700'],
-                                }}
-                            />
-                        </IconButton>
-                    </Box>
-                </Box>
-
-                <Box display="flex" alignItems="center">
-                    <Box fontSize="1rem" lineHeight={1.5}>
-                        마지막 업데이트 : {currentTimeFormat()}
-                    </Box>
-                    <Tooltip
-                        title="오늘 근무 정보는 퇴근 후에 반영됩니다."
-                        arrow
-                    >
-                        <InfoIcon sx={{ fontSize: '1.2rem', pl: 0.5 }} />
-                    </Tooltip>
-                </Box>
-            </Paper>
             <Box pt={1}>
                 <List
                     sx={{
@@ -132,6 +140,81 @@ const WorkingTimeResult = () => {
                         gap: '0.5rem',
                     }}
                 >
+                    <Paper sx={{ p: 1, background: yellow[50] }} elevation={2}>
+                        <Box display="flex" alignItems="center" pb={1}>
+                            <Box fontSize="0.75rem" lineHeight={1.5}>
+                                마지막 업데이트 : {lastUpdateTime}
+                            </Box>
+                        </Box>
+                        <Box
+                            display="flex"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            lineHeight={1.5}
+                        >
+                            <DatePicker
+                                value={targetDate}
+                                setValue={setDateByDayjs}
+                            />
+
+                            <Box display="flex" alignItems="center">
+                                <IconButton onClick={setPrevMonth} size="small">
+                                    <ArrowBackIosNew
+                                        sx={{
+                                            fontSize: '1.2rem',
+                                            color: blue['A700'],
+                                        }}
+                                    />
+                                </IconButton>
+                                <IconButton onClick={setNextMonth} size="small">
+                                    <ArrowForwardIos
+                                        sx={{
+                                            fontSize: '1.2rem',
+                                            color: blue['A700'],
+                                        }}
+                                    />
+                                </IconButton>
+                            </Box>
+                        </Box>
+                    </Paper>
+                    <Paper sx={{ p: 1, background: indigo[100] }} elevation={2}>
+                        <List
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.5rem',
+                                fontWeight: 600,
+                                fontSize: '0.875rem',
+                            }}
+                        >
+                            <Box>근무상태: {myClockData.현재근무상태}</Box>
+                            <Box>
+                                출근시간:{' '}
+                                {myClockData.출근시간
+                                    ? dayjs(myClockData.출근시간)
+                                          .utc()
+                                          .local()
+                                          .format('HH시 mm분')
+                                    : '출근하기 전 입니다.'}
+                            </Box>
+                            <Box>
+                                퇴근시간:{' '}
+                                {myClockData.퇴근시간
+                                    ? dayjs(myClockData.퇴근시간)
+                                          .utc()
+                                          .local()
+                                          .format('HH시 mm분')
+                                    : '퇴근하기 전 입니다.'}
+                            </Box>
+                            <Box>
+                                오늘 한 근무:{' '}
+                                {hourToString(myClockData.오늘일한시간)}
+                            </Box>
+                        </List>
+                    </Paper>
+
+                    <Divider sx={{ my: 1 }} />
+
                     <TimeResult backgroundColor={pink[100]}>
                         {monthInfo.map(({ info, tooltipTitle }, index) => (
                             <TimeResult.Item
@@ -160,7 +243,7 @@ const WorkingTimeResult = () => {
                         ))}
                     </TimeResult>
 
-                    {parsedData.휴가정보list.length > 0 && (
+                    {myScheduleData.휴가정보list.length > 0 && (
                         <Paper
                             sx={{ backgroundColor: lightBlue[50] }}
                             elevation={2}
@@ -180,7 +263,7 @@ const WorkingTimeResult = () => {
                                 flexDirection="column"
                                 gap={0.5}
                             >
-                                {parsedData.휴가정보list.map((timeOff) => (
+                                {myScheduleData.휴가정보list.map((timeOff) => (
                                     <Box display="flex" flexDirection="column">
                                         <Box display="flex">
                                             <Box
