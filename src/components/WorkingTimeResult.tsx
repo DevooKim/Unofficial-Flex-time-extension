@@ -2,16 +2,20 @@ import { useMemo, useState } from 'react'
 
 import {
     Alert,
-    Button,
     CircularProgress,
     Divider,
     IconButton,
     List,
     Paper,
     Snackbar,
+    Tooltip,
 } from '@mui/material'
 import { Box } from '@mui/system'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
+import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak'
+import DownloadIcon from '@mui/icons-material/Download'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import LanguageIcon from '@mui/icons-material/Language'
 import {
     yellow,
     pink,
@@ -32,6 +36,7 @@ import {
     useFetchClockData,
     useCaptureHandler,
     useCopyToClipboard,
+    useOpenFlex,
 } from '../hooks'
 
 import { hourToString } from '../utils/utils.time'
@@ -89,6 +94,7 @@ const WorkingTimeResult = ({
 
     const { captureHandler } = useCaptureHandler({ id: 'capture' })
     const copy = useCopyToClipboard()
+    const { openFlex } = useOpenFlex()
 
     const copyTextData = () => {
         const copyValue = {
@@ -193,31 +199,39 @@ const WorkingTimeResult = ({
                     완료되었습니다.
                 </Alert>
             </Snackbar>
-            <Box width="100%" display="flex" flexDirection="row" gap={0.5}>
-                <Button
-                    size="small"
-                    variant="outlined"
-                    fullWidth
-                    onClick={() => onCapture('clipboard')}
-                >
-                    이미지 복사
-                </Button>
-                <Button
-                    size="small"
-                    variant="outlined"
-                    fullWidth
-                    onClick={() => onCapture('download')}
-                >
-                    이미지 다운로드
-                </Button>
-                <Button
-                    size="small"
-                    variant="outlined"
-                    fullWidth
-                    onClick={copyTextData}
-                >
-                    텍스트 복사
-                </Button>
+            <Box
+                width="100%"
+                display="flex"
+                flexDirection="row"
+                justifyContent="flex-end"
+                gap={0.5}
+            >
+                <Tooltip title="이미지 복사" arrow>
+                    <IconButton
+                        size="small"
+                        onClick={() => onCapture('clipboard')}
+                    >
+                        <CenterFocusWeakIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="이미지 다운로드" arrow>
+                    <IconButton
+                        size="small"
+                        onClick={() => onCapture('download')}
+                    >
+                        <DownloadIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="데이터 복사" arrow>
+                    <IconButton size="small" onClick={copyTextData}>
+                        <ContentCopyIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="플렉스로 이동" arrow>
+                    <IconButton size="small" onClick={openFlex}>
+                        <LanguageIcon />
+                    </IconButton>
+                </Tooltip>
             </Box>
             <div id="capture">
                 <List

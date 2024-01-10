@@ -1,11 +1,8 @@
 import { Box, Button } from '@mui/material'
+import { useOpenFlex } from '../../hooks'
 
 const InActive = () => {
-    const openFlex = () => {
-        chrome.tabs.update({
-            url: 'https://flex.team/home',
-        })
-    }
+    const { openFlex } = useOpenFlex()
     return (
         <Box
             sx={{

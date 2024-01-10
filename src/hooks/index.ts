@@ -5,6 +5,7 @@ import useGetTargetDate from './useGetTargetDate'
 import useToggle from './useToggle'
 import useCaptureHandler from './useCaptureHandler'
 import useCopyToClipboard from './useCopyToClipboard'
+import useOpenFlex from './useOpenFlex'
 
 export {
     useFetchUserIdHash,
@@ -14,4 +15,5 @@ export {
     useToggle,
     useCaptureHandler,
     useCopyToClipboard,
+    useOpenFlex,
 }
