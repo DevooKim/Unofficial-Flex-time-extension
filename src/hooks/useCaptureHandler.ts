@@ -1,5 +1,6 @@
 import html2canvas from 'html2canvas'
 import { useCallback } from 'react'
+import useCopyToClipboard from './useCopyToClipboard'
 
 type captureHandlerType = ({
     filename,
@@ -16,23 +17,19 @@ const useCaptureHandler = ({
 }): {
     captureHandler: captureHandlerType
 } => {
+    const copy = useCopyToClipboard()
+
     const captureHandler: captureHandlerType = useCallback(
-        // ({ filename }: { filename: string }): void => {
         ({ filename, mode }) => {
             const element = document.getElementById(id)
             if (!element) return
 
             html2canvas(element).then((canvas) => {
-                // document.body.appendChild(canvas);
-
-                //canvas를 clipboard에 저장
                 if (mode === 'clipboard') {
                     canvas.toBlob((blob) => {
                         if (!blob) return
 
-                        navigator.clipboard.write([
-                            new ClipboardItem({ [blob.type]: blob as Blob }),
-                        ])
+                        copy([new ClipboardItem({ [blob.type]: blob as Blob })])
                     })
                 }
 
@@ -41,7 +38,8 @@ const useCaptureHandler = ({
                     link.download = `${filename}.png`
                     link.href = canvas.toDataURL()
                     link.click()
-                    document.removeChild(link)
+                    // document.removeChild(link)
+                    link.remove()
                 }
             })
         },

@@ -4,6 +4,7 @@ import useFetchClockData from './useFetchClockData'
 import useGetTargetDate from './useGetTargetDate'
 import useToggle from './useToggle'
 import useCaptureHandler from './useCaptureHandler'
+import useCopyToClipboard from './useCopyToClipboard'
 
 export {
     useFetchUserIdHash,
@@ -12,4 +13,5 @@ export {
     useGetTargetDate,
     useToggle,
     useCaptureHandler,
+    useCopyToClipboard,
 }
