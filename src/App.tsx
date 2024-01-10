@@ -1,18 +1,12 @@
 import { blueGrey } from '@mui/material/colors'
 import { Container } from '@mui/system'
-import { useEffect, useMemo, useState } from 'react'
-import { activeTabHandler, tabStatus } from './chrome/utils'
-import InActive from './components/InActive'
+import { useEffect, useMemo } from 'react'
+import { activeTabHandler } from './chrome/utils'
 import WorkingTimeResult from './components/WorkingTimeResult'
 import { BaseTimeData } from './types'
 import dayjs, { Dayjs } from 'dayjs'
 
 function App() {
-    const [tabStatus, setTabStatus] = useState<tabStatus>({
-        isWorkingInfoTab: false,
-        isComplete: false,
-    })
-
     const baseTimeData: BaseTimeData = useMemo(() => {
         const day: Dayjs = dayjs()
 
@@ -28,27 +22,9 @@ function App() {
         }
     }, [])
 
-    useEffect(() => {
-        chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-            activeTabHandler(tab, setTabStatus)
-        })
-    }, [])
-
-    useEffect(() => {
-        const queryInfo = { active: true, currentWindow: true }
-        chrome.tabs?.query(queryInfo, (tabs: chrome.tabs.Tab[]): void => {
-            activeTabHandler(tabs[0], setTabStatus)
-            return
-        })
-    }, [])
-
     return (
         <Container sx={{ minWidth: '350px', p: 1.5, background: blueGrey[50] }}>
-            {tabStatus.isWorkingInfoTab ? (
-                <WorkingTimeResult baseTimeData={baseTimeData} />
-            ) : (
-                <InActive />
-            )}
+            <WorkingTimeResult baseTimeData={baseTimeData} />
         </Container>
     )
 }

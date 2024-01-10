@@ -1,3 +1,5 @@
+const ORIGIN_URL = 'https://flex.team'
+
 export const getCurrentTabUrl = (
     callback: (url: string | undefined) => void
 ): void => {
@@ -27,7 +29,12 @@ export const activeTabHandler = (
     tab: chrome.tabs.Tab,
     callback: (status: tabStatus) => void
 ) => {
-    const isWorkingInfoTab = !!tab.url?.startsWith('https://flex.team')
+    if (!tab.url) return
+
+    const url = new URL(tab.url)
+
+    const isWorkingInfoTab = url.origin === ORIGIN_URL
+
     const isComplete = tab.status === 'complete'
 
     isWorkingInfoTab
