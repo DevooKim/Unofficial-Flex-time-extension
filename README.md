@@ -4,4 +4,4 @@
 # 설치방법
 1. [다운로드](https://github.com/DevooKim/Unofficial-Flex-time-extension/releases)
 2. 다운로드 한 파일을 적절한 디렉토리에 옮긴다.
-3. 크롬 익스텐션 관리 탭에서 익스텐션을 불러온다. - [가이드](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world?hl=ko#load-unpacked)
+3. 크롬 익스텐션 관리 탭에서 익스텐션을 불러온다. - [설치](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world?hl=ko#load-unpacked), [업데이트](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world?hl=ko#reload)
