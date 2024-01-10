@@ -83,7 +83,7 @@ const WorkingTimeResult = ({
     )
 
     const { loading: scheduleLoading, data: scheduleData } =
-        useFetchScheduleData(userIdHash, targetTimeStamp)
+        useFetchScheduleData({ userIdHash, timeStamp: targetTimeStamp, now })
 
     const lastUpdateTime = useMemo(
         () => currentTimeFormat(dayjs()),

@@ -19,7 +19,7 @@ const useFetchUserIdHash = (): UseFetchUserIdHashType => {
     const [isError, setIsError] = useState<boolean>(false)
 
     useEffect(() => {
-        chrome.storage.local.get(['userIdHash'], async (result) => {
+        chrome.storage.local.get('userIdHash', async (result) => {
             if (result.userIdHash) {
                 setUserIdHash(result.userIdHash)
             } else {
