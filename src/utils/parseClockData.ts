@@ -8,7 +8,6 @@ const 현재근무정보구하기 = ({
     now: number
     records: flexClockData['records']
 }) => {
-    // 한국 시간으로 yyyy-mm-dd
     const currentDate = dayjs(now).format('YYYY-MM-DD')
 
     const todayRecords = records.find(
@@ -18,34 +17,39 @@ const 현재근무정보구하기 = ({
     return todayRecords?.workClockRecordPacks[0]
 }
 
+const 지금까지의휴계시간구하기 = ({
+    now,
+    restRecords,
+}: {
+    now: number
+    restRecords: flexClockData['records'][0]['workClockRecordPacks'][0]['restRecords']
+}) =>
+    restRecords.reduce((acc, { restStartRecord, restStopRecord }) => {
+        const { targetTime: startTargetTime } = restStartRecord || {}
+        const { targetTime: stopTargetTime } = restStopRecord || {}
+
+        if (dayjs(startTargetTime).isSameOrAfter(now)) {
+            return acc
+        }
+
+        const start = startTargetTime
+        const stop = Math.min(stopTargetTime || now, now)
+
+        return acc + dayjs(stop).diff(dayjs(start), 'minute')
+    }, 0)
+
 const 오늘일한시간구하기 = ({
     출근시간,
     퇴근시간,
     now,
-    restRecords,
+    휴계시간,
 }: {
     출근시간: number | undefined
     퇴근시간: number | undefined
     now: number
-    restRecords: flexClockData['records'][0]['workClockRecordPacks'][0]['restRecords']
+    휴계시간: number
 }) => {
     const key = 퇴근시간 || now
-
-    const 휴계시간 = restRecords.reduce(
-        (acc, { restStartRecord, restStopRecord }) => {
-            const { targetTime: startTargetTime, recordType: startRecordType } =
-                restStartRecord
-            const { targetTime: stopTargetTime, recordType: stopRecordType } =
-                restStopRecord || {}
-
-            const start = startRecordType !== 'RECORD' ? now : startTargetTime
-
-            const stop = stopRecordType !== 'RECORD' ? now : stopTargetTime
-
-            return acc + dayjs(stop).diff(dayjs(start), 'minute')
-        },
-        0
-    )
 
     return (dayjs(key).diff(dayjs(출근시간), 'minute') - 휴계시간) / 60
 }
@@ -80,11 +84,16 @@ export const parseClockData = ({
         ? '근무중'
         : '퇴근'
 
+    const 휴계시간 = 지금까지의휴계시간구하기({
+        now,
+        restRecords,
+    })
+
     const 오늘일한시간 = 오늘일한시간구하기({
         출근시간,
         퇴근시간,
         now,
-        restRecords,
+        휴계시간,
     })
 
     return {
