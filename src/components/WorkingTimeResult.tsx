@@ -27,7 +27,6 @@ import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
 import {
-    useFetchUserIdHash,
     useFetchScheduleData,
     useGetTargetDate,
     useFetchClockData,
@@ -56,7 +55,9 @@ const currentTimeFormat = (d: Dayjs) => {
 
 const WorkingTimeResult = ({
     baseTimeData,
+    userIdHash,
 }: {
+    userIdHash: string
     baseTimeData: BaseTimeData
 }) => {
     const { firstDay, lastDay, now } = baseTimeData
@@ -67,15 +68,17 @@ const WorkingTimeResult = ({
         setPrevMonth,
         setDateByDayjs,
     } = useGetTargetDate()
-    const hash: string = useFetchUserIdHash()
 
-    const { loading: clockLoading, data: clockData } = useFetchClockData(hash, {
-        timeStampFrom: firstDay,
-        timeStampTo: lastDay,
-    })
+    const { loading: clockLoading, data: clockData } = useFetchClockData(
+        userIdHash,
+        {
+            timeStampFrom: firstDay,
+            timeStampTo: lastDay,
+        }
+    )
 
     const { loading: scheduleLoading, data: scheduleData } =
-        useFetchScheduleData(hash, targetTimeStamp)
+        useFetchScheduleData(userIdHash, targetTimeStamp)
 
     const lastUpdateTime = useMemo(
         () => currentTimeFormat(dayjs()),

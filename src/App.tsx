@@ -1,12 +1,17 @@
+import { useMemo } from 'react'
+import dayjs, { Dayjs } from 'dayjs'
 import { blueGrey } from '@mui/material/colors'
 import { Container } from '@mui/system'
-import { useEffect, useMemo } from 'react'
-import { activeTabHandler } from './chrome/utils'
+
 import WorkingTimeResult from './components/WorkingTimeResult'
+import InActive from './components/InActive'
+
 import { BaseTimeData } from './types'
-import dayjs, { Dayjs } from 'dayjs'
+import { useFetchUserIdHash } from './hooks'
 
 function App() {
+    const { data: userIdHash, isError } = useFetchUserIdHash()
+
     const baseTimeData: BaseTimeData = useMemo(() => {
         const day: Dayjs = dayjs()
 
@@ -24,7 +29,14 @@ function App() {
 
     return (
         <Container sx={{ minWidth: '350px', p: 1.5, background: blueGrey[50] }}>
-            <WorkingTimeResult baseTimeData={baseTimeData} />
+            {isError ? (
+                <InActive />
+            ) : (
+                <WorkingTimeResult
+                    baseTimeData={baseTimeData}
+                    userIdHash={userIdHash}
+                />
+            )}
         </Container>
     )
 }
