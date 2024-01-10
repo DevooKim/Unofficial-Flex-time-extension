@@ -3,6 +3,7 @@ import useFetchScheduleData from './useFetchScheduleData'
 import useFetchClockData from './useFetchClockData'
 import useGetTargetDate from './useGetTargetDate'
 import useToggle from './useToggle'
+import useCaptureHandler from './useCaptureHandler'
 
 export {
     useFetchUserIdHash,
@@ -10,4 +11,5 @@ export {
     useFetchClockData,
     useGetTargetDate,
     useToggle,
+    useCaptureHandler,
 }
