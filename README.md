@@ -1,5 +1,5 @@
 # 설명
-[플렉스](https://flex.team/)의 근무페이지에서 정보를 더 얻기 위해 만든 익스텐션
+[플렉스](https://flex.team/)의 근무페이지에서 정보를 더 얻기 위해 만든 비공식 익스텐션
 
 # 설치 및 사용 방법
 1. `npm install` or `yarn add`
