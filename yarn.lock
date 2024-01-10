@@ -2216,10 +2216,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/chrome@^0.0.188":
-  version "0.0.188"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.188.tgz#ed73feca28a6d84f796ec50a2dbe7e41510175b3"
-  integrity sha512-fVxbcnSrQqCaaTFfaP9QooRr0Lf47Ni+QVGpd4SQafe6x8RlLrlp+AAgc4QKNUVK7W6xEoOePMAu5sBXrc2qhA==
+"@types/chrome@^0.0.256":
+  version "0.0.256"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.256.tgz#366b52f8f5a2d8119ade9eef2519692e6f987ff8"
+  integrity sha512-NleTQw4DNzhPwObLNuQ3i3nvX1rZ1mgnx5FNHc2KP+Cj1fgd3BrT5yQ6Xvs+7H0kNsYxCY+lxhiCwsqq3JwtEg==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"

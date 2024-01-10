@@ -32,7 +32,7 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.17.12",
-        "@types/chrome": "^0.0.188",
+        "@types/chrome": "^0.0.256",
         "@types/jest": "^28.1.0",
         "@types/lodash": "^4.14.182",
         "@types/node": "^16.11.38",

@@ -22,13 +22,7 @@
     "permissions": ["tabs", "activeTab", "webRequest", "storage", "sidePanel"],
     "side_panel": {
         "default_path": "index.html",
-        "default_title": "working time",
-        "default_icon": {
-            "16": "./icons/icon16.png",
-            "32": "./icons/icon32.png",
-            "64": "./icons/icon64.png",
-            "128": "./icons/icon128.png"
-        }
+        "default_title": "working time"
     },
     "host_permissions": [
         "https://flex.team/*",
@@ -36,17 +30,9 @@
         "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules",
         "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules?*"
     ],
-    "content_scripts": [
-        {
-            "matches": [
-                "https://flex.team/*",
-                "https://flex.team/api/v2/core/users/me/user-settings",
-                "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules",
-                "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules?*"
-            ],
-            "js": ["./static/js/content.js"]
-        }
-    ],
+    "background": {
+        "service_worker": "./static/js/content.js"
+    },
     "content_security_policy": {
         "script-src": "self",
         "object-src": "self"
