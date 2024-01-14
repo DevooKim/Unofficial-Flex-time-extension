@@ -30,7 +30,6 @@ import {
     Download,
     ContentCopy,
     Language,
-    Refresh,
 } from '@mui/icons-material'
 
 import {
@@ -57,8 +56,7 @@ const currentTimeFormat = (timestamp: number) =>
     dayjs(timestamp).format('MM월 DD일 HH시 mm분')
 
 const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
-    const { baseTimeData, refreshBaseTimeForce, refreshBaseTimeIfInvalid } =
-        useBaseTimeContext()
+    const { baseTimeData, refreshBaseTimeIfInvalid } = useBaseTimeContext()
     const { firstDay, lastDay, now } = baseTimeData
     const {
         targetDate,
@@ -194,11 +192,6 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
                 justifyContent="flex-end"
                 gap={0.5}
             >
-                <Tooltip title="새로고침" arrow>
-                    <IconButton size="small" onClick={refreshBaseTimeForce}>
-                        <Refresh />
-                    </IconButton>
-                </Tooltip>
                 <Tooltip title="이미지 복사" arrow>
                     <IconButton
                         size="small"
