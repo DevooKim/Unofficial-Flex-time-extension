@@ -45,7 +45,8 @@ import { parseScheduleData } from '../utils/parseScheduleData'
 
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
-import { BaseTimeData } from '../types'
+
+import { useBaseTimeContext } from '../contexts/BaseTimeContext'
 
 dayjs.extend(utc)
 
@@ -58,13 +59,8 @@ const currentTimeFormat = (d: Dayjs) => {
     return `${month}월 ${day}일 ${hour}시 ${minute}분`
 }
 
-const WorkingTimeResult = ({
-    baseTimeData,
-    userIdHash,
-}: {
-    userIdHash: string
-    baseTimeData: BaseTimeData
-}) => {
+const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
+    const baseTimeData = useBaseTimeContext()
     const { firstDay, lastDay, now } = baseTimeData
     const {
         targetDate,
@@ -74,16 +70,14 @@ const WorkingTimeResult = ({
         setDateByDayjs,
     } = useGetTargetDate()
 
-    const { loading: clockLoading, data: clockData } = useFetchClockData(
+    const { loading: clockLoading, data: clockData } = useFetchClockData({
         userIdHash,
-        {
-            timeStampFrom: firstDay,
-            timeStampTo: lastDay,
-        }
-    )
+        timeStampFrom: firstDay,
+        timeStampTo: lastDay,
+    })
 
     const { loading: scheduleLoading, data: scheduleData } =
-        useFetchScheduleData({ userIdHash, timeStamp: targetTimeStamp, now })
+        useFetchScheduleData({ userIdHash, timeStamp: targetTimeStamp })
 
     const lastUpdateTime = useMemo(
         () => currentTimeFormat(dayjs()),

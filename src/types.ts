@@ -13,6 +13,7 @@ export interface BaseTimeData {
     today: number
     firstDay: number
     lastDay: number
+    isCached: boolean
 }
 
 export type flexPaidSummary = {
