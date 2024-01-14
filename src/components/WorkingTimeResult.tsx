@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 import {
     Alert,
-    CircularProgress,
     Divider,
     IconButton,
     List,
@@ -11,11 +12,7 @@ import {
     Tooltip,
 } from '@mui/material'
 import { Box } from '@mui/system'
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
-import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak'
-import DownloadIcon from '@mui/icons-material/Download'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import LanguageIcon from '@mui/icons-material/Language'
+
 import {
     yellow,
     pink,
@@ -25,10 +22,16 @@ import {
     blue,
     indigo,
 } from '@mui/material/colors'
-import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material'
-
-import dayjs, { Dayjs } from 'dayjs'
-import utc from 'dayjs/plugin/utc'
+import {
+    ArrowBackIosNew,
+    ArrowForwardIos,
+    FiberManualRecord,
+    CenterFocusWeak,
+    Download,
+    ContentCopy,
+    Language,
+    Refresh,
+} from '@mui/icons-material'
 
 import {
     useFetchScheduleData,
@@ -42,25 +45,20 @@ import {
 import { hourToString } from '../utils/utils.time'
 import { parseClockData } from '../utils/parseClockData'
 import { parseScheduleData } from '../utils/parseScheduleData'
+import { useBaseTimeContext } from '../contexts/BaseTimeContext'
 
 import DatePicker from './DatePicker'
 import TimeResult, { IItem } from './TimeResult'
-
-import { useBaseTimeContext } from '../contexts/BaseTimeContext'
+import LoadingUI from './LoadingUI'
 
 dayjs.extend(utc)
 
-const currentTimeFormat = (d: Dayjs) => {
-    const month = d.month() + 1
-    const day = d.date()
-    const hour = d.hour()
-    const minute = d.minute()
-
-    return `${month}월 ${day}일 ${hour}시 ${minute}분`
-}
+const currentTimeFormat = (timestamp: number) =>
+    dayjs(timestamp).format('MM월 DD일 HH시 mm분')
 
 const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
-    const baseTimeData = useBaseTimeContext()
+    const { baseTimeData, refreshBaseTimeForce, refreshBaseTimeIfInvalid } =
+        useBaseTimeContext()
     const { firstDay, lastDay, now } = baseTimeData
     const {
         targetDate,
@@ -79,10 +77,11 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
     const { loading: scheduleLoading, data: scheduleData } =
         useFetchScheduleData({ userIdHash, timeStamp: targetTimeStamp })
 
-    const lastUpdateTime = useMemo(
-        () => currentTimeFormat(dayjs()),
-        [targetTimeStamp]
-    )
+    useEffect(() => {
+        refreshBaseTimeIfInvalid()
+    }, [targetTimeStamp, refreshBaseTimeIfInvalid])
+
+    const lastUpdateTime = useMemo(() => currentTimeFormat(now), [now])
 
     const [snackbarOpen, setSnackbarOpen] = useState(false)
 
@@ -113,12 +112,7 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
         setSnackbarOpen(true)
     }
 
-    if (clockLoading || scheduleLoading)
-        return (
-            <Box display="flex" justifyContent="center">
-                <CircularProgress />
-            </Box>
-        )
+    if (clockLoading || scheduleLoading) return <LoadingUI />
 
     const myClockData = parseClockData({ data: clockData, now })
 
@@ -200,12 +194,17 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
                 justifyContent="flex-end"
                 gap={0.5}
             >
+                <Tooltip title="새로고침" arrow>
+                    <IconButton size="small" onClick={refreshBaseTimeForce}>
+                        <Refresh />
+                    </IconButton>
+                </Tooltip>
                 <Tooltip title="이미지 복사" arrow>
                     <IconButton
                         size="small"
                         onClick={() => onCapture('clipboard')}
                     >
-                        <CenterFocusWeakIcon />
+                        <CenterFocusWeak />
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="이미지 다운로드" arrow>
@@ -213,17 +212,17 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
                         size="small"
                         onClick={() => onCapture('download')}
                     >
-                        <DownloadIcon />
+                        <Download />
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="데이터 복사" arrow>
                     <IconButton size="small" onClick={copyTextData}>
-                        <ContentCopyIcon />
+                        <ContentCopy />
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="플렉스로 이동" arrow>
                     <IconButton size="small" onClick={openFlex}>
-                        <LanguageIcon />
+                        <Language />
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -367,7 +366,7 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
                                                     fontWeight: 700,
                                                 }}
                                             >
-                                                <FiberManualRecordIcon
+                                                <FiberManualRecord
                                                     sx={{
                                                         fontSize: '0.625rem',
                                                         mr: 0.5,

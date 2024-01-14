@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { flexScheduleData } from '../types'
 import { useBaseTimeContext } from '../contexts/BaseTimeContext'
@@ -23,21 +23,23 @@ const useFetchScheduleData = ({
     loading: boolean
     data: flexScheduleData
 } => {
-    const { isCached } = useBaseTimeContext()
+    const {
+        baseTimeData: { isCached, now },
+    } = useBaseTimeContext()
 
     const [loading, setLoading] = useState<boolean>(true)
     const [workingData, setWorkingData] = useState<flexScheduleData>(
         {} as flexScheduleData
     )
 
-    const fetchWorkingData = async () => {
+    const fetchWorkingData = useCallback(async () => {
         if (userIdHash && timeStamp) {
             const 근무정보 = await fetch(userIdHash, timeStamp)
             chrome.storage.session.set({ scheduleData: 근무정보 }, () => {})
             setWorkingData(근무정보)
             setLoading(false)
         }
-    }
+    }, [userIdHash, timeStamp])
 
     useEffect(() => {
         if (isCached) {
@@ -52,7 +54,7 @@ const useFetchScheduleData = ({
         } else {
             fetchWorkingData()
         }
-    }, [isCached, userIdHash, timeStamp])
+    }, [now, isCached, fetchWorkingData])
 
     return { loading, data: workingData }
 }

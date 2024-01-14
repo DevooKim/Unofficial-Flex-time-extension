@@ -2,7 +2,9 @@ import { useState } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 
 const useGetTargetDate = () => {
-    const [targetDate, setTargetDate] = useState(dayjs())
+    const [targetDate, setTargetDate] = useState(
+        dayjs().second(0).millisecond(0)
+    )
     const [targetTimeStamp, setTargetTimeStamp] = useState<string>(
         dayjs().endOf('month').valueOf().toString()
     )

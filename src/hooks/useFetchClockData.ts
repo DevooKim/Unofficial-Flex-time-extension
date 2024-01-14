@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 
 import { flexClockData } from '../types'
@@ -28,13 +28,15 @@ const useFetchClockData = ({
     loading: boolean
     data: flexClockData
 } => {
-    const { isCached } = useBaseTimeContext()
+    const {
+        baseTimeData: { isCached, now },
+    } = useBaseTimeContext()
 
     const [loading, setLoading] = useState<boolean>(true)
     const [clockData, setClockData] = useState<flexClockData>(
         {} as flexClockData
     )
-    const fetchClockData = async () => {
+    const fetchClockData = useCallback(async () => {
         if (userIdHash && timeStampFrom && timeStampTo) {
             const 근무시간정보 = await fetch(
                 userIdHash,
@@ -47,7 +49,7 @@ const useFetchClockData = ({
             setClockData(근무시간정보)
             setLoading(false)
         }
-    }
+    }, [userIdHash, timeStampFrom, timeStampTo])
 
     useEffect(() => {
         if (isCached) {
@@ -62,7 +64,7 @@ const useFetchClockData = ({
         } else {
             fetchClockData()
         }
-    }, [isCached, userIdHash, timeStampFrom, timeStampTo])
+    }, [now, isCached, fetchClockData])
 
     return { loading, data: clockData }
 }
