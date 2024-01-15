@@ -10,6 +10,9 @@ node_modules
 
 # production
 build
+build.zip
+unofficial-flex-extension
+unofficial-flex-extension.zip
 
 # misc
 .DS_Store
