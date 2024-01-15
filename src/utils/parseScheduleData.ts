@@ -8,6 +8,7 @@ import {
     myScheduleData,
     myClockData,
     BaseTimeData,
+    flexUnpaidSummary,
 } from '../types'
 
 dayjs.extend(isSameOrAfter)
@@ -34,16 +35,20 @@ const 워킹데이계산하기 = (days: flexScheduleData['days']) => {
  * 지금까지의 근무시간 정보
  * @return actualWorkingHours: 실제 근무 시간, timeOffHours: 연차 시간
  */
-const 근무시간계산하기 = ({
-    actualWorkingMinutes: 실제근무시간,
-    timeOffMinutes: 연차시간,
-}: Pick<flexPaidSummary, 'actualWorkingMinutes' | 'timeOffMinutes'>): {
+const 근무시간계산하기 = (
+    paidSummary: flexPaidSummary,
+    unpaidSummary: flexUnpaidSummary
+): {
     실제근무시간: number
     연차시간: number
 } => {
+    const { actualWorkingMinutes: 실제근무시간, timeOffMinutes: 연차시간 } =
+        paidSummary
+    const { timeOffMinutes: 무급휴가시간 } = unpaidSummary
+
     return {
         실제근무시간: convertMinuteToHours(실제근무시간),
-        연차시간: convertMinuteToHours(연차시간),
+        연차시간: convertMinuteToHours(연차시간 + 무급휴가시간),
     }
 }
 
@@ -111,14 +116,18 @@ export const parseScheduleData = ({
 }): myScheduleData => {
     const days = data.days
     const period = data.period
-    const summary = data.paidSummary
+    const paidSummary = data.paidSummary
+    const unpaidSummary = data.unpaidSummary
     const timeOffResults = data.timeOffSummary.timeOffResults
 
     /** 이번달 워킹데이 */
     const 워킹데이 = 워킹데이계산하기(days)
 
     /** 근무시간 정보 */
-    const { 실제근무시간, 연차시간 } = 근무시간계산하기(summary)
+    const { 실제근무시간, 연차시간 } = 근무시간계산하기(
+        paidSummary,
+        unpaidSummary
+    )
 
     /** 지금까지 총 근무시간 */
     const 근무시간총합 = 실제근무시간 + 연차시간

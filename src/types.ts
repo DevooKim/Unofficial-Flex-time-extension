@@ -24,6 +24,10 @@ export type flexPaidSummary = {
     timeOffMinutes: number
 }
 
+export type flexUnpaidSummary = {
+    timeOffMinutes: number
+}
+
 export type flexDayInfo = {
     date: string
     dayWorkingType:
@@ -45,6 +49,7 @@ export type timeOffResult = {
 
 export type flexScheduleData = {
     paidSummary: flexPaidSummary
+    unpaidSummary: flexUnpaidSummary
     timeOffSummary: { timeOffResults: timeOffResult[] }
     days: flexDayInfo[]
     period: { applyTimeRangeTo: number; applyTimeRangeFrom: number }
