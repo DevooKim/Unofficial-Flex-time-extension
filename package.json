@@ -19,16 +19,17 @@
         "html2canvas": "^1.4.1",
         "lodash": "^4.17.21",
         "react": "^18.1.0",
-        "react-dom": "^18.1.0"
+        "react-dom": "^18.1.0",
+        "webextension-polyfill": "^0.10.0"
     },
     "devDependencies": {
         "@crxjs/vite-plugin": "^1.0.14",
         "@types/chrome": "^0.0.256",
-        "@types/jest": "^28.1.0",
         "@types/lodash": "^4.14.182",
         "@types/node": "^16.11.38",
         "@types/react": "^18.0.10",
         "@types/react-dom": "^18.0.5",
+        "@types/webextension-polyfill": "^0.10.7",
         "@typescript-eslint/eslint-plugin": "^7.1.0",
         "@typescript-eslint/parser": "^7.1.0",
         "@vitejs/plugin-react": "^4.2.1",

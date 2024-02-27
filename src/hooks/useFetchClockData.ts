@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
+import browser from 'webextension-polyfill'
 
 import { flexClockData } from '../types'
-import { useBaseTimeContext } from '../contexts/BaseTimeContext'
+import { useBaseTimeContext } from '../pages/popup/contexts/BaseTimeContext'
 
 const fetch = async (
     userIdHash: string,
@@ -44,7 +45,7 @@ const useFetchClockData = ({
                 timeStampTo
             )
 
-            chrome.storage.session.set({ clockData: 근무시간정보 })
+            browser.storage.session.set({ clockData: 근무시간정보 })
 
             setClockData(근무시간정보)
             setLoading(false)
@@ -52,15 +53,21 @@ const useFetchClockData = ({
     }, [userIdHash, timeStampFrom, timeStampTo])
 
     useEffect(() => {
+        const cachedHandler = async () => {
+            const cachedData = (await browser.storage.session.get(
+                'clockData'
+            )) as { clockData: flexClockData }
+
+            if (cachedData.clockData) {
+                setClockData(cachedData.clockData)
+                setLoading(false)
+            } else {
+                fetchClockData()
+            }
+        }
+
         if (isCached) {
-            chrome.storage.session.get('clockData', (result) => {
-                if (result.clockData) {
-                    setClockData(result.clockData)
-                    setLoading(false)
-                } else {
-                    fetchClockData()
-                }
-            })
+            cachedHandler()
         } else {
             fetchClockData()
         }

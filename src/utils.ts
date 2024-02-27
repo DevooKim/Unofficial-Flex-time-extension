@@ -1,23 +1,24 @@
+import browser from 'webextension-polyfill'
+
 const ORIGIN_URL = 'https://flex.team'
 
-export const getCurrentTabUrl = (
+export const getCurrentTabUrl = async (
     callback: (url: string | undefined) => void
-): void => {
+): Promise<void> => {
     const queryInfo = { active: true, currentWindow: true }
 
-    chrome.tabs?.query(queryInfo, (tabs) => {
-        callback(tabs[0].url)
-    })
+    const tabs = await browser.tabs?.query(queryInfo)
+    callback(tabs[0].url)
 }
 
-export const getCurrentTabUId = (
+export const getCurrentTabUId = async (
     callback: (url: number | undefined) => void
-): void => {
+): Promise<void> => {
     const queryInfo = { active: true, currentWindow: true }
 
-    chrome.tabs?.query(queryInfo, async (tabs) => {
-        await callback(tabs[0].id)
-    })
+    const tabs = await browser.tabs?.query(queryInfo)
+    // await callback(tabs[0].id)
+    callback(tabs[0].id)
 }
 
 export type tabStatus = {
@@ -26,7 +27,7 @@ export type tabStatus = {
 }
 
 export const activeTabHandler = (
-    tab: chrome.tabs.Tab,
+    tab: browser.tabs.Tab,
     callback: (status: tabStatus) => void
 ) => {
     if (!tab.url) return
@@ -38,8 +39,8 @@ export const activeTabHandler = (
     const isComplete = tab.status === 'complete'
 
     isWorkingInfoTab
-        ? chrome.action.enable(tab.id)
-        : chrome.action.disable(tab.id)
+        ? browser.action.enable(tab.id)
+        : browser.action.disable(tab.id)
 
     callback({ isWorkingInfoTab, isComplete })
 }

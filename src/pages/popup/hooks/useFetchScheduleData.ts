@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
-import { flexScheduleData } from '../types'
+import browser from 'webextension-polyfill'
+
+import { flexScheduleData } from '../../../types'
 import { useBaseTimeContext } from '../contexts/BaseTimeContext'
 
 const fetch = async (
@@ -35,22 +37,25 @@ const useFetchScheduleData = ({
     const fetchWorkingData = useCallback(async () => {
         if (userIdHash && timeStamp) {
             const 근무정보 = await fetch(userIdHash, timeStamp)
-            chrome.storage.session.set({ scheduleData: 근무정보 }, () => {})
+            browser.storage.session.set({ scheduleData: 근무정보 })
             setWorkingData(근무정보)
             setLoading(false)
         }
     }, [userIdHash, timeStamp])
 
     useEffect(() => {
+        const cachedHandler = async () => {
+            const cachedData = await browser.storage.session.get('scheduleData')
+            if (cachedData.scheduleData) {
+                setWorkingData(cachedData.scheduleData)
+                setLoading(false)
+            } else {
+                fetchWorkingData()
+            }
+        }
+
         if (isCached) {
-            chrome.storage.session.get('scheduleData', (result) => {
-                if (result.scheduleData) {
-                    setWorkingData(result.scheduleData)
-                    setLoading(false)
-                } else {
-                    fetchWorkingData()
-                }
-            })
+            cachedHandler()
         } else {
             fetchWorkingData()
         }

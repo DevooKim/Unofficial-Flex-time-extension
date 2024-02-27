@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-
+import browser from 'webextension-polyfill'
 interface UseFetchUserIdHashType {
     data: string
     isError: boolean
@@ -19,22 +19,24 @@ const useFetchUserIdHash = (): UseFetchUserIdHashType => {
     const [isError, setIsError] = useState<boolean>(false)
 
     useEffect(() => {
-        chrome.storage.local.get('userIdHash', async (result) => {
+        const handler = async () => {
+            const result = await browser.storage.local.get('userIdHash')
+
             if (result.userIdHash) {
                 setUserIdHash(result.userIdHash)
             } else {
                 try {
                     const userIdHash = await fetch()
 
-                    chrome.storage.local.set({ userIdHash }, () => {
-                        setUserIdHash(userIdHash)
-                    })
+                    browser.storage.local.set({ userIdHash })
+                    setUserIdHash(userIdHash)
                 } catch (error) {
                     console.error('fetch UserIdHash error', error)
                     setIsError(true)
                 }
             }
-        })
+        }
+        handler()
     }, [])
 
     return { data: userIdHash, isError }
