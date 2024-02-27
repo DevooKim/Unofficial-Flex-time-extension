@@ -1,9 +1,14 @@
 {
-    "name": "flex-time-extension",
+    "name": "unofficial-flex-extension",
     "version": "1.0.0",
     "private": true,
+    "scripts": {
+        "_build": "rm -rf ./unofficial-flex-extension && rm -rf ./unofficial-flex-extension.zip && craco build && zip -r unofficial-flex-extension.zip ./unofficial-flex-extension",
+        "build": "vite build",
+        "dev": "nodemon",
+        "prepare": "husky install"
+    },
     "dependencies": {
-        "@craco/craco": "^6.4.3",
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.8.1",
         "@mui/icons-material": "^5.8.2",
@@ -15,46 +20,33 @@
         "lodash": "^4.17.21",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
-        "react-scripts": "5.0.1",
-        "typescript": "^4.7.2"
-    },
-    "scripts": {
-        "start": "react-scripts start",
-        "build": "rm -rf ./unofficial-flex-extension && rm -rf ./unofficial-flex-extension.zip && craco build && zip -r unofficial-flex-extension.zip ./unofficial-flex-extension",
-        "test": "jest",
-        "prepare": "husky install"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
+        "webextension-polyfill": "^0.10.0"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.17.12",
+        "@crxjs/vite-plugin": "^1.0.14",
         "@types/chrome": "^0.0.256",
-        "@types/jest": "^28.1.0",
         "@types/lodash": "^4.14.182",
         "@types/node": "^16.11.38",
         "@types/react": "^18.0.10",
         "@types/react-dom": "^18.0.5",
+        "@types/webextension-polyfill": "^0.10.7",
+        "@typescript-eslint/eslint-plugin": "^7.1.0",
+        "@typescript-eslint/parser": "^7.1.0",
+        "@vitejs/plugin-react": "^4.2.1",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-jsx-a11y": "^6.8.0",
+        "eslint-plugin-react": "^7.33.2",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint-plugin-react-refresh": "^0.4.5",
         "husky": "^8.0.1",
         "jest": "^28.1.0",
         "lint-staged": "^13.0.2",
         "prettier": "^2.7.1",
         "standard-version": "^9.5.0",
-        "ts-jest": "^28.0.4"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
+        "ts-jest": "^28.0.4",
+        "typescript": "^5.3.3",
+        "vite": "^5.1.4"
     }
 }

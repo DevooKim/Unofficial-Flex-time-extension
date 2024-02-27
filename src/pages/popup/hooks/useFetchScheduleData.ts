@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import browser from 'webextension-polyfill'
 
-import { flexScheduleData } from '../types'
-import { useBaseTimeContext } from '../pages/popup/contexts/BaseTimeContext'
+import { flexScheduleData } from '../../../types'
+import { useBaseTimeContext } from '../contexts/BaseTimeContext'
 
 const fetch = async (
     userIdHash: string,
@@ -45,10 +45,7 @@ const useFetchScheduleData = ({
 
     useEffect(() => {
         const cachedHandler = async () => {
-            const cachedData = (await browser.storage.session.get(
-                'scheduleData'
-            )) as { scheduleData: flexScheduleData }
-
+            const cachedData = await browser.storage.session.get('scheduleData')
             if (cachedData.scheduleData) {
                 setWorkingData(cachedData.scheduleData)
                 setLoading(false)
@@ -56,6 +53,7 @@ const useFetchScheduleData = ({
                 fetchWorkingData()
             }
         }
+
         if (isCached) {
             cachedHandler()
         } else {

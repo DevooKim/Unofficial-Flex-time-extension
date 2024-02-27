@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import browser from 'webextension-polyfill'
-
 interface UseFetchUserIdHashType {
     data: string
     isError: boolean
@@ -20,21 +19,16 @@ const useFetchUserIdHash = (): UseFetchUserIdHashType => {
     const [isError, setIsError] = useState<boolean>(false)
 
     useEffect(() => {
-        const cachedHandler = async () => {
-            const cachedData = (await browser.storage.local.get(
-                'userIdHash'
-            )) as {
-                userIdHash: string
-            }
+        const handler = async () => {
+            const result = await browser.storage.local.get('userIdHash')
 
-            if (cachedData.userIdHash) {
-                setUserIdHash(cachedData.userIdHash)
+            if (result.userIdHash) {
+                setUserIdHash(result.userIdHash)
             } else {
                 try {
                     const userIdHash = await fetch()
 
                     browser.storage.local.set({ userIdHash })
-
                     setUserIdHash(userIdHash)
                 } catch (error) {
                     console.error('fetch UserIdHash error', error)
@@ -42,8 +36,7 @@ const useFetchUserIdHash = (): UseFetchUserIdHashType => {
                 }
             }
         }
-
-        cachedHandler()
+        handler()
     }, [])
 
     return { data: userIdHash, isError }

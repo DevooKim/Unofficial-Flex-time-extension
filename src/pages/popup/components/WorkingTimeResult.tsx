@@ -41,9 +41,9 @@ import {
     useOpenFlex,
 } from '../hooks'
 
-import { hourToString } from '../utils/utils.time'
-import { parseClockData } from '../utils/parseClockData'
-import { parseScheduleData } from '../utils/parseScheduleData'
+import { hourToString } from '@utils/utils.time'
+import { parseClockData } from '@utils/parseClockData'
+import { parseScheduleData } from '@utils/parseScheduleData'
 import { useBaseTimeContext } from '../contexts/BaseTimeContext'
 
 import DatePicker from './DatePicker'
@@ -350,52 +350,59 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
                                 flexDirection="column"
                                 gap={0.5}
                             >
-                                {myScheduleData.휴가정보list.map((timeOff) => (
-                                    <Box display="flex" flexDirection="column">
-                                        <Box display="flex">
-                                            <Box
-                                                sx={{
-                                                    fontSize: '0.875rem',
-                                                    fontWeight: 700,
-                                                }}
-                                            >
-                                                <FiberManualRecord
-                                                    sx={{
-                                                        fontSize: '0.625rem',
-                                                        mr: 0.5,
-                                                    }}
-                                                />
-                                                {timeOff.date}
-                                            </Box>
-                                        </Box>
-
+                                {myScheduleData.휴가정보list.map(
+                                    (timeOff, index) => (
                                         <Box
                                             display="flex"
                                             flexDirection="column"
-                                            pl="1rem"
-                                            sx={{
-                                                fontSize: '0.875rem',
-                                            }}
+                                            key={index}
                                         >
-                                            {timeOff.infos.map((info) => (
-                                                <>
-                                                    <div>
-                                                        {info.name} -{' '}
-                                                        {hourToString(
-                                                            info.hours
-                                                        )}
-                                                    </div>
-                                                </>
-                                            ))}
-                                            <Box fontWeight={600}>
-                                                총합 -{' '}
-                                                {hourToString(
-                                                    timeOff.totalHours
+                                            <Box display="flex">
+                                                <Box
+                                                    sx={{
+                                                        fontSize: '0.875rem',
+                                                        fontWeight: 700,
+                                                    }}
+                                                >
+                                                    <FiberManualRecord
+                                                        sx={{
+                                                            fontSize:
+                                                                '0.625rem',
+                                                            mr: 0.5,
+                                                        }}
+                                                    />
+                                                    {timeOff.date}
+                                                </Box>
+                                            </Box>
+
+                                            <Box
+                                                display="flex"
+                                                flexDirection="column"
+                                                pl="1rem"
+                                                sx={{
+                                                    fontSize: '0.875rem',
+                                                }}
+                                            >
+                                                {timeOff.infos.map(
+                                                    (info, index) => (
+                                                        <div key={index}>
+                                                            {info.name} -{' '}
+                                                            {hourToString(
+                                                                info.hours
+                                                            )}
+                                                        </div>
+                                                    )
                                                 )}
+                                                <Box fontWeight={600}>
+                                                    총합 -{' '}
+                                                    {hourToString(
+                                                        timeOff.totalHours
+                                                    )}
+                                                </Box>
                                             </Box>
                                         </Box>
-                                    </Box>
-                                ))}
+                                    )
+                                )}
                             </Box>
                         </Paper>
                     )}
