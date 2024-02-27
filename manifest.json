@@ -1,0 +1,31 @@
+{
+    "manifest_version": 3,
+    "name": "unofficial-flex-extension",
+    "description": "Calculate Working Time From Flex",
+    "action": {
+        "default_popup": "src/pages/popup/index.html",
+        "default_title": "unofficial-flex-extension",
+        "default_icon": {
+            "32": "icons/icon32.png"
+        }
+    },
+    "icons": {
+        "64": "icons/icon64.png",
+        "128": "icons/icon128.png"
+    },
+    "permissions": ["tabs", "activeTab", "webRequest", "storage", "sidePanel"],
+    "side_panel": {
+        "default_path": "src/pages/popup/index.html",
+        "default_title": "unofficial-flex-extension"
+    },
+    "host_permissions": [
+        "https://flex.team/*",
+        "https://flex.team/api/v2/core/users/me/user-settings",
+        "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules",
+        "https://flex.team/api/v2/time-tracking/users/*/periods/work-schedules?*"
+    ],
+    "content_security_policy": {
+        "script-src": "self",
+        "object-src": "self"
+    }
+}

@@ -8,7 +8,7 @@ import { useFetchUserIdHash } from './hooks'
 
 import BaseTimeProvider from './contexts/BaseTimeContext'
 
-function App() {
+export default function App(): JSX.Element {
     const { data: userIdHash, isError } = useFetchUserIdHash()
 
     return (
@@ -23,5 +23,3 @@ function App() {
         </Container>
     )
 }
-
-export default App

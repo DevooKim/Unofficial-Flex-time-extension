@@ -9,10 +9,7 @@ node_modules
 /coverage
 
 # production
-build
-build.zip
-unofficial-flex-extension
-unofficial-flex-extension.zip
+dist
 
 # misc
 .DS_Store
