@@ -64,6 +64,92 @@ module.exports = {
             alternative: '#525463',
             hint: '#858899',
         },
+        fontSize: {
+            h1: [
+                '2.375rem',
+                {
+                    lineHeight: '3.5625rem',
+                    fontWeight: '700',
+                },
+            ],
+            h2: [
+                '2rem',
+                {
+                    lineHeight: '3rem',
+                    fontWeight: '700',
+                },
+            ],
+            h3: [
+                '1.5rem',
+                {
+                    lineHeight: '2.25rem',
+                    fontWeight: '700',
+                },
+            ],
+            h4: [
+                '1.25rem',
+                {
+                    lineHeight: '1.25rem',
+                    fontWeight: '700',
+                },
+            ],
+            h5: [
+                '1.125rem',
+                {
+                    lineHeight: '1.6875rem',
+                    fontWeight: '700',
+                },
+            ],
+            h6: [
+                '1rem',
+                {
+                    lineHeight: '1.5rem',
+                    fontWeight: '700',
+                },
+            ],
+            subtitle1: [
+                '0.875rem',
+                {
+                    lineHeight: '1.3125rem',
+                    fontWeight: '500',
+                },
+            ],
+            subtitle2: [
+                '0.75rem',
+                {
+                    lineHeight: '1.125rem',
+                    fontWeight: '500',
+                },
+            ],
+            body1: [
+                '1rem',
+                {
+                    lineHeight: '1.5rem',
+                    fontWeight: '400',
+                },
+            ],
+            body2: [
+                '0.875rem',
+                {
+                    lineHeight: '1.3125rem',
+                    fontWeight: '400',
+                },
+            ],
+            body3: [
+                '0.875rem',
+                {
+                    lineHeight: '1.125rem',
+                    fontWeight: '400',
+                },
+            ],
+            caption: [
+                '0.75rem',
+                {
+                    lineHeight: '1.125rem',
+                    fontWeight: '400',
+                },
+            ],
+        },
         extend: {},
     },
     plugins: [],
