@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import '@pages/popup/index.css'
-// import '@assets/styles/tailwind.css'
+import '@src/styles/tailwind.css'
 import Popup from '@popup/Popup'
 
 function init() {
