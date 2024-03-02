@@ -1,4 +1,5 @@
 import React, { Children, useEffect, useRef, useState } from 'react'
+import cn from 'classnames'
 import Button from '../Button'
 
 type ButtonToggleGroupItemProps = React.DetailedHTMLProps<
@@ -8,33 +9,32 @@ type ButtonToggleGroupItemProps = React.DetailedHTMLProps<
     isActive?: boolean
     children?: React.ReactNode
     className?: string
+    fullWidth?: boolean
 }
 
 type ButtonToggleGroupProps = {
+    fullWidth?: boolean
     children: React.ReactNode
 }
 
 const ButtonToggleGroupItem = ({
     isActive,
     className,
+    fullWidth,
     children,
     ...props
 }: ButtonToggleGroupItemProps) => {
     const activeClassName = `hover:bg-white bg-white border-gray-300 text-gray-800`
 
     return (
-        <li className="z-[1]">
+        <li className={cn('z-[1]', { 'w-full': fullWidth })}>
             <Button
-                className={`
-            bg-transparent
-            border-transparent
-            tra
-            rounded-lg
-            text-gray-500
-            transition-transform
-            duration-[250ms] ease-in-out hover:bg-gray-600/[.16]
-            ${isActive ? activeClassName : ''}
-            ${className}`}
+                className={cn(
+                    'bg-transparent border-transparent rounded-lg text-gray-500 transition-colors duration-[250ms] ease-in-out hover:bg-gray-600/[.16]',
+                    { [activeClassName]: isActive },
+                    { 'w-full': fullWidth },
+                    className
+                )}
                 {...props}
             >
                 {children}
@@ -43,7 +43,7 @@ const ButtonToggleGroupItem = ({
     )
 }
 
-const ButtonToggleGroup = ({ children }: ButtonToggleGroupProps) => {
+const ButtonToggleGroup = ({ fullWidth, children }: ButtonToggleGroupProps) => {
     const ref = useRef<HTMLUListElement>(null)
     const [activeIndex, setActiveIndex] = useState(0)
     const [maskRect, setMaskRect] = useState<DOMRect | null>(null)
@@ -64,8 +64,17 @@ const ButtonToggleGroup = ({ children }: ButtonToggleGroupProps) => {
     }, [activeIndex])
 
     return (
-        <div className="inline-flex rounded-[0.625rem] border bg-gray-100">
-            <ul className="relative m-0.5 flex gap-1 p-0" ref={ref}>
+        <div
+            className={cn('inline-flex rounded-[0.625rem] border bg-gray-100', {
+                'w-full': fullWidth,
+            })}
+        >
+            <ul
+                className={cn('relative m-0.5 flex gap-1 p-0', {
+                    'w-full': fullWidth,
+                })}
+                ref={ref}
+            >
                 {Children.map(children, (child, index) => {
                     if (React.isValidElement(child)) {
                         return React.cloneElement(
@@ -78,18 +87,19 @@ const ButtonToggleGroup = ({ children }: ButtonToggleGroupProps) => {
                                     child.props.onClick?.(e)
                                 },
                                 isActive: index === activeIndex,
+                                fullWidth,
                             }
                         )
                     }
                 })}
                 <div
                     className={
-                        'absolute left-0 top-0 z-0 transform-gpu rounded-lg border bg-white transition-transform duration-[250ms] ease-in-out'
+                        'absolute left-0 top-0 z-0 rounded-lg bg-white transition-transform duration-[250ms] ease-in-out'
                     }
                     style={{
                         width: maskRect?.width ?? 0,
                         height: maskRect?.height,
-                        transform: `translateX(${(maskRect?.width ?? 0) * activeIndex}px)`,
+                        transform: `translateX(${(maskRect?.width ?? 0) * activeIndex + 4 * activeIndex}px)`,
                     }}
                 />
             </ul>
