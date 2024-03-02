@@ -17,6 +17,7 @@ import React from 'react'
 import Header from './components/Header'
 import WorkingStatus from './components/WorkingStatus'
 import TimeDataSwitch from './components/TimeDataSwitch'
+import UserData from './components/UserData'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -48,10 +49,9 @@ export default function App(): JSX.Element {
                                     {/* <WorkingTimeResult
                                         userIdHash={userIdHash}
                                     /> */}
-                                    <div>
+                                    <div className="flex flex-col gap-4">
                                         <Header />
-                                        <WorkingStatus />
-                                        <TimeDataSwitch />
+                                        <UserData />
                                     </div>
                                 </BaseTimeProvider>
                             </React.Suspense>
