@@ -2,27 +2,27 @@
     "env": {
         "browser": true,
         "es6": true,
-        "node": true
+        "node": true,
     },
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
-            "jsx": true
+            "jsx": true,
         },
         "ecmaVersion": "latest",
-        "sourceType": "module"
+        "sourceType": "module",
     },
-    "plugins": ["react", "@typescript-eslint"],
+    "plugins": ["react", "@typescript-eslint", "@tanstack/query"],
     "rules": {
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
     },
     "globals": {
-        "chrome": "readonly"
+        "chrome": "readonly",
     },
-    "ignorePatterns": ["watch.js", "dist/**"]
+    "ignorePatterns": ["watch.js", "dist/**"],
 }
