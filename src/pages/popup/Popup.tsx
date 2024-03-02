@@ -14,6 +14,9 @@ import { useFetchUserIdHash } from './hooks'
 import BaseTimeProvider from './contexts/BaseTimeContext'
 import { ErrorBoundary } from 'react-error-boundary'
 import React from 'react'
+import Header from './components/Header'
+import WorkingStatus from './components/WorkingStatus'
+import TimeDataSwitch from './components/TimeDataSwitch'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -31,40 +34,31 @@ export default function App(): JSX.Element {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <Container
-                sx={{ minWidth: '350px', p: 1.5, background: blueGrey[50] }}
-            >
+            <div className="min-w-[350px] p-5">
                 <QueryErrorResetBoundary>
                     {({ reset }) => (
                         <ErrorBoundary
                             onReset={() => {}}
                             fallbackRender={({ resetErrorBoundary }) => (
-                                // <div>
-                                //     There was an error!
-                                //     <button
-                                //         onClick={() => resetErrorBoundary()}
-                                //     >
-                                //         Try again
-                                //     </button>
-                                // </div>
                                 <InActive />
                             )}
                         >
                             <React.Suspense fallback={<h1>loading</h1>}>
                                 <BaseTimeProvider>
-                                    {isError ? (
-                                        <InActive />
-                                    ) : (
-                                        <WorkingTimeResult
-                                            userIdHash={userIdHash}
-                                        />
-                                    )}
+                                    {/* <WorkingTimeResult
+                                        userIdHash={userIdHash}
+                                    /> */}
+                                    <div>
+                                        <Header />
+                                        <WorkingStatus />
+                                        <TimeDataSwitch />
+                                    </div>
                                 </BaseTimeProvider>
                             </React.Suspense>
                         </ErrorBoundary>
                     )}
                 </QueryErrorResetBoundary>
-            </Container>
+            </div>
         </QueryClientProvider>
     )
 }
