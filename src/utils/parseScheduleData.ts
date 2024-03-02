@@ -169,7 +169,7 @@ export const parseScheduleData = ({
 
     const 남은근무시간_지금기준 =
         clockData.현재근무상태 === '근무중'
-            ? 남은근무시간 - clockData.오늘일한시간
+            ? Math.max(남은근무시간 - clockData.오늘일한시간, 0)
             : 남은근무시간
     const 남은평균근무시간_지금기준 =
         남은근무시간_지금기준 / 남은근무일_지금기준 || 0
