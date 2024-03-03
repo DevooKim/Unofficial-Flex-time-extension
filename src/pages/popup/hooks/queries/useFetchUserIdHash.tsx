@@ -11,7 +11,7 @@ const fetch = async () => {
     return userIdHash
 }
 
-const useFetchUserIdHash = () =>
+export const useFetchUserIdHash = () =>
     useSuspenseQuery({
         queryKey: ['userIdHash'],
         queryFn: async () => {
@@ -27,5 +27,3 @@ const useFetchUserIdHash = () =>
             }
         },
     })
-
-export default useFetchUserIdHash

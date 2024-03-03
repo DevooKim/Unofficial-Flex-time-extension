@@ -15,8 +15,6 @@ const Header = () => {
             <div className="text-sm text-alternative">
                 오늘 {dayjs(baseTimeData.today).format('YYYY.MM.DD')}
             </div>
-
-            <h1>{data}</h1>
             <IconButton
                 icon={<GlobalIcon className="w-6 h-6 fill-link" />}
                 onClick={openFlex}
