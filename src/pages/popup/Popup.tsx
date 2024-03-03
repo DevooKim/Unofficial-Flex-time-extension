@@ -1,5 +1,3 @@
-import { blueGrey } from '@mui/material/colors'
-import { Container } from '@mui/system'
 import {
     QueryClient,
     QueryClientProvider,
@@ -10,12 +8,8 @@ import { ErrorBoundary } from 'react-error-boundary'
 
 import Header from './components/Header'
 import InActive from './components/InActive'
-import TimeDataSwitch from './components/TimeDataSwitch'
 import UserData from './components/UserData'
-import WorkingStatus from './components/WorkingStatus'
-import WorkingTimeResult from './components/WorkingTimeResult'
 import BaseTimeProvider from './contexts/BaseTimeContext'
-import { useFetchUserIdHash } from './hooks'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -29,7 +23,7 @@ const queryClient = new QueryClient({
 })
 
 export default function App(): JSX.Element {
-    const { data: userIdHash, isError } = useFetchUserIdHash()
+    // const { data: userIdHash, isError } = useFetchUserIdHash()
 
     return (
         <QueryClientProvider client={queryClient}>
