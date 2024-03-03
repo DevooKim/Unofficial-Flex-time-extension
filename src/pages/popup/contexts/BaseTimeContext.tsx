@@ -7,8 +7,9 @@ import {
     useState,
 } from 'react'
 
-import LoadingUI from '../components/LoadingUI'
-import { BaseTimeData } from '../types'
+import { BaseTimeData } from '@src/types'
+
+import LoadingUI from '@popup/components/LoadingUI'
 
 const CACHE_TIME_SEC = 60
 
@@ -26,16 +27,12 @@ const BaseTimeContext = createContext<BaseTimeContextType>(
     {} as BaseTimeContextType
 )
 
-export const useBaseTimeContext = (): BaseTimeContextType => {
-    return useContext(BaseTimeContext)
-}
+export const useBaseTimeContext = (): BaseTimeContextType =>
+    useContext(BaseTimeContext)
 
-const isValidCache = (cacheTime: number, day: Dayjs) => {
-    return (
-        cacheTime &&
-        dayjs(cacheTime).diff(Number(day.valueOf()), 'second') <= CACHE_TIME_SEC
-    )
-}
+const isValidCache = (cacheTime: number, day: Dayjs) =>
+    cacheTime &&
+    dayjs(cacheTime).diff(Number(day.valueOf()), 'second') <= CACHE_TIME_SEC
 
 const BaseTimeProvider = ({ children }: BaseTimeProviderProps) => {
     const [baseTimeData, setBaseTimeData] = useState<BaseTimeData>(

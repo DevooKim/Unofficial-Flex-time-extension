@@ -30,7 +30,7 @@ export const useFetchClockData = ({
     isCached,
 }: UseFetchClockData) =>
     useSuspenseQuery({
-        queryKey: ['clockData'],
+        queryKey: ['clockData', timeStampFrom, timestampTo, isCached],
         queryFn: async () => {
             let result = {} as flexClockData
 
