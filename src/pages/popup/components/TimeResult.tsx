@@ -1,7 +1,7 @@
-import React from 'react'
-import { Box } from '@mui/system'
-import { Paper, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
+import { Paper, Tooltip } from '@mui/material'
+import { Box } from '@mui/system'
+import React from 'react'
 
 interface ITimeResult {
     children: React.ReactNode

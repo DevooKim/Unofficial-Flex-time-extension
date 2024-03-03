@@ -1,5 +1,6 @@
 import html2canvas from 'html2canvas'
 import { useCallback } from 'react'
+
 import useCopyToClipboard from './useCopyToClipboard'
 
 type captureHandlerType = ({

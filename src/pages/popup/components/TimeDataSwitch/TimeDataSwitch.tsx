@@ -1,7 +1,9 @@
+import { useState } from 'react'
+
 import ButtonToggleGroup from '@src/components/ButtonToggleGroup'
+
 import TimeOff from './components/TimeOff'
 import WorkingRecord from './components/WorkingRecord'
-import { useState } from 'react'
 
 const TimeDataSwitch = () => {
     const [activeStatus, setActiveStatus] = useState<'근무' | '휴가'>('근무')

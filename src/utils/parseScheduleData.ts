@@ -1,14 +1,15 @@
-import isEmpty from 'lodash/isEmpty'
 import dayjs from 'dayjs'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isEmpty from 'lodash/isEmpty'
+
 import {
-    flexDayInfo,
-    flexScheduleData,
-    flexPaidSummary,
-    myScheduleData,
-    myClockData,
     BaseTimeData,
+    flexDayInfo,
+    flexPaidSummary,
+    flexScheduleData,
     flexUnpaidSummary,
+    myClockData,
+    myScheduleData,
 } from '../types'
 
 dayjs.extend(isSameOrAfter)

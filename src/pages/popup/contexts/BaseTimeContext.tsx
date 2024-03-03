@@ -1,3 +1,4 @@
+import dayjs, { Dayjs } from 'dayjs'
 import {
     createContext,
     useCallback,
@@ -5,10 +6,8 @@ import {
     useEffect,
     useState,
 } from 'react'
-import dayjs, { Dayjs } from 'dayjs'
 
 import LoadingUI from '../components/LoadingUI'
-
 import { BaseTimeData } from '../types'
 
 const CACHE_TIME_SEC = 60

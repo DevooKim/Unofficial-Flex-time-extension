@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill'
+
 interface UseOpenFlexType {
     openFlex: () => void
 }

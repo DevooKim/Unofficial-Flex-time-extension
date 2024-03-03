@@ -1,9 +1,10 @@
 import dayjs from 'dayjs'
-import { useBaseTimeContext } from '../../contexts/BaseTimeContext'
 
-import GlobalIcon from '@src/icons/GlobalIcon'
 import IconButton from '@src/components/IconButton'
 import { useOpenFlex } from '@src/hooks'
+import GlobalIcon from '@src/icons/GlobalIcon'
+
+import { useBaseTimeContext } from '../../contexts/BaseTimeContext'
 
 const Header = () => {
     const { baseTimeData } = useBaseTimeContext()

@@ -5,19 +5,17 @@ import {
     QueryClientProvider,
     QueryErrorResetBoundary,
 } from '@tanstack/react-query'
-
-import WorkingTimeResult from './components/WorkingTimeResult'
-import InActive from './components/InActive'
-
-import { useFetchUserIdHash } from './hooks'
-
-import BaseTimeProvider from './contexts/BaseTimeContext'
-import { ErrorBoundary } from 'react-error-boundary'
 import React from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+
 import Header from './components/Header'
-import WorkingStatus from './components/WorkingStatus'
+import InActive from './components/InActive'
 import TimeDataSwitch from './components/TimeDataSwitch'
 import UserData from './components/UserData'
+import WorkingStatus from './components/WorkingStatus'
+import WorkingTimeResult from './components/WorkingTimeResult'
+import BaseTimeProvider from './contexts/BaseTimeContext'
+import { useFetchUserIdHash } from './hooks'
 
 const queryClient = new QueryClient({
     defaultOptions: {
