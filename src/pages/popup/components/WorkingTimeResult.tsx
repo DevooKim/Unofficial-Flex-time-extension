@@ -117,7 +117,7 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
 
     const myScheduleData = parseScheduleData({
         data: scheduleData,
-        baseTimeData,
+        today: baseTimeData.today,
         clockData: myClockData,
     })
 

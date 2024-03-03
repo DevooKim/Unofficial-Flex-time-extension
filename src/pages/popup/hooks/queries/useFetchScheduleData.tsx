@@ -6,13 +6,13 @@ import { flexScheduleData } from '@src/types'
 
 type UseFetchClockData = {
     userIdHash: string
-    timeStamp: string
+    timeStamp: number
     isCached: boolean
 }
 
 const fetch = async (
     userIdHash: string,
-    timeStamp: string
+    timeStamp: number
 ): Promise<flexScheduleData> => {
     const { data } = await axios.get(
         `https://flex.team/api/v2/time-tracking/users/${userIdHash}/periods/work-schedules?timeStampFrom=${timeStamp}&timeStampTo=${timeStamp}`
