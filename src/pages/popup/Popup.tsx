@@ -14,9 +14,9 @@ import BaseTimeProvider from './contexts/BaseTimeContext'
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
+            gcTime: Infinity,
             refetchOnWindowFocus: false,
             refetchOnMount: false,
-            refetchOnReconnect: false,
             retry: false,
         },
     },
