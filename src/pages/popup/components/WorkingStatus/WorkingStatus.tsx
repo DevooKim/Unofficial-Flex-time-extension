@@ -1,3 +1,4 @@
+import Badge from '@src/components/Badge'
 import DotIcon from '@src/icons/DotIcon'
 import { myClockData } from '@src/types'
 import { parseClockData } from '@src/utils/parseClockData'
@@ -12,29 +13,35 @@ type StatusProps = {
     오늘일한시간: string
 }
 
-const boxStyle = {
+const boxColorVariant = {
     근무중: 'bg-primary/[.08]',
     출근전: 'bg-gray-50',
     퇴근: 'bg-warning/[.08]',
 }
 
-const statusTextColor = {
+const statusTextColorVariant = {
     근무중: 'text-primary',
     출근전: 'text-link',
     퇴근: 'text-warning',
 }
 
-const dotIconColor = {
+const dotIconColorVariant = {
     근무중: 'fill-primary',
     출근전: 'fill-link',
     퇴근: 'fill-warning',
 }
 
 const StatusInfo = ({ 현재근무상태, 오늘일한시간 }: StatusProps) => (
-    <div className={statusTextColor[현재근무상태]}>
-        <DotIcon className={dotIconColor[현재근무상태]} width="6" height="6" />
+    <div className={statusTextColorVariant[현재근무상태]}>
+        <DotIcon
+            className={dotIconColorVariant[현재근무상태]}
+            width="6"
+            height="6"
+        />
         {현재근무상태}
-        <div>{오늘일한시간}</div>
+        <Badge color="primary" size="md">
+            {오늘일한시간}
+        </Badge>
     </div>
 )
 
@@ -65,7 +72,7 @@ const WorkingStatus = () => {
     const 오늘일한시간 = hourToString(_오늘일한시간)
 
     return (
-        <div className={boxStyle[현재근무상태]}>
+        <div className={boxColorVariant[현재근무상태]}>
             <StatusInfo
                 현재근무상태={현재근무상태}
                 오늘일한시간={오늘일한시간}
