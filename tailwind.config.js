@@ -107,7 +107,7 @@ module.exports = {
                     '1rem',
                     {
                         lineHeight: '1.5rem',
-                        fontWeight: '700',
+                        fontWeight: '500',
                     },
                 ],
                 subtitle1: [
@@ -150,6 +150,30 @@ module.exports = {
                     {
                         lineHeight: '1.125rem',
                         fontWeight: '400',
+                    },
+                ],
+                'paragraph-sm': [
+                    '0.75rem',
+                    {
+                        fontWeight: '400',
+                        letterSpacing: '-0.006rem',
+                        lineHeight: '1.125rem',
+                    },
+                ],
+                paragraph: [
+                    '0.875rem',
+                    {
+                        fontWeight: '400',
+                        letterSpacing: '-0.006rem',
+                        lineHeight: '1.375rem',
+                    },
+                ],
+                'paragraph-lg': [
+                    '1rem',
+                    {
+                        fontWeight: '400',
+                        letterSpacing: '-0.006rem',
+                        lineHeight: '1.5rem',
                     },
                 ],
             },
