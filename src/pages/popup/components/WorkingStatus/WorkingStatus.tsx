@@ -38,7 +38,8 @@ const badgeColorVariant = {
 } as const
 
 /**
- * @참고: src/pages/popup/components/Header/Header.tsx
+ * @코드참고: src/pages/popup/components/Header/Header.tsx
+ * @스타일참고: https://tailwindcss.com/docs/padding
  */
 
 const StatusInfo = ({ 현재근무상태, 오늘일한시간 }: StatusProps) => (
@@ -50,7 +51,11 @@ const StatusInfo = ({ 현재근무상태, 오늘일한시간 }: StatusProps) => 
             height="6"
         />
         {현재근무상태}
-        <Badge color={badgeColorVariant[현재근무상태]} size="md">
+        <Badge
+            className="!rounded-[13px]"
+            color={badgeColorVariant[현재근무상태]}
+            size="md"
+        >
             {오늘일한시간}
         </Badge>
     </div>
