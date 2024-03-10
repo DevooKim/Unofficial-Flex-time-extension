@@ -3,9 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "_build": "rm -rf ./unofficial-flex-extension && rm -rf ./unofficial-flex-extension.zip && craco build && zip -r unofficial-flex-extension.zip ./unofficial-flex-extension",
         "build": "vite build",
         "dev": "nodemon",
+        "dev:mock": "yarn run dev --config nodemon.mock.json",
         "prepare": "husky install"
     },
     "dependencies": {
@@ -50,6 +50,7 @@
         "husky": "^8.0.1",
         "jest": "^28.1.0",
         "lint-staged": "^13.0.2",
+        "msw": "^2.2.3",
         "postcss": "^8.4.35",
         "prettier": "^3.2.5",
         "prettier-plugin-tailwindcss": "^0.5.11",

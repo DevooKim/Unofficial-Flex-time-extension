@@ -6,6 +6,7 @@ const fetch = async () => {
     const { data } = await axios.get(
         'https://flex.team/api/v2/core/users/me/user-settings'
     )
+
     const { userIdHash } = data.setting
 
     return userIdHash
