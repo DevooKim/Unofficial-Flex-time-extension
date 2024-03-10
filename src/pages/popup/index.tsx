@@ -12,7 +12,7 @@ async function enableMocking() {
     const { worker } = await import('../../test/mock')
 
     // mock 상태 변경
-    window.mockType = '퇴근'
+    window.mockType = '출근전'
 
     return worker.start()
 }
