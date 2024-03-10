@@ -1,14 +1,15 @@
-import isEmpty from 'lodash/isEmpty'
 import dayjs from 'dayjs'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isEmpty from 'lodash/isEmpty'
+
 import {
-    flexDayInfo,
-    flexScheduleData,
-    flexPaidSummary,
-    myScheduleData,
-    myClockData,
     BaseTimeData,
+    flexDayInfo,
+    flexPaidSummary,
+    flexScheduleData,
     flexUnpaidSummary,
+    myClockData,
+    myScheduleData,
 } from '../types'
 
 dayjs.extend(isSameOrAfter)
@@ -107,11 +108,11 @@ const 휴가정보구하기 = (
 
 export const parseScheduleData = ({
     data,
-    baseTimeData,
+    today,
     clockData,
 }: {
     data: flexScheduleData
-    baseTimeData: BaseTimeData
+    today: BaseTimeData['today']
     clockData: myClockData
 }): myScheduleData => {
     const days = data.days
@@ -150,7 +151,6 @@ export const parseScheduleData = ({
         .filter(({ timeOffs }) => !isEmpty(timeOffs))
         .map((day) => 휴가정보구하기(휴가IdMap, day))
 
-    const { today } = baseTimeData
     const offset = clockData.현재근무상태 === '퇴근' ? 60 * 60 * 24 * 1000 : 0
 
     const filterDays = ({ date }: { date: string }) =>

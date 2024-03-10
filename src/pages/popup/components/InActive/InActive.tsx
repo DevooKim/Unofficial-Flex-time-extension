@@ -1,4 +1,5 @@
 import { Box, Button } from '@mui/material'
+
 import { useOpenFlex } from '../../hooks'
 
 const InActive = () => {
