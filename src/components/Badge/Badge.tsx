@@ -1,5 +1,7 @@
 import cn from 'classnames'
 
+import './Badge.css'
+
 type BadgeProps = {
     className?: string
     color?: 'primary' | 'warning'
