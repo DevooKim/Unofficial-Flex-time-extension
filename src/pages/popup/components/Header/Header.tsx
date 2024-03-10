@@ -52,6 +52,8 @@ const Header = () => {
         now: baseTimeData.today,
     })
 
+    console.log(myClockData)
+
     const myScheduleData = parseScheduleData({
         data: scheduleData,
         today: baseTimeData.today,

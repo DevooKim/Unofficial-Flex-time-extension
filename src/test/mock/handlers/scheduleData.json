@@ -1,0 +1,1215 @@
+{
+    "출근전": {
+        "workScheduleResults": [
+            {
+                "userIdHash": "bqzoerRQ8a",
+                "paidSummary": {
+                    "baseWorkingMinutes": 10080,
+                    "baseWeeklyPaidHolidayMinutes": 2400,
+                    "legalBaseWorkingMinutes": 10080,
+                    "actualWorkingMinutes": 1077,
+                    "actualWeeklyPaidHolidayMinutes": 2400,
+                    "timeOffMinutes": 1440,
+                    "holidayMinutes": 3360,
+                    "workingHolidayMinutes": 960,
+                    "restMinutes": 0
+                },
+                "unpaidSummary": {
+                    "timeOffMinutes": 0,
+                    "holidayMinutes": 0,
+                    "restMinutes": 120
+                },
+                "period": {
+                    "unit": "MONTH",
+                    "unitCount": 1,
+                    "zoneId": "Asia/Seoul",
+                    "from": "2024-03-01",
+                    "to": "2024-03-31",
+                    "applyTimeRangeFrom": 1709218800000,
+                    "applyTimeRangeTo": 1711897200000
+                },
+                "deductionSummary": {
+                    "fullDayAbsentDays": 0,
+                    "fullDayAbsentMinutes": 0
+                },
+                "periodExceededSummary": {
+                    "regardedOverWorkMinutes": 0,
+                    "overWorkMinutes": 0,
+                    "holidayWorkMinutes": 0,
+                    "holidayNightWorkMinutes": 0
+                },
+                "workMinutesCalculationBasis": {
+                    "baseWorkingMinutesPerRange": 10626,
+                    "agreedWorkingMinutes": 10626,
+                    "statutoryWorkingMinutes": 10626,
+                    "statutoryMaxOverWorkingMinutes": 3186,
+                    "maxStatutoryTotalWorkingMinutes": 13812,
+                    "requiredWorkingMinutes": 10626
+                },
+                "workFormSummary": {
+                    "workFormResults": [
+                        {
+                            "customerWorkFormId": "10673",
+                            "name": "근무",
+                            "type": "WORK",
+                            "totalMinutes": 1077,
+                            "primary": true
+                        }
+                    ]
+                },
+                "timeOffSummary": {
+                    "timeOffResults": [
+                        {
+                            "timeOffPolicyId": "2075",
+                            "name": "연차",
+                            "timeOffPolicyType": "ANNUAL",
+                            "totalMinutes": 480
+                        },
+                        {
+                            "timeOffPolicyId": "108296",
+                            "name": "보상휴가",
+                            "timeOffPolicyType": "CUSTOM",
+                            "totalMinutes": 960
+                        }
+                    ]
+                },
+                "legalWorkMinutesSummary": {
+                    "normalWorkMinutes": 1077,
+                    "regardedOverWorkMinutes": 0,
+                    "regardedOverNightWorkMinutes": 0,
+                    "overWorkMinutes": 0,
+                    "nightWorkMinutes": 0,
+                    "holidayWorkMinutes": 0,
+                    "overNightWorkMinutes": 0,
+                    "holidayOverWorkMinutes": 0,
+                    "holidayNightWorkMinutes": 0,
+                    "holidayOverNightWorkMinutes": 0
+                },
+                "days": [
+                    {
+                        "date": "2024-03-01",
+                        "applyTimeStampFrom": 1709218800000,
+                        "applyTimeStampTo": 1709305200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": true,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-02",
+                        "applyTimeStampFrom": 1709305200000,
+                        "applyTimeStampTo": 1709391600000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-03",
+                        "applyTimeStampFrom": 1709391600000,
+                        "applyTimeStampTo": 1709478000000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-04",
+                        "applyTimeStampFrom": 1709478000000,
+                        "applyTimeStampTo": 1709564400000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [
+                            {
+                                "userWorkRecordEventId": "39216932",
+                                "customerWorkFormId": "10673",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709510520000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709523000000
+                                },
+                                "eventSource": "WORK_CLOCK",
+                                "eventStatus": "RECORD",
+                                "workFormType": "WORK",
+                                "name": "근무",
+                                "workBlocks": [
+                                    {
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709510520000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709523000000
+                                        },
+                                        "legalCategory": "NORMAL"
+                                    }
+                                ]
+                            },
+                            {
+                                "userWorkRecordEventId": "39216932",
+                                "customerWorkFormId": "10674",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709523000000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709526600000
+                                },
+                                "eventSource": "WORK_CLOCK",
+                                "eventStatus": "RECORD",
+                                "workFormType": "REST",
+                                "name": "휴게",
+                                "workBlocks": []
+                            },
+                            {
+                                "userWorkRecordEventId": "39216932",
+                                "customerWorkFormId": "10673",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709526600000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709548620000
+                                },
+                                "eventSource": "WORK_CLOCK",
+                                "eventStatus": "RECORD",
+                                "workFormType": "WORK",
+                                "name": "근무",
+                                "workBlocks": [
+                                    {
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709526600000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709548620000
+                                        },
+                                        "legalCategory": "NORMAL"
+                                    }
+                                ]
+                            }
+                        ],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-05",
+                        "applyTimeStampFrom": 1709564400000,
+                        "applyTimeStampTo": 1709650800000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [
+                            {
+                                "userWorkRecordEventId": "39254160",
+                                "customerWorkFormId": "10673",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709601300000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709609400000
+                                },
+                                "eventSource": "WORK_CLOCK",
+                                "eventStatus": "RECORD",
+                                "workFormType": "WORK",
+                                "name": "근무",
+                                "workBlocks": [
+                                    {
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709601300000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709609400000
+                                        },
+                                        "legalCategory": "NORMAL"
+                                    }
+                                ]
+                            },
+                            {
+                                "userWorkRecordEventId": "39254160",
+                                "customerWorkFormId": "10674",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709609400000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709613000000
+                                },
+                                "eventSource": "WORK_CLOCK",
+                                "eventStatus": "RECORD",
+                                "workFormType": "REST",
+                                "name": "휴게",
+                                "workBlocks": []
+                            },
+                            {
+                                "userWorkRecordEventId": "39254160",
+                                "customerWorkFormId": "10673",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709613000000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709635020000
+                                },
+                                "eventSource": "WORK_CLOCK",
+                                "eventStatus": "RECORD",
+                                "workFormType": "WORK",
+                                "name": "근무",
+                                "workBlocks": [
+                                    {
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709613000000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709635020000
+                                        },
+                                        "legalCategory": "NORMAL"
+                                    }
+                                ]
+                            }
+                        ],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-06",
+                        "applyTimeStampFrom": 1709650800000,
+                        "applyTimeStampTo": 1709737200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-07",
+                        "applyTimeStampFrom": 1709737200000,
+                        "applyTimeStampTo": 1709823600000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-08",
+                        "applyTimeStampFrom": 1709823600000,
+                        "applyTimeStampTo": 1709910000000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-09",
+                        "applyTimeStampFrom": 1709910000000,
+                        "applyTimeStampTo": 1709996400000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-10",
+                        "applyTimeStampFrom": 1709996400000,
+                        "applyTimeStampTo": 1710082800000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-11",
+                        "applyTimeStampFrom": 1710082800000,
+                        "applyTimeStampTo": 1710169200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-12",
+                        "applyTimeStampFrom": 1710169200000,
+                        "applyTimeStampTo": 1710255600000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": true,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-13",
+                        "applyTimeStampFrom": 1710255600000,
+                        "applyTimeStampTo": 1710342000000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [
+                            {
+                                "userTimeOffEventId": "3963443",
+                                "timeOffPolicyId": "2075",
+                                "timeOffPolicyType": "ANNUAL",
+                                "memo": "",
+                                "approval": {
+                                    "status": "APPROVED",
+                                    "taskKey": "2c4cdbb1970943168f65994471d56bec",
+                                    "approvalId": "13069453"
+                                },
+                                "cancelApprovalInProgress": false,
+                                "usedMinutes": 480,
+                                "usedPaidMinutes": 480,
+                                "restMinutes": 0,
+                                "timeOffUseStatus": "APPROVAL_COMPLETED",
+                                "timeOffRegisterUnit": "DAY"
+                            }
+                        ],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-14",
+                        "applyTimeStampFrom": 1710342000000,
+                        "applyTimeStampTo": 1710428400000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [
+                            {
+                                "userTimeOffEventId": "3896549",
+                                "timeOffPolicyId": "108296",
+                                "timeOffPolicyType": "CUSTOM",
+                                "memo": "",
+                                "approval": {
+                                    "status": "WAITING",
+                                    "taskKey": "2cbc450a381f448dba9e30cda4b573a7",
+                                    "approvalId": "12801593"
+                                },
+                                "cancelApprovalInProgress": false,
+                                "usedMinutes": 480,
+                                "usedPaidMinutes": 480,
+                                "restMinutes": 0,
+                                "timeOffUseStatus": "APPROVAL_WAITING",
+                                "timeOffRegisterUnit": "DAY"
+                            }
+                        ],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-15",
+                        "applyTimeStampFrom": 1710428400000,
+                        "applyTimeStampTo": 1710514800000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [
+                            {
+                                "userTimeOffEventId": "3896549",
+                                "timeOffPolicyId": "108296",
+                                "timeOffPolicyType": "CUSTOM",
+                                "memo": "",
+                                "approval": {
+                                    "status": "WAITING",
+                                    "taskKey": "2cbc450a381f448dba9e30cda4b573a7",
+                                    "approvalId": "12801593"
+                                },
+                                "cancelApprovalInProgress": false,
+                                "usedMinutes": 480,
+                                "usedPaidMinutes": 480,
+                                "restMinutes": 0,
+                                "timeOffUseStatus": "APPROVAL_WAITING",
+                                "timeOffRegisterUnit": "DAY"
+                            }
+                        ],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-16",
+                        "applyTimeStampFrom": 1710514800000,
+                        "applyTimeStampTo": 1710601200000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-17",
+                        "applyTimeStampFrom": 1710601200000,
+                        "applyTimeStampTo": 1710687600000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-18",
+                        "applyTimeStampFrom": 1710687600000,
+                        "applyTimeStampTo": 1710774000000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-19",
+                        "applyTimeStampFrom": 1710774000000,
+                        "applyTimeStampTo": 1710860400000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-20",
+                        "applyTimeStampFrom": 1710860400000,
+                        "applyTimeStampTo": 1710946800000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-21",
+                        "applyTimeStampFrom": 1710946800000,
+                        "applyTimeStampTo": 1711033200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-22",
+                        "applyTimeStampFrom": 1711033200000,
+                        "applyTimeStampTo": 1711119600000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-23",
+                        "applyTimeStampFrom": 1711119600000,
+                        "applyTimeStampTo": 1711206000000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-24",
+                        "applyTimeStampFrom": 1711206000000,
+                        "applyTimeStampTo": 1711292400000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-25",
+                        "applyTimeStampFrom": 1711292400000,
+                        "applyTimeStampTo": 1711378800000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-26",
+                        "applyTimeStampFrom": 1711378800000,
+                        "applyTimeStampTo": 1711465200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-27",
+                        "applyTimeStampFrom": 1711465200000,
+                        "applyTimeStampTo": 1711551600000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-28",
+                        "applyTimeStampFrom": 1711551600000,
+                        "applyTimeStampTo": 1711638000000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-29",
+                        "applyTimeStampFrom": 1711638000000,
+                        "applyTimeStampTo": 1711724400000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-30",
+                        "applyTimeStampFrom": 1711724400000,
+                        "applyTimeStampTo": 1711810800000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-31",
+                        "applyTimeStampFrom": 1711810800000,
+                        "applyTimeStampTo": 1711897200000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    }
+                ],
+                "presentationDays": [
+                    {
+                        "date": "2024-03-01",
+                        "applyTimeStampFrom": 1709218800000,
+                        "applyTimeStampTo": 1709305200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": true,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-02",
+                        "applyTimeStampFrom": 1709305200000,
+                        "applyTimeStampTo": 1709391600000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-03",
+                        "applyTimeStampFrom": 1709391600000,
+                        "applyTimeStampTo": 1709478000000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-04",
+                        "applyTimeStampFrom": 1709478000000,
+                        "applyTimeStampTo": 1709564400000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [
+                            {
+                                "customerWorkFormId": "10673",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709510520000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709548620000
+                                },
+                                "workFormType": "WORK",
+                                "workBlocks": [
+                                    {
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709510520000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709523000000
+                                        },
+                                        "legalCategory": "NORMAL"
+                                    },
+                                    {
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709526600000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709548620000
+                                        },
+                                        "legalCategory": "NORMAL"
+                                    }
+                                ],
+                                "approvals": [],
+                                "originalWorkRecords": [
+                                    {
+                                        "userWorkRecordEventId": "39216932",
+                                        "customerWorkFormId": "10673",
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709510520000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709548620000
+                                        },
+                                        "eventSource": "WORK_CLOCK",
+                                        "eventStatus": "RECORD",
+                                        "workFormType": "WORK",
+                                        "name": "근무",
+                                        "workBlocks": [
+                                            {
+                                                "blockTimeFrom": {
+                                                    "zoneId": "Asia/Seoul",
+                                                    "timeStamp": 1709510520000
+                                                },
+                                                "blockTimeTo": {
+                                                    "zoneId": "Asia/Seoul",
+                                                    "timeStamp": 1709523000000
+                                                },
+                                                "legalCategory": "NORMAL"
+                                            },
+                                            {
+                                                "blockTimeFrom": {
+                                                    "zoneId": "Asia/Seoul",
+                                                    "timeStamp": 1709526600000
+                                                },
+                                                "blockTimeTo": {
+                                                    "zoneId": "Asia/Seoul",
+                                                    "timeStamp": 1709548620000
+                                                },
+                                                "legalCategory": "NORMAL"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "eventStatus": "RECORD",
+                                "userWorkRecordEventId": 39216932
+                            },
+                            {
+                                "customerWorkFormId": "10674",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709523000000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709526600000
+                                },
+                                "workFormType": "REST",
+                                "workBlocks": [],
+                                "approvals": [],
+                                "originalWorkRecords": [
+                                    {
+                                        "userWorkRecordEventId": "39216932",
+                                        "customerWorkFormId": "10674",
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709523000000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709526600000
+                                        },
+                                        "eventSource": "WORK_CLOCK",
+                                        "eventStatus": "RECORD",
+                                        "workFormType": "REST",
+                                        "name": "휴게",
+                                        "workBlocks": []
+                                    }
+                                ],
+                                "eventStatus": "RECORD",
+                                "userWorkRecordEventId": 39216932
+                            }
+                        ],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-05",
+                        "applyTimeStampFrom": 1709564400000,
+                        "applyTimeStampTo": 1709650800000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [
+                            {
+                                "customerWorkFormId": "10673",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709601300000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709635020000
+                                },
+                                "workFormType": "WORK",
+                                "workBlocks": [
+                                    {
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709601300000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709609400000
+                                        },
+                                        "legalCategory": "NORMAL"
+                                    },
+                                    {
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709613000000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709635020000
+                                        },
+                                        "legalCategory": "NORMAL"
+                                    }
+                                ],
+                                "approvals": [],
+                                "originalWorkRecords": [
+                                    {
+                                        "userWorkRecordEventId": "39254160",
+                                        "customerWorkFormId": "10673",
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709601300000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709635020000
+                                        },
+                                        "eventSource": "WORK_CLOCK",
+                                        "eventStatus": "RECORD",
+                                        "workFormType": "WORK",
+                                        "name": "근무",
+                                        "workBlocks": [
+                                            {
+                                                "blockTimeFrom": {
+                                                    "zoneId": "Asia/Seoul",
+                                                    "timeStamp": 1709601300000
+                                                },
+                                                "blockTimeTo": {
+                                                    "zoneId": "Asia/Seoul",
+                                                    "timeStamp": 1709609400000
+                                                },
+                                                "legalCategory": "NORMAL"
+                                            },
+                                            {
+                                                "blockTimeFrom": {
+                                                    "zoneId": "Asia/Seoul",
+                                                    "timeStamp": 1709613000000
+                                                },
+                                                "blockTimeTo": {
+                                                    "zoneId": "Asia/Seoul",
+                                                    "timeStamp": 1709635020000
+                                                },
+                                                "legalCategory": "NORMAL"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "eventStatus": "RECORD",
+                                "userWorkRecordEventId": 39254160
+                            },
+                            {
+                                "customerWorkFormId": "10674",
+                                "blockTimeFrom": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709609400000
+                                },
+                                "blockTimeTo": {
+                                    "zoneId": "Asia/Seoul",
+                                    "timeStamp": 1709613000000
+                                },
+                                "workFormType": "REST",
+                                "workBlocks": [],
+                                "approvals": [],
+                                "originalWorkRecords": [
+                                    {
+                                        "userWorkRecordEventId": "39254160",
+                                        "customerWorkFormId": "10674",
+                                        "blockTimeFrom": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709609400000
+                                        },
+                                        "blockTimeTo": {
+                                            "zoneId": "Asia/Seoul",
+                                            "timeStamp": 1709613000000
+                                        },
+                                        "eventSource": "WORK_CLOCK",
+                                        "eventStatus": "RECORD",
+                                        "workFormType": "REST",
+                                        "name": "휴게",
+                                        "workBlocks": []
+                                    }
+                                ],
+                                "eventStatus": "RECORD",
+                                "userWorkRecordEventId": 39254160
+                            }
+                        ],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-06",
+                        "applyTimeStampFrom": 1709650800000,
+                        "applyTimeStampTo": 1709737200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-07",
+                        "applyTimeStampFrom": 1709737200000,
+                        "applyTimeStampTo": 1709823600000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-08",
+                        "applyTimeStampFrom": 1709823600000,
+                        "applyTimeStampTo": 1709910000000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-09",
+                        "applyTimeStampFrom": 1709910000000,
+                        "applyTimeStampTo": 1709996400000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-10",
+                        "applyTimeStampFrom": 1709996400000,
+                        "applyTimeStampTo": 1710082800000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-11",
+                        "applyTimeStampFrom": 1710082800000,
+                        "applyTimeStampTo": 1710169200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-12",
+                        "applyTimeStampFrom": 1710169200000,
+                        "applyTimeStampTo": 1710255600000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": true,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-13",
+                        "applyTimeStampFrom": 1710255600000,
+                        "applyTimeStampTo": 1710342000000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [
+                            {
+                                "userTimeOffEventId": "3963443",
+                                "timeOffPolicyId": "2075",
+                                "timeOffPolicyType": "ANNUAL",
+                                "memo": "",
+                                "approval": {
+                                    "status": "APPROVED",
+                                    "taskKey": "2c4cdbb1970943168f65994471d56bec",
+                                    "approvalId": "13069453"
+                                },
+                                "cancelApprovalInProgress": false,
+                                "usedMinutes": 480,
+                                "usedPaidMinutes": 480,
+                                "restMinutes": 0,
+                                "timeOffUseStatus": "APPROVAL_COMPLETED",
+                                "timeOffRegisterUnit": "DAY"
+                            }
+                        ],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-14",
+                        "applyTimeStampFrom": 1710342000000,
+                        "applyTimeStampTo": 1710428400000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [
+                            {
+                                "userTimeOffEventId": "3896549",
+                                "timeOffPolicyId": "108296",
+                                "timeOffPolicyType": "CUSTOM",
+                                "memo": "",
+                                "approval": {
+                                    "status": "WAITING",
+                                    "taskKey": "2cbc450a381f448dba9e30cda4b573a7",
+                                    "approvalId": "12801593"
+                                },
+                                "cancelApprovalInProgress": false,
+                                "usedMinutes": 480,
+                                "usedPaidMinutes": 480,
+                                "restMinutes": 0,
+                                "timeOffUseStatus": "APPROVAL_WAITING",
+                                "timeOffRegisterUnit": "DAY"
+                            }
+                        ],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-15",
+                        "applyTimeStampFrom": 1710428400000,
+                        "applyTimeStampTo": 1710514800000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [
+                            {
+                                "userTimeOffEventId": "3896549",
+                                "timeOffPolicyId": "108296",
+                                "timeOffPolicyType": "CUSTOM",
+                                "memo": "",
+                                "approval": {
+                                    "status": "WAITING",
+                                    "taskKey": "2cbc450a381f448dba9e30cda4b573a7",
+                                    "approvalId": "12801593"
+                                },
+                                "cancelApprovalInProgress": false,
+                                "usedMinutes": 480,
+                                "usedPaidMinutes": 480,
+                                "restMinutes": 0,
+                                "timeOffUseStatus": "APPROVAL_WAITING",
+                                "timeOffRegisterUnit": "DAY"
+                            }
+                        ],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-16",
+                        "applyTimeStampFrom": 1710514800000,
+                        "applyTimeStampTo": 1710601200000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-17",
+                        "applyTimeStampFrom": 1710601200000,
+                        "applyTimeStampTo": 1710687600000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-18",
+                        "applyTimeStampFrom": 1710687600000,
+                        "applyTimeStampTo": 1710774000000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-19",
+                        "applyTimeStampFrom": 1710774000000,
+                        "applyTimeStampTo": 1710860400000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-20",
+                        "applyTimeStampFrom": 1710860400000,
+                        "applyTimeStampTo": 1710946800000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-21",
+                        "applyTimeStampFrom": 1710946800000,
+                        "applyTimeStampTo": 1711033200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-22",
+                        "applyTimeStampFrom": 1711033200000,
+                        "applyTimeStampTo": 1711119600000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-23",
+                        "applyTimeStampFrom": 1711119600000,
+                        "applyTimeStampTo": 1711206000000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-24",
+                        "applyTimeStampFrom": 1711206000000,
+                        "applyTimeStampTo": 1711292400000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-25",
+                        "applyTimeStampFrom": 1711292400000,
+                        "applyTimeStampTo": 1711378800000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-26",
+                        "applyTimeStampFrom": 1711378800000,
+                        "applyTimeStampTo": 1711465200000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-27",
+                        "applyTimeStampFrom": 1711465200000,
+                        "applyTimeStampTo": 1711551600000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-28",
+                        "applyTimeStampFrom": 1711551600000,
+                        "applyTimeStampTo": 1711638000000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-29",
+                        "applyTimeStampFrom": 1711638000000,
+                        "applyTimeStampTo": 1711724400000,
+                        "dayWorkingType": "WORKING_DAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-30",
+                        "applyTimeStampFrom": 1711724400000,
+                        "applyTimeStampTo": 1711810800000,
+                        "dayWorkingType": "WEEKLY_UNPAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    },
+                    {
+                        "date": "2024-03-31",
+                        "applyTimeStampFrom": 1711810800000,
+                        "applyTimeStampTo": 1711897200000,
+                        "dayWorkingType": "WEEKLY_PAID_HOLIDAY",
+                        "customHoliday": false,
+                        "workRecords": [],
+                        "timeOffs": [],
+                        "workStartRecords": []
+                    }
+                ],
+                "remainingMaxWorkingMinutes": {
+                    "calculatedMaxWorkingMinutes": 12735,
+                    "remainingStatutoryMaxWorkingMinutes": 12735
+                },
+                "totalRequiredWorkingMinutes": 9666,
+                "totalOverWorkMinutes": 4146
+            }
+        ]
+    }
+}

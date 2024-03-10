@@ -14,8 +14,6 @@ const publicDir = resolve(__dirname, 'public')
 
 const isDev = process.env.NODE_ENV === 'development'
 
-console.log('@@@@@: ', process.env.USE_MOCK)
-
 const extensionManifest = {
     ...manifest,
     name: isDev ? `DEV: ${manifest.name}` : manifest.name,
@@ -48,5 +46,23 @@ export default defineConfig({
     },
     define: {
         'process.env.USE_MOCK': process.env.USE_MOCK,
+        'process.env.MOCK_TIME_DATA': process.env.USE_MOCK
+            ? {
+                  출근전: {
+                      firstDay: 1709218800000,
+                      lastDay: 1711810800000,
+                      now: 1709596800000,
+                      today: 1709996400000,
+                      isCached: false,
+                  },
+                  퇴근: {
+                      firstDay: 1709218800000,
+                      lastDay: 1711810800000,
+                      now: 1709596800000,
+                      today: 1709596800000,
+                      isCached: false,
+                  },
+              }
+            : {},
     },
 })

@@ -1,3 +1,15 @@
+declare global {
+    interface Window {
+        mockType: myClockData['현재근무상태']
+    }
+}
+
+export type MockTimeData = {
+    출근전: BaseTimeData
+    퇴근: BaseTimeData
+    근무중: BaseTimeData
+}
+
 export enum Sender {
     React,
     Content,

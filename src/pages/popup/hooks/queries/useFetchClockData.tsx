@@ -64,6 +64,8 @@ export const useFetchClockData = ({
                 result = fetchData
             }
 
+            console.log(result)
+
             return result
         },
     })

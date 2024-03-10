@@ -7,7 +7,7 @@ import {
     useState,
 } from 'react'
 
-import { BaseTimeData } from '@src/types'
+import { BaseTimeData, MockTimeData } from '@src/types'
 
 import LoadingUI from '@popup/components/LoadingUI'
 
@@ -22,6 +22,8 @@ type BaseTimeContextType = {
     refreshBaseTimeForce: () => void
     refreshBaseTimeIfInvalid: () => void
 }
+
+const isMocking = process.env.USE_MOCK
 
 const BaseTimeContext = createContext<BaseTimeContextType>(
     {} as BaseTimeContextType
@@ -100,10 +102,13 @@ const BaseTimeProvider = ({ children }: BaseTimeProviderProps) => {
 
     if (loading) return <LoadingUI />
 
+    const mockTimeData = process.env.MOCK_TIME_DATA as unknown as MockTimeData
+    const mockData = mockTimeData[window.mockType]
+
     return (
         <BaseTimeContext.Provider
             value={{
-                baseTimeData,
+                baseTimeData: isMocking ? mockData : baseTimeData,
                 refreshBaseTimeForce,
                 refreshBaseTimeIfInvalid,
             }}

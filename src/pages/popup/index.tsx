@@ -11,8 +11,9 @@ async function enableMocking() {
 
     const { worker } = await import('../../test/mock')
 
-    // `worker.start()` returns a Promise that resolves
-    // once the Service Worker is up and ready to intercept requests.
+    // mock 상태 변경
+    window.mockType = '퇴근'
+
     return worker.start()
 }
 
