@@ -54,3 +54,9 @@
         }
     }
 }
+
+@layer components {
+    .tooltip {
+        @apply rounded-lg bg-black px-[.375rem] py-2 text-paragraph-sm text-white;
+    }
+}
