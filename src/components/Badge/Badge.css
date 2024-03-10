@@ -23,5 +23,8 @@
         &-warning {
             @apply bg-warning/[.16] text-[#b35809];
         }
+        &-info {
+            @apply bg-info/[.16] text-[#858899];
+        }
     }
 }

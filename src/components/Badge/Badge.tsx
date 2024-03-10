@@ -4,7 +4,7 @@ import './Badge.css'
 
 type BadgeProps = {
     className?: string
-    color?: 'primary' | 'warning'
+    color: 'primary' | 'warning' | 'info'
     size?: 'sm' | 'md' | 'lg'
     children: React.ReactNode
 }
@@ -12,6 +12,7 @@ type BadgeProps = {
 const colorVariant = {
     primary: 'badge-primary',
     warning: 'badge-warning',
+    info: 'badge-info',
 }
 const sizeVariant = {
     sm: 'badge-sm',

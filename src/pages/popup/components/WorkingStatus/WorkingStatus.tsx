@@ -31,15 +31,26 @@ const dotIconColorVariant = {
     퇴근: 'fill-warning',
 }
 
+const badgeColorVariant = {
+    근무중: 'primary',
+    출근전: 'info',
+    퇴근: 'warning',
+} as const
+
+/**
+ * @참고: src/pages/popup/components/Header/Header.tsx
+ */
+
 const StatusInfo = ({ 현재근무상태, 오늘일한시간 }: StatusProps) => (
-    <div className={statusTextColorVariant[현재근무상태]}>
+    // <div className={`flex items-start 등등 여기에스타일 ${statusTextColorVariant[현재근무상태]}`}>
+    <div className={`${statusTextColorVariant[현재근무상태]}`}>
         <DotIcon
             className={dotIconColorVariant[현재근무상태]}
             width="6"
             height="6"
         />
         {현재근무상태}
-        <Badge color="primary" size="md">
+        <Badge color={badgeColorVariant[현재근무상태]} size="md">
             {오늘일한시간}
         </Badge>
     </div>
@@ -72,14 +83,13 @@ const WorkingStatus = () => {
     const 오늘일한시간 = hourToString(_오늘일한시간)
 
     return (
-        <div className={boxColorVariant[현재근무상태]}>
+        <div className={`여기에스타일 ${boxColorVariant[현재근무상태]}`}>
             <StatusInfo
                 현재근무상태={현재근무상태}
                 오늘일한시간={오늘일한시간}
             />
             <div>출근시간: {출근시간}</div>
             <div>퇴근시간: {퇴근시간}</div>
-            <div>오늘 일한 시간: {오늘일한시간}</div>
         </div>
     )
 }
