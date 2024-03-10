@@ -26,20 +26,22 @@ export const useFetchScheduleData = ({
     isCached,
 }: UseFetchClockData) =>
     useSuspenseQuery({
-        queryKey: ['userIdHash', timeStamp, isCached],
+        queryKey: ['scheduleData', timeStamp, isCached],
         queryFn: async () => {
             let result = {} as flexScheduleData
             if (isCached) {
                 const cachedData = (await browser.storage.session.get(
-                    'userIdHash'
-                )) as { userIdHash: flexScheduleData }
+                    'scheduleData'
+                )) as { scheduleData: flexScheduleData }
 
                 try {
-                    result = cachedData.userIdHash
+                    result = cachedData.scheduleData
                 } catch (error) {
                     const fetchData = await fetch(userIdHash, timeStamp)
 
-                    browser.storage.session.set({ userIdHash: fetchData })
+                    console.log(fetchData, 'fetchData - error')
+
+                    browser.storage.session.set({ scheduleData: fetchData })
 
                     result = fetchData
                 }
@@ -47,7 +49,7 @@ export const useFetchScheduleData = ({
                 const fetchData = await fetch(userIdHash, timeStamp)
                 result = fetchData
 
-                browser.storage.session.set({ userIdHash: fetchData })
+                browser.storage.session.set({ scheduleData: fetchData })
             }
 
             return result
