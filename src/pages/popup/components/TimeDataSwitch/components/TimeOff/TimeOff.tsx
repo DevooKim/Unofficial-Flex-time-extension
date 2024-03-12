@@ -47,6 +47,7 @@ const TimeOff = () => {
     return (
         <section className="mt-2">
             <TimeOffHeader 이번달휴가일수={이번달휴가일수} />
+            <TimeffMain 휴가정보list={myScheduleData.휴가정보list} />
         </section>
     )
 }
@@ -68,6 +69,48 @@ const TimeOffHeader = (props: TimeOffHeaderProps) => {
                 </span>
             </div>
         </header>
+    )
+}
+
+interface TimeOffMainProps {
+    휴가정보list: {
+        date: string
+        infos: {
+            name: string
+            minutes: number
+            hours: number
+        }[]
+        totalMinutes: number
+        totalHours: number
+    }[]
+}
+const TimeffMain = (props: TimeOffMainProps) => {
+    const { 휴가정보list } = props
+    return (
+        <main className="pl-[88px] pr-4 py-2">
+            <ul className="flex flex-col">
+                {휴가정보list.map((휴가정보) => (
+                    <li
+                        className="flex flex-col text-alternative text-sm"
+                        key={휴가정보.date}
+                    >
+                        <span>{휴가정보.date}</span>
+                        <ul className="flex-flex-col">
+                            {휴가정보.infos.map((info) => (
+                                <li key={info.name}>
+                                    {info.hours === 0
+                                        ? ''
+                                        : `${info.hours}시간`}{' '}
+                                    {info.minutes === 0
+                                        ? ''
+                                        : `${info.minutes}분`}
+                                </li>
+                            ))}
+                        </ul>
+                    </li>
+                ))}
+            </ul>
+        </main>
     )
 }
 
