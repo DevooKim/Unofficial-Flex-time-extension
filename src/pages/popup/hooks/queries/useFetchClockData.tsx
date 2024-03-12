@@ -41,6 +41,7 @@ export const useFetchClockData = ({
 
                 try {
                     result = cachedData.clockData
+                    if (!result) throw new Error('No data')
                 } catch (error) {
                     const fetchData = await fetch(
                         userIdHash,
