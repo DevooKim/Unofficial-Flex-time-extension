@@ -161,6 +161,11 @@ export const parseScheduleData = ({
         .filter(filterDays)
         .reduce((acc, cur) => acc + cur.totalHours / 8, 0)
 
+    const 이번달휴가일수 = 휴가list.reduce(
+        (acc, cur) => acc + cur.totalHours / 8,
+        0
+    )
+
     const 남은근무일 = 남은워킹데이 - 오늘이후휴가일수
     const 남은평균근무시간 = 남은근무시간 / 남은근무일 || 0
 
@@ -184,6 +189,8 @@ export const parseScheduleData = ({
         휴가정보list: 휴가list,
         timestampTo: period.applyTimeRangeTo,
         timestampFrom: period.applyTimeRangeFrom,
+        이번달휴가일수,
+        오늘이후휴가일수,
         지금기준: {
             남은근무일: 남은근무일_지금기준,
             남은근무시간: 남은근무시간_지금기준,

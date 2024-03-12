@@ -39,14 +39,10 @@ const TimeOff = () => {
         today: baseTimeData.today,
         clockData: myClockData,
     })
-    const 이번달휴가일수 = myScheduleData.휴가정보list.reduce(
-        (acc, cur) => acc + (cur.totalHours + cur.totalMinutes) / 8,
-        0
-    )
 
     return (
         <section className="mt-2">
-            <TimeOffHeader 이번달휴가일수={이번달휴가일수} />
+            <TimeOffHeader 이번달휴가일수={myScheduleData.이번달휴가일수} />
             <TimeffMain 휴가정보list={myScheduleData.휴가정보list} />
         </section>
     )
@@ -91,7 +87,7 @@ const TimeffMain = (props: TimeOffMainProps) => {
             <ul className="flex flex-col">
                 {휴가정보list.map((휴가정보) => (
                     <li
-                        className="flex flex-col text-alternative text-sm"
+                        className="flex flex-col text-sm text-alternative"
                         key={휴가정보.date}
                     >
                         <span>{휴가정보.date}</span>
