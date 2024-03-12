@@ -17,7 +17,6 @@ const TimeDataSwitch = () => {
     useEffect(() => {
         Browser.runtime.onMessage.addListener((message) => {
             if (message.type === 'toggle_tab') {
-                console.log(message)
                 toggle()
             }
         })
