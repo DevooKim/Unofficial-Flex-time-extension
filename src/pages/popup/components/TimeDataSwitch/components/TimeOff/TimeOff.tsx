@@ -1,3 +1,4 @@
+import VocationIcon from '@src/icons/VocationIcon'
 import { useBaseTimeContext } from '@src/pages/popup/contexts/BaseTimeContext'
 import { parseClockData } from '@src/utils/parseClockData'
 import { parseScheduleData } from '@src/utils/parseScheduleData'
@@ -38,8 +39,36 @@ const TimeOff = () => {
         today: baseTimeData.today,
         clockData: myClockData,
     })
+    const 이번달휴가일수 = myScheduleData.휴가정보list.reduce(
+        (acc, cur) => acc + (cur.totalHours + cur.totalMinutes) / 8,
+        0
+    )
 
-    return <h1>TimeOff</h1>
+    return (
+        <section className="mt-2">
+            <TimeOffHeader 이번달휴가일수={이번달휴가일수} />
+        </section>
+    )
+}
+
+interface TimeOffHeaderProps {
+    이번달휴가일수: number
+}
+const TimeOffHeader = (props: TimeOffHeaderProps) => {
+    const { 이번달휴가일수 } = props
+    return (
+        <header className="flex px-3 py-2 gap-x-5">
+            <VocationIcon className="" />
+            <div className="flex flex-col gap-y-1">
+                <span className="text-xs text-hint">이번 달 휴가 일수</span>
+                <span className="text-lg text-alternative">
+                    {이번달휴가일수 === 0
+                        ? '사용한 연차가 없어요.'
+                        : `${이번달휴가일수}일 쉬어요.`}
+                </span>
+            </div>
+        </header>
+    )
 }
 
 export default TimeOff
