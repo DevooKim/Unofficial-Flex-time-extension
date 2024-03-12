@@ -43,7 +43,7 @@ const TimeOff = () => {
     return (
         <section className="mt-2">
             <TimeOffHeader 이번달휴가일수={myScheduleData.이번달휴가일수} />
-            <TimeffMain 휴가정보list={myScheduleData.휴가정보list} />
+            <TimeOffMain 휴가정보list={myScheduleData.휴가정보list} />
         </section>
     )
 }
@@ -80,7 +80,7 @@ interface TimeOffMainProps {
         totalHours: number
     }[]
 }
-const TimeffMain = (props: TimeOffMainProps) => {
+const TimeOffMain = (props: TimeOffMainProps) => {
     const { 휴가정보list } = props
     return (
         <main className="pl-[88px] pr-4 py-2">
