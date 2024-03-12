@@ -18,6 +18,12 @@
             "suggested_key": {
                 "default": "Alt+Shift+F"
             }
+        },
+        "toggle_tab": {
+            "suggested_key": {
+                "default": "Alt+Shift+E"
+            },
+            "description": "근무-휴가 탭 전환"
         }
     },
     "permissions": ["tabs", "activeTab", "webRequest", "storage", "sidePanel"],
@@ -34,5 +40,8 @@
     "content_security_policy": {
         "script-src": "self",
         "object-src": "self"
+    },
+    "background": {
+        "service_worker": "src/pages/background/index.ts"
     }
 }
