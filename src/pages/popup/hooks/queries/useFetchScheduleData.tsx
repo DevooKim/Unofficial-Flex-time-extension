@@ -36,6 +36,7 @@ export const useFetchScheduleData = ({
 
                 try {
                     result = cachedData.scheduleData
+                    if (!result) throw new Error('No data')
                 } catch (error) {
                     const fetchData = await fetch(userIdHash, timeStamp)
 
