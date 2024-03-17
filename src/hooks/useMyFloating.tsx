@@ -36,7 +36,7 @@ const useMyFloating = ({
         ],
     })
 
-    const getFloatingInteraction = (...hooks: Array<ElementProps | void>) => {
+    const getFloatingInteraction = (hooks: Array<ElementProps | void>) => {
         const floatingHover = useHover(floating.context)
         const floatingFocus = useFocus(floating.context)
         const floatingInteraction = useInteractions([
