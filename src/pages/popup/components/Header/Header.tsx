@@ -32,7 +32,11 @@ const Header = () => {
         getFloatingInteraction: getFlexFloatingInteraction,
         arrowRef: flexFloatingArrowRef,
         isOpen: isFlexFloatingOpen,
-    } = useMyFloating({})
+    } = useMyFloating({
+        delay: {
+            open: 750,
+        },
+    })
     const flexFloatingInteraction = getFlexFloatingInteraction()
 
     const { data: userIdHash } = useFetchUserIdHash()
