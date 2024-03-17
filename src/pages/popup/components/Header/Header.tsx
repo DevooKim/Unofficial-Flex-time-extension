@@ -20,17 +20,20 @@ const Header = () => {
 
     const {
         floating: dateFloating,
-        floatingInteraction: dateFloatingInteraction,
+        getFloatingInteraction: getDateFloatingInteraction,
         arrowRef: dateFloatingArrowRef,
         isOpen: isDateFloatingOpen,
     } = useMyFloating({})
 
+    const dateFloatingInteraction = getDateFloatingInteraction()
+
     const {
         floating: flexFloating,
-        floatingInteraction: flexFloatingInteraction,
+        getFloatingInteraction: getFlexFloatingInteraction,
         arrowRef: flexFloatingArrowRef,
         isOpen: isFlexFloatingOpen,
     } = useMyFloating({})
+    const flexFloatingInteraction = getFlexFloatingInteraction()
 
     const { data: userIdHash } = useFetchUserIdHash()
 

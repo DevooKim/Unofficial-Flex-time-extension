@@ -1,20 +1,20 @@
 import {
+    ElementProps,
     OffsetOptions,
     Placement,
     arrow,
     offset as offsetBase,
-    useDismiss,
     useFloating as useFloatingBase,
     useFocus,
     useHover,
     useInteractions,
-    useRole,
 } from '@floating-ui/react'
 import { useRef, useState } from 'react'
 
 type myFloatingType = {
     placement?: Placement
     offset?: OffsetOptions
+    useClientPoint?: boolean
 }
 
 const useMyFloating = ({
@@ -36,20 +36,21 @@ const useMyFloating = ({
         ],
     })
 
-    const floatingHover = useHover(floating.context)
-    const floatingFocus = useFocus(floating.context)
-    const floatingDismiss = useDismiss(floating.context)
-    const floatingRole = useRole(floating.context, { role: 'tooltip' })
-    const floatingInteraction = useInteractions([
-        floatingHover,
-        floatingFocus,
-        floatingDismiss,
-        floatingRole,
-    ])
+    const getFloatingInteraction = (...hooks: Array<ElementProps | void>) => {
+        const floatingHover = useHover(floating.context)
+        const floatingFocus = useFocus(floating.context)
+        const floatingInteraction = useInteractions([
+            floatingHover,
+            floatingFocus,
+            ...hooks,
+        ])
+
+        return floatingInteraction
+    }
 
     return {
         floating,
-        floatingInteraction,
+        getFloatingInteraction,
         arrowRef,
         isOpen,
     }
