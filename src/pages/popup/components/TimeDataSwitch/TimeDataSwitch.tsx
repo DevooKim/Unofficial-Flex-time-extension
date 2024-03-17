@@ -10,8 +10,16 @@ import WorkingRecord from './components/WorkingRecord'
 
 const ButtonKeyList = ['근무', '휴가'] as const
 
+let platform: string
+
+Browser.runtime.getPlatformInfo().then((info) => {
+    platform = info.os
+})
+
 const TimeDataSwitch = () => {
     const [activeStatus, setActiveStatus] = useState<'근무' | '휴가'>('근무')
+    const command =
+        platform === 'mac' ? 'Option + Shift + E' : 'Alt + Shift + E'
 
     const { floating, getFloatingInteraction, isOpen } = useMyFloating({
         placement: 'bottom',
@@ -66,7 +74,7 @@ const TimeDataSwitch = () => {
                         style={floating.floatingStyles}
                         {...floatingInteraction.getFloatingProps()}
                     >
-                        Option + shift + E
+                        {command}
                     </div>
                 )}
             </FloatingPortal>
