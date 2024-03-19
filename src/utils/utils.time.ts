@@ -1,3 +1,8 @@
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(utc)
+
 export const dayToMinutes = (day: number): number => day * 8 * 60
 
 export const safeDivision = (
@@ -19,3 +24,11 @@ export const hourToString = (time: number): string => {
 
     return `${hour}시간 ${min}분`
 }
+
+export const formatAmPm = (time: string | number) =>
+    dayjs(time)
+        .utc()
+        .local()
+        .format('A hh:mm')
+        .replace('AM', '오전')
+        .replace('PM', '오후')
