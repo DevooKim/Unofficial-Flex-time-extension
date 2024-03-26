@@ -1,31 +1,83 @@
-import { useState } from 'react'
+import { FloatingPortal, useHover } from '@floating-ui/react'
+import { useEffect, useState } from 'react'
+import Browser from 'webextension-polyfill'
 
 import ButtonToggleGroup from '@src/components/ButtonToggleGroup'
+import useMyFloating from '@src/hooks/useMyFloating'
 
 import TimeOff from './components/TimeOff'
 import WorkingRecord from './components/WorkingRecord'
 
+const ButtonKeyList = ['근무', '휴가'] as const
+
+let platform: string
+
+Browser.runtime.getPlatformInfo().then((info) => {
+    platform = info.os
+})
+
 const TimeDataSwitch = () => {
     const [activeStatus, setActiveStatus] = useState<'근무' | '휴가'>('근무')
+    const command =
+        platform === 'mac' ? 'Option + Shift + E' : 'Alt + Shift + E'
+
+    const { floating, getFloatingInteraction, isOpen } = useMyFloating({
+        placement: 'bottom',
+        delay: {
+            open: 750,
+        },
+        offset: ({ rects }) => ({
+            crossAxis: rects.floating.width - 8,
+            mainAxis: 4,
+        }),
+    })
+
+    const floatingInteraction = getFloatingInteraction()
+
+    const toggle = () =>
+        setActiveStatus((prev) => (prev === '근무' ? '휴가' : '근무'))
+
+    useEffect(() => {
+        Browser.runtime.onMessage.addListener((message) => {
+            if (message.type === 'toggle_tab') {
+                toggle()
+            }
+        })
+    }, [])
 
     return (
         <>
-            <ButtonToggleGroup fullWidth>
-                <ButtonToggleGroup.Item
-                    onClick={() => setActiveStatus('근무')}
-                    value="근무"
+            <div ref={floating.refs.setReference}>
+                <ButtonToggleGroup
+                    fullWidth
+                    defaultIndex={ButtonKeyList.indexOf(activeStatus)}
                 >
-                    <div className="text-subtitle1">근무</div>
-                </ButtonToggleGroup.Item>
-                <ButtonToggleGroup.Item
-                    onClick={() => setActiveStatus('휴가')}
-                    value="휴가"
-                >
-                    <div className="text-subtitle1">휴가</div>
-                </ButtonToggleGroup.Item>
-            </ButtonToggleGroup>
+                    {ButtonKeyList.map((key) => (
+                        <ButtonToggleGroup.Item
+                            key={key}
+                            onClick={() => setActiveStatus(key)}
+                            value={key}
+                        >
+                            <div className="text-subtitle1">{key}</div>
+                        </ButtonToggleGroup.Item>
+                    ))}
+                </ButtonToggleGroup>
+            </div>
+
             {activeStatus === '근무' && <WorkingRecord />}
             {activeStatus === '휴가' && <TimeOff />}
+            <FloatingPortal>
+                {isOpen && (
+                    <div
+                        ref={floating.refs.setFloating}
+                        className="tooltip"
+                        style={floating.floatingStyles}
+                        {...floatingInteraction.getFloatingProps()}
+                    >
+                        {command}
+                    </div>
+                )}
+            </FloatingPortal>
         </>
     )
 }
