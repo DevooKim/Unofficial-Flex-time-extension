@@ -21,9 +21,11 @@
         "dayjs": "^1.11.6",
         "html2canvas": "^1.4.1",
         "lodash": "^4.17.21",
+        "msw": "^2.2.12",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
         "react-error-boundary": "^4.0.13",
+        "vitest": "^1.4.0",
         "webextension-polyfill": "^0.10.0"
     },
     "devDependencies": {
@@ -61,5 +63,10 @@
         "typescript": "^5.3.3",
         "vite": "^5.1.4",
         "vitest": "^1.4.0"
+    },
+    "msw": {
+        "workerDirectory": [
+            "public"
+        ]
     }
 }
