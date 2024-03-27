@@ -87,17 +87,20 @@ const TimeOffMain = (props: TimeOffMainProps) => {
             <ul className="flex flex-col">
                 {휴가정보list.map((휴가정보) => (
                     <li
-                        className="flex flex-col text-sm text-alternative"
+                        className="flex flex-col text-sm text-alternative mb-2"
                         key={휴가정보.date}
                     >
                         <span>{휴가정보.date}</span>
                         <ul className="flex-flex-col">
                             {휴가정보.infos.map((info) => (
-                                <li key={info.name}>
+                                <li
+                                    key={info.name}
+                                    className="list-disc list-inside"
+                                >
                                     {info.hours === 0
                                         ? ''
                                         : `${info.hours}시간`}{' '}
-                                    {info.minutes === 0
+                                    {info.minutes % 60 === 0
                                         ? ''
                                         : `${info.minutes}분`}
                                 </li>
