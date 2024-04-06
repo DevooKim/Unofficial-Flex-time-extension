@@ -43,4 +43,7 @@ export default defineConfig({
         sourcemap: isDev,
         emptyOutDir: !isDev,
     },
+    define: {
+        APP_VERSION: JSON.stringify(pkg.version),
+    },
 })
