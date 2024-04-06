@@ -14,7 +14,6 @@ import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
 
 import { useFetchClockData } from '../../hooks/queries/useFetchClockData'
 import { useFetchLatestVersion } from '../../hooks/queries/useFetchLatestVersion'
-import VersionUpdateBar from './components/VersionUpdateBar'
 
 const Header = () => {
     const { baseTimeData } = useBaseTimeContext()
@@ -71,7 +70,6 @@ const Header = () => {
 
     return (
         <div>
-            <VersionUpdateBar />
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                     <div className="text-h6 text-alternative">
