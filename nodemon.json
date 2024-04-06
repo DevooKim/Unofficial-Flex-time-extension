@@ -1,7 +1,5 @@
 {
-    "env": {
-        "__DEV__": "true"
-    },
+    "env": {},
     "watch": [
         "src",
         "utils",
@@ -12,5 +10,5 @@
     ],
     "ext": "tsx,css,html,ts,json",
     "ignore": ["src/**/*.spec.ts"],
-    "exec": "vite build"
+    "exec": "NODE_ENV=development vite build --mode development"
 }
