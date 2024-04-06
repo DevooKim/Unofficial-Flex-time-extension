@@ -1,11 +1,9 @@
 import {
-    FloatingFocusManager,
     FloatingPortal,
     autoPlacement,
     autoUpdate,
     offset,
     useClick,
-    useDismiss,
     useFloating,
     useInteractions,
 } from '@floating-ui/react'
