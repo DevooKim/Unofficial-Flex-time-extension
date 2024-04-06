@@ -13,10 +13,14 @@ import { useFetchScheduleData } from '@popup/hooks/queries/useFetchScheduleData'
 import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
 
 import { useFetchClockData } from '../../hooks/queries/useFetchClockData'
+import { useFetchLatestVersion } from '../../hooks/queries/useFetchLatestVersion'
+import VersionUpdateBar from './components/VersionUpdateBar'
 
 const Header = () => {
     const { baseTimeData } = useBaseTimeContext()
     const { openFlex } = useOpenFlex()
+
+    const { refetch } = useFetchLatestVersion()
 
     const {
         floating: dateFloating,
@@ -66,63 +70,72 @@ const Header = () => {
     })
 
     return (
-        <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-                <div className="text-h6 text-alternative">
-                    {dayjs(baseTimeData.today).format('MM월 DD일')}
+        <div>
+            <VersionUpdateBar />
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                    <div className="text-h6 text-alternative">
+                        {dayjs(baseTimeData.today).format('MM월 DD일')}
+                    </div>
+                    <div
+                        ref={dateFloating.refs.setReference}
+                        className="text-paragraph-sm text-link"
+                        {...dateFloatingInteraction.getReferenceProps()}
+                    >
+                        (
+                        {myClockData.현재근무상태 === '근무중'
+                            ? myScheduleData.지금기준.남은근무일
+                            : myScheduleData.남은근무일}{' '}
+                        / {myScheduleData.워킹데이})
+                    </div>
                 </div>
-                <div
-                    ref={dateFloating.refs.setReference}
-                    className="text-paragraph-sm text-link"
-                    {...dateFloatingInteraction.getReferenceProps()}
-                >
-                    (
-                    {myClockData.현재근무상태 === '근무중'
-                        ? myScheduleData.지금기준.남은근무일
-                        : myScheduleData.남은근무일}{' '}
-                    / {myScheduleData.워킹데이})
-                </div>
-            </div>
 
-            <div
-                ref={flexFloating.refs.setReference}
-                {...flexFloatingInteraction.getReferenceProps()}
-            >
-                <IconButton
-                    icon={<GlobalIcon className="w-6 h-6 fill-link" />}
-                    onClick={openFlex}
-                />
+                <div className="flex items-center">
+                    <div
+                        ref={flexFloating.refs.setReference}
+                        className="flex"
+                        {...flexFloatingInteraction.getReferenceProps()}
+                    >
+                        <IconButton
+                            icon={<GlobalIcon className="w-6 h-6 fill-link" />}
+                            onClick={openFlex}
+                        />
+                    </div>
+                    <div>
+                        <button onClick={() => refetch()}>업데이트 확인</button>
+                    </div>
+                </div>
+                <FloatingPortal>
+                    {isDateFloatingOpen && (
+                        <div
+                            ref={dateFloating.refs.setFloating}
+                            className="tooltip"
+                            style={dateFloating.floatingStyles}
+                            {...dateFloatingInteraction.getFloatingProps()}
+                        >
+                            <FloatingArrow
+                                ref={dateFloatingArrowRef}
+                                context={dateFloating.context}
+                            />
+                            남은 근무일
+                        </div>
+                    )}
+                    {isFlexFloatingOpen && (
+                        <div
+                            ref={flexFloating.refs.setFloating}
+                            className="tooltip"
+                            style={flexFloating.floatingStyles}
+                            {...flexFloatingInteraction.getFloatingProps()}
+                        >
+                            <FloatingArrow
+                                ref={flexFloatingArrowRef}
+                                context={flexFloating.context}
+                            />
+                            flex로 이동
+                        </div>
+                    )}
+                </FloatingPortal>
             </div>
-            <FloatingPortal>
-                {isDateFloatingOpen && (
-                    <div
-                        ref={dateFloating.refs.setFloating}
-                        className="tooltip"
-                        style={dateFloating.floatingStyles}
-                        {...dateFloatingInteraction.getFloatingProps()}
-                    >
-                        <FloatingArrow
-                            ref={dateFloatingArrowRef}
-                            context={dateFloating.context}
-                        />
-                        남은 근무일
-                    </div>
-                )}
-                {isFlexFloatingOpen && (
-                    <div
-                        ref={flexFloating.refs.setFloating}
-                        className="tooltip"
-                        style={flexFloating.floatingStyles}
-                        {...flexFloatingInteraction.getFloatingProps()}
-                    >
-                        <FloatingArrow
-                            ref={flexFloatingArrowRef}
-                            context={flexFloating.context}
-                        />
-                        flex로 이동
-                    </div>
-                )}
-            </FloatingPortal>
         </div>
     )
 }
