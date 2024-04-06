@@ -11,14 +11,15 @@ import { useEffect, useState } from 'react'
 
 import { useFetchLatestVersion } from '@src/pages/popup/hooks/queries/useFetchLatestVersion'
 
-const currentVersion = APP_VERSION
+const OWNER = import.meta.env.VITE_GITHUB_OWNER
+const REPO = import.meta.env.VITE_GITHUB_REPO
 
 const VersionUpdateBar = () => {
     const latestVersion = useFetchLatestVersion()
     const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
-        setIsOpen(latestVersion.data && currentVersion !== latestVersion.data)
+        setIsOpen(latestVersion.data && APP_VERSION !== latestVersion.data)
     }, [latestVersion.data, latestVersion.isFetching])
 
     const { refs, floatingStyles, context } = useFloating({
@@ -31,6 +32,13 @@ const VersionUpdateBar = () => {
     const click = useClick(context)
 
     const { getReferenceProps, getFloatingProps } = useInteractions([click])
+
+    const download = () => {
+        window.open(
+            `https://github.com/${OWNER}/${REPO}/releases/latest/download/${ASSET_NAME}`,
+            '_blank'
+        )
+    }
 
     return (
         <div>
@@ -46,7 +54,7 @@ const VersionUpdateBar = () => {
                     >
                         <span>새로운 버전이 있습니다!</span>
                         <div className="flex gap-2">
-                            <button>업데이트</button>
+                            <button onClick={download}>다운로드</button>
                             <button onClick={() => setIsOpen(false)}>
                                 닫기
                             </button>
