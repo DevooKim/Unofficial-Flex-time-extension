@@ -8,7 +8,9 @@ type IconButtonProps = ButtonProps & {
 }
 
 const IconButton = ({ icon, ...props }: IconButtonProps) => (
-    <Button {...props}>{icon}</Button>
+    <Button {...props}>
+        <div className="flex items-center justify-center">{icon}</div>
+    </Button>
 )
 
 export default IconButton
