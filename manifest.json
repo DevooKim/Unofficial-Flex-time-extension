@@ -26,7 +26,14 @@
             "description": "근무-휴가 탭 전환"
         }
     },
-    "permissions": ["tabs", "activeTab", "webRequest", "storage", "sidePanel"],
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "webRequest",
+        "storage",
+        "sidePanel",
+        "notifications"
+    ],
     "side_panel": {
         "default_path": "src/pages/popup/index.html",
         "default_title": "unofficial-flex-extension"
