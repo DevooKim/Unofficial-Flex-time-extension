@@ -5,7 +5,7 @@ import '@src/styles/tailwind.css'
 import Popup from '@popup/Popup'
 
 async function enableMocking() {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'development') {
         return
     }
 
