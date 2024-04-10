@@ -2,7 +2,7 @@ name: Build and Zip Extension
 
 on:
     workflow_run:
-      workflows: ['Release']
+      workflows: [Release]
       types:
         - completed
 
