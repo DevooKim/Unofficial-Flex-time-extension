@@ -1,4 +1,4 @@
-name: Build and Zip Extension_test
+name: Build and Zip Extension
 
 on:
     workflow_run:
@@ -9,7 +9,7 @@ on:
 jobs:
     build:
         name: Build
-        timeout-minutes: 15
+        timeout-minutes: 5
         runs-on: ubuntu-latest
         steps:
             - name: Check out code

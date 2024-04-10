@@ -3,13 +3,10 @@ name: Release
 on:
     workflow_dispatch:
     push:
-        # branches: ['main']
-        branches: ['update-notice']
+        branches: ['main']
 
 jobs:
-    build:
-        name: Build
-        timeout-minutes: 15
+    release:
         runs-on: ubuntu-latest
         steps:
             - name: Git user setup
