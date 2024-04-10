@@ -1,6 +1,6 @@
 import Browser from 'webextension-polyfill'
 
-import { getCurrentSession } from '@src/utils/apis'
+import { getCurrentSession, searchUsers } from '@src/utils/apis'
 
 console.log('Hello world, background service worker!')
 
@@ -56,60 +56,60 @@ const fetchMyCurrentStatus = async () => {
     return targetDayWorkSchedule
 }
 
-const searchUsers = async ({
-    keyword,
-    filter,
-    sort,
-    size,
-    continuationToken,
-} = {}) => {
-    console.log('searching users...')
-    const makePagingQuery = ({ size, continuationToken } = {}) => {
-        const queries = []
-        if (size) {
-            queries.push(`size=${size}`)
-        }
-        if (continuationToken) {
-            queries.push(`continuationToken=${continuationToken}`)
-        }
-        return queries.length ? `?${queries.join('&')}` : ''
-    }
-    const response = await fetch(
-        `https://flex.team/action/v2/search/customers/pVEkBrmzMB/time-series/search-users${makePagingQuery({ size, continuationToken })}`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                ...(keyword && { keyword }),
-                ...(sort && { sort }),
-                filter: {
-                    jobTitleIdHashes: [...(filter?.jobTitleIdHashes ?? [])],
-                    jobRankIdHashes: [...(filter?.jobRankIdHashes ?? [])],
-                    jobRoleIdHashes: [...(filter?.jobRoleIdHashes ?? [])],
-                    departmentIdHashes: [...(filter?.departmentIdHashes ?? [])],
-                    headUsers: [...(filter?.headUsers ?? [])],
-                    userStatuses: [
-                        'LEAVE_OF_ABSENCE',
-                        'LEAVE_OF_ABSENCE_SCHEDULED',
-                        'RESIGNATION_SCHEDULED',
-                        'IN_EMPLOY',
-                        'IN_APPRENTICESHIP',
-                    ],
-                },
-                // sort: {
-                //     sortType: 'DISPLAY_NAME',
-                //     directionType: 'ASC',
-                // },
-            }),
-        }
-    )
+// const searchUsers = async ({
+//     keyword,
+//     filter,
+//     sort,
+//     size,
+//     continuationToken,
+// } = {}) => {
+//     console.log('searching users...')
+//     const makePagingQuery = ({ size, continuationToken } = {}) => {
+//         const queries = []
+//         if (size) {
+//             queries.push(`size=${size}`)
+//         }
+//         if (continuationToken) {
+//             queries.push(`continuationToken=${continuationToken}`)
+//         }
+//         return queries.length ? `?${queries.join('&')}` : ''
+//     }
+//     const response = await fetch(
+//         `https://flex.team/action/v2/search/customers/pVEkBrmzMB/time-series/search-users${makePagingQuery({ size, continuationToken })}`,
+//         {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//                 ...(keyword && { keyword }),
+//                 ...(sort && { sort }),
+//                 filter: {
+//                     jobTitleIdHashes: [...(filter?.jobTitleIdHashes ?? [])],
+//                     jobRankIdHashes: [...(filter?.jobRankIdHashes ?? [])],
+//                     jobRoleIdHashes: [...(filter?.jobRoleIdHashes ?? [])],
+//                     departmentIdHashes: [...(filter?.departmentIdHashes ?? [])],
+//                     headUsers: [...(filter?.headUsers ?? [])],
+//                     userStatuses: [
+//                         'LEAVE_OF_ABSENCE',
+//                         'LEAVE_OF_ABSENCE_SCHEDULED',
+//                         'RESIGNATION_SCHEDULED',
+//                         'IN_EMPLOY',
+//                         'IN_APPRENTICESHIP',
+//                     ],
+//                 },
+//                 // sort: {
+//                 //     sortType: 'DISPLAY_NAME',
+//                 //     directionType: 'ASC',
+//                 // },
+//             }),
+//         }
+//     )
 
-    console.log(await response.json())
+//     console.log(await response.json())
 
-    return true
-}
+//     return true
+// }
 
 const fetchPrimaryWorkspaceCustomer = async () => {
     const userIdHash = await fetchUserIdHash()
@@ -175,14 +175,16 @@ const fetchPrimaryWorkspaceCustomer = async () => {
     const myCurrentStatus = await fetchMyCurrentStatus()
     console.log(myCurrentStatus)
 
-    const users = await searchUsers({ size: 100 })
+    const currentSession = await getCurrentSession()
+    console.log(currentSession)
+
+    const users = await searchUsers({
+        customerIdHash: currentSession.customer.customerIdHash,
+    })
     console.log(users)
 
     const primaryWorkspaceCustomer = await fetchPrimaryWorkspaceCustomer()
     console.log(primaryWorkspaceCustomer)
-
-    const currentSession = await getCurrentSession()
-    console.log(currentSession)
 })()
 
 Browser.commands.onCommand.addListener((command) => {
