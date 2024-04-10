@@ -5,6 +5,7 @@ import IconButton from '@src/components/IconButton'
 import { useOpenFlex } from '@src/hooks'
 import useMyFloating from '@src/hooks/useMyFloating'
 import GlobalIcon from '@src/icons/GlobalIcon'
+import StarFillIcon from '@src/icons/StarFillIcon'
 import { parseClockData } from '@src/utils/parseClockData'
 import { parseScheduleData } from '@src/utils/parseScheduleData'
 
@@ -41,6 +42,15 @@ const Header = () => {
         },
     })
     const flexFloatingInteraction = getFlexFloatingInteraction()
+
+    const {
+        floating: updateFloating,
+        getFloatingInteraction: getUpdateFloatingInteraction,
+        arrowRef: updateFloatingArrowRef,
+        isOpen: isUpdateFloatingOpen,
+    } = useMyFloating({})
+
+    const updateFloatingInteraction = getUpdateFloatingInteraction()
 
     const { data: userIdHash } = useFetchUserIdHash()
 
@@ -88,7 +98,7 @@ const Header = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center">
+                <div className="flex items-center gap-1">
                     <div
                         ref={flexFloating.refs.setReference}
                         className="flex"
@@ -99,8 +109,17 @@ const Header = () => {
                             onClick={openFlex}
                         />
                     </div>
-                    <div>
-                        <button onClick={() => refetch()}>업데이트 확인</button>
+                    <div
+                        ref={updateFloating.refs.setReference}
+                        className="flex"
+                        {...updateFloatingInteraction.getReferenceProps()}
+                    >
+                        <IconButton
+                            icon={
+                                <StarFillIcon className="w-6 h-6 fill-link" />
+                            }
+                            onClick={() => refetch()}
+                        />
                     </div>
                 </div>
                 <FloatingPortal>
@@ -130,6 +149,20 @@ const Header = () => {
                                 context={flexFloating.context}
                             />
                             flex로 이동
+                        </div>
+                    )}
+                    {isUpdateFloatingOpen && (
+                        <div
+                            ref={updateFloating.refs.setFloating}
+                            className="tooltip"
+                            style={updateFloating.floatingStyles}
+                            {...updateFloatingInteraction.getFloatingProps()}
+                        >
+                            <FloatingArrow
+                                ref={updateFloatingArrowRef}
+                                context={updateFloating.context}
+                            />
+                            업데이트 확인
                         </div>
                     )}
                 </FloatingPortal>
