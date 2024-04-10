@@ -2,17 +2,23 @@ name: Release
 
 on:
     workflow_dispatch:
-    push:
-        branches: ['main']
 
 jobs:
     release:
         runs-on: ubuntu-latest
         steps:
-            - name: Git user setup
+            - name: Checkout code
               uses: actions/checkout@v4
-            - run: git config user.email $(git log -1 --pretty=format:'%ae')
-            - run: git config user.name $(git log -1 --pretty=format:'%an')
+              with:
+                  ref: develop
+
+            - name: Create branch
+              run: git checkout -b release/${{ github.run_number }} develop
+
+            - name: Set git user
+              run: |
+                  git config user.name github-actions
+                  git config user.email github-actions@github.com
 
             - name: Setup Node.js environment
               uses: actions/setup-node@v4
@@ -21,7 +27,13 @@ jobs:
                   cache: 'yarn'
 
             - name: Release version
-              run: yarn version --minor
+              run: |
+                  yarn version --minor
+                  git push origin --tags
 
-            - name: Push changes
-              run: git push --follow-tags
+            - name: Merge branch
+              run: |
+                  git fetch origin main
+                  git switch main
+                  git merge --no-ff release/${{ github.run_number }}
+                  git push origin main
