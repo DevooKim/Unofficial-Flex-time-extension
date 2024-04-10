@@ -1,0 +1,33 @@
+name: Release
+
+on:
+    workflow_dispatch:
+    push:
+        # branches: ['main']
+        branches: ['update-notice']
+
+jobs:
+    build:
+        name: Build
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: Git user setup
+              uses: actions/checkout@v4
+            - run: git config user.email $(git log -1 --pretty=format:'%ae')
+            - run: git config user.name $(git log -1 --pretty=format:'%an')
+
+            - name: Setup Node.js environment
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'yarn'
+
+            - name: Install dependencies
+              run: yarn
+
+            - name: Release version
+              run: yarn version --minor
+
+            - name: Push changes
+              run: git push --follow-tags
