@@ -67,8 +67,26 @@ export type searchUsersParams = {
     continuationToken?: string
 }
 
+interface searchUsersListTypesBase {
+    /** 회사 아이디 해시값 */
+    customerIdHash: string
+    /** 직위 정보 */
+    employeeInfo: {
+        jobLevels: object[]
+        jobRanks: object[]
+        jobRoles: object[]
+        position: object[]
+    }
+    /** 유저 상태 태그 */
+    tagInfo: {
+        userStatuses: usersStatusesTypes[]
+    }
+    /** 유저 아이디 해시값 */
+    userIdHash: string
+}
+
 /** 유저 리스트 타입 정의 */
-type searchUsersListTypes = {
+interface searchUsersListTypes extends searchUsersListTypesBase {
     /** 기본 정보 */
     basicInfo: {
         /** 내 소개 글 */
@@ -113,35 +131,56 @@ type searchUsersListTypes = {
         /** 프로필 썸네일 이미지 */
         profileThumbnailImageUrl: string
     }
-    /** 회사 아이디 해시값 */
-    customerIdHash: string
-    /** 직위 정보 */
-    employeeInfo: {
-        jobLevels: object[]
-        jobRanks: object[]
-        jobRoles: object[]
-        position: object[]
-    }
-    /** 유저 상태 태그 */
-    tagInfo: {
-        userStatuses: usersStatusesTypes[]
-    }
-    /** 유저 아이디 해시값 */
-    userIdHash: string
 }
 
-/** 회사에 소속된 유저 검색 응답 데이터 타입 정의 */
-export type searchUsersResult = {
+interface searchUsersListOriginalTypes extends searchUsersListTypesBase {
+    basicInfo: {
+        aboutMe: string
+        birth: {
+            monthDaySplit: {
+                month: number
+                day: number
+            }
+        }
+        companyJoin: {
+            yearMonthDaySplit: {
+                year: number
+                month: number
+                day: number
+            }
+        }
+        displayName: string
+        email: string
+        gender: 'MALE' | 'FEMAIL' | 'UNKNOWN'
+        name: string
+        nameInEnglishFirst: string
+        nameInEnglishLast: string
+        originEmail: string
+        profileCoverImageUrl: string
+        profileImageUrl: string
+        profileThumbnailImageUrl: string
+    }
+}
+
+interface searchUsersResultBase {
     /** 다음 페이지네이션 지점 - 다음 API 호출 시 해당 값을 전달하면 이후 유저 데이터 부터 불러옵니다. */
     continuation: string
     /** 다음 페이지 존재 유무 */
     hasNext: boolean
-    /** 유저 리스트 */
-    list: searchUsersListTypes[]
     /** 전체 값 */
     total: {
         /** 총 유저 수 */
         value: number
         relation: string
     }
+}
+
+/** 회사에 소속된 유저 검색 응답 데이터 타입 정의 */
+export interface searchUsersResult extends searchUsersResultBase {
+    /** 유저 리스트 */
+    list: searchUsersListTypes[]
+}
+
+export interface searchUsersResultOriginal extends searchUsersResultBase {
+    list: searchUsersListOriginalTypes[]
 }

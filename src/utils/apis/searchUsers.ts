@@ -1,4 +1,8 @@
-import { searchUsersParams, searchUsersResult } from './types'
+import {
+    searchUsersParams,
+    searchUsersResult,
+    searchUsersResultOriginal,
+} from './types'
 
 /**
  * 회사에 소속된 유저를 검색합니다.
@@ -60,7 +64,53 @@ const searchUsers = async ({
         }
     )
 
-    return await response.json()
+    const { continuation, hasNext, list, total }: searchUsersResultOriginal =
+        await response.json()
+
+    return {
+        continuation,
+        hasNext,
+        list: list.map(
+            ({
+                basicInfo,
+                customerIdHash,
+                employeeInfo,
+                tagInfo,
+                userIdHash,
+            }) => ({
+                basicInfo: {
+                    aboutMe: basicInfo.aboutMe,
+                    birth: {
+                        month: basicInfo.birth.monthDaySplit.month,
+                        day: basicInfo.birth.monthDaySplit.day,
+                    },
+                    companyJoined: {
+                        year: basicInfo.companyJoin.yearMonthDaySplit.year,
+                        month: basicInfo.companyJoin.yearMonthDaySplit.month,
+                        day: basicInfo.companyJoin.yearMonthDaySplit.day,
+                    },
+                    displayName: basicInfo.displayName,
+                    email: basicInfo.email,
+                    gender: basicInfo.gender,
+                    name: basicInfo.name,
+                    englishName: {
+                        firstName: basicInfo.nameInEnglishFirst,
+                        lastName: basicInfo.nameInEnglishLast,
+                    },
+                    originEmail: basicInfo.originEmail,
+                    profileCoverImageUrl: basicInfo.profileCoverImageUrl,
+                    profileImageUrl: basicInfo.profileImageUrl,
+                    profileThumbnailImageUrl:
+                        basicInfo.profileThumbnailImageUrl,
+                },
+                customerIdHash,
+                employeeInfo,
+                tagInfo,
+                userIdHash,
+            })
+        ),
+        total,
+    }
 }
 
 export default searchUsers
