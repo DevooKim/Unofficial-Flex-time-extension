@@ -69,35 +69,64 @@ export type searchUsersParams = {
 
 /** 유저 리스트 타입 정의 */
 type searchUsersListTypes = {
+    /** 기본 정보 */
     basicInfo: {
+        /** 내 소개 글 */
         aboutMe: string
+        /** 생일 */
         birth: {
+            /** 월 */
             month: number
+            /** 일 */
             day: number
         }
+        /** 입사일 */
         companyJoined: {
+            /** 연도 */
             year: number
+            /** 월 */
             month: number
+            /** 일 */
             day: number
         }
+        /** 표시 이름 */
         displayName: string
+        /** 이메일 */
         email: string
+        /** 성별 */
         gender: 'MALE' | 'FEMAIL' | 'UNKNOWN'
+        /** 성함 */
         name: string
+        /** 영문 유저명 */
         englishName: {
+            /** 영문 이름 */
             firstName: string
+            /** 영문 성 */
             lastName: string
         }
+        /** 원본 이메일 */
         originEmail: string
+        /** 프로필 커버 이미지 */
         profileCoverImageUrl: string
+        /** 프로필 이미지 */
         profileImageUrl: string
+        /** 프로필 썸네일 이미지 */
         profileThumbnailImageUrl: string
     }
+    /** 회사 아이디 해시값 */
     customerIdHash: string
-    employeeInfo: object //
+    /** 직위 정보 */
+    employeeInfo: {
+        jobLevels: object[]
+        jobRanks: object[]
+        jobRoles: object[]
+        position: object[]
+    }
+    /** 유저 상태 태그 */
     tagInfo: {
         userStatuses: usersStatusesTypes[]
     }
+    /** 유저 아이디 해시값 */
     userIdHash: string
 }
 
