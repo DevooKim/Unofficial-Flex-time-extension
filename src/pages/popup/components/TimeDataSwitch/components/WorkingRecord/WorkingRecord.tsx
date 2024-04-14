@@ -17,14 +17,22 @@ const ProgressBar = ({
     근무시간총합,
     최소근무시간,
     남은근무시간,
+    휴가시간 = 0,
 }: {
     근무시간총합: number
     최소근무시간: number
     남은근무시간: number
+    휴가시간: number
 }) => {
     const [viewWorkedTime, setViewWorkedTime] = useState(true)
 
-    const progressBarWidth = `${Math.max(Math.min((근무시간총합 / 최소근무시간) * 100, 100), 3).toFixed(2)}%`
+    const 초과근무시간 = Math.max(근무시간총합 - 최소근무시간, 0)
+
+    const workTimeBarWidth = `${Math.max(Math.min(((근무시간총합 - 초과근무시간) / 최소근무시간) * 100, 100), 3).toFixed(2)}%`
+
+    const vacationTimeBarWidth = `${Math.max(Math.min((휴가시간 / 최소근무시간) * 100, 100), 0).toFixed(2)}%`
+
+    const overtimeBarWidth = `${((초과근무시간 / 최소근무시간) * 100).toFixed(2)}%`
 
     return (
         <>
@@ -42,11 +50,23 @@ const ProgressBar = ({
                 </h4>
                 <p className="m-0 mb-2 text-xs text-hint">{최소근무시간}시간</p>
             </div>
-            <div className="h-2 w-full rounded bg-gray-200">
+            <div className="flex h-2 w-full rounded bg-gray-200 [&>:first-child]:rounded-l [&>:last-child]:rounded-r-md">
+                {휴가시간 ? (
+                    <div
+                        className="h-2 bg-blue-200"
+                        style={{ width: vacationTimeBarWidth }}
+                    />
+                ): null}
                 <div
-                    className="h-2 rounded bg-blue-500"
-                    style={{ width: progressBarWidth || 0 }}
+                    className="h-2 bg-blue-500"
+                    style={{ width: workTimeBarWidth || 0 }}
                 />
+                {초과근무시간 ? (
+                    <div
+                        className="h-2 bg-red-400"
+                        style={{ width: overtimeBarWidth}}
+                    />
+                ): null}
             </div>
         </>
     )
@@ -85,7 +105,12 @@ const Skeleton = () => (
                 이번 달 최소 근무 시간
                 <HelpCircleIcon className="ml-1" />
             </div>
-            <ProgressBar 근무시간총합={0} 최소근무시간={0} 남은근무시간={0} />
+            <ProgressBar
+                근무시간총합={0}
+                최소근무시간={0}
+                남은근무시간={0}
+                휴가시간={0}
+            />
         </div>
         <TimeCard
             icon="⌛"
@@ -124,11 +149,13 @@ const WorkingRecord = () => {
         지금기준,
         남은평균근무시간,
         남은근무시간,
+        휴가정보list,
     } = parseScheduleData({
         data: scheduleData,
         today: baseTimeData.today,
         clockData: myClockData,
     })
+
 
     return (
         <div>
@@ -141,6 +168,7 @@ const WorkingRecord = () => {
                     근무시간총합={근무시간총합}
                     최소근무시간={최소근무시간}
                     남은근무시간={남은근무시간}
+                    휴가시간={휴가정보list[0]?.totalHours || 0}
                 />
             </div>
             <TimeCard
