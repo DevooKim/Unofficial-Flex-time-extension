@@ -1,6 +1,7 @@
 import Browser from 'webextension-polyfill'
 
 import { getCurrentSession, searchUsers } from '@src/utils/apis'
+import getUserCurrentStatus from '@src/utils/apis/getUserCurrentStatus'
 
 console.log('Hello world, background service worker!')
 
@@ -172,8 +173,9 @@ const fetchPrimaryWorkspaceCustomer = async () => {
     })
     console.log(scheduleData)
 
-    const myCurrentStatus = await fetchMyCurrentStatus()
-    console.log(myCurrentStatus)
+    const myCurrentStatus = await getUserCurrentStatus({ userIdHash })
+    // const typeTest = myCurrentStatus.onGoingRecordPack?.restRecords.map(d => d.restStartRecord.eventType === "REST_START")
+    console.log({ myCurrentStatus })
 
     const currentSession = await getCurrentSession()
     console.log(currentSession)
