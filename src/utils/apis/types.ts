@@ -181,6 +181,93 @@ export interface searchUsersResult extends searchUsersResultBase {
     list: searchUsersListTypes[]
 }
 
+/** 회사 소속 유저 검색 응답 데이터 원본 타입 정의 */
 export interface searchUsersResultOriginal extends searchUsersResultBase {
     list: searchUsersListOriginalTypes[]
+}
+
+/** 특정 유저의 현재 근무 및 휴가 상태를 가져오는 API 함수 요청 파라미터 정의 */
+export type userCurrentStatusRequests = {
+    /** 유저 아이디 해시값 */
+    userIdHash: string
+}
+
+/** 휴가중 데이터 타입 정의 */
+type userCurrentStatusTimeOffs = {
+    /** 휴가 이벤트 아이디 */
+    userTimeOffEventId: string
+    /** 휴가 유형 아이디 */
+    timeOffPolicyId: string
+    /** 휴가 유형 */
+    timeOffPolicyType: 'ANNUAL' | 'CUSTOM'
+    /** 승인 상태 */
+    approval: {
+        /** 승인 상태 */
+        status: 'APPROVED'
+        /** 태스크 키 */
+        taskKey: string
+        /** 승인 아이디 */
+        approvalId: string
+    }
+    /** 승인 취소 진행 중 여부 */
+    cancelApprovalInProgress: boolean
+    /** 적용 시간 (분) */
+    usedMinutes: number
+    /** 실제(?) 적용 시간 (분) */
+    usedPaidMinutes: number
+    /** 휴게 시간 */
+    restMinutes: number
+    /** 휴기 사용 상태 */
+    timeOffUseStatus: 'APPROVAL_COMPLETED'
+    /** 휴기 등록 단위 */
+    timeOffRegisterUnit: 'DAY' | 'HALF_DAY_AM' | 'HALF_DAY_PM'
+}
+
+/** 근무 기록 데이터 타입 정의 */
+type userCurrentStatusRecords = {
+    /** 이벤트 종류 */
+    eventType: 'START' | 'STOP' | 'REST_START' | 'REST_STOP'
+    /** 시간 (타임스탬프) */
+    targetTime: EpochTimeStamp
+    /** customerWorkFormId */
+    customerWorkFormId?: string
+    /** 기록 유형 */
+    recordType: 'RECORD' | 'PLAN_BY_AUTO'
+    /** 적용 타임 존 */
+    zoneId: string
+}
+
+/** 특정 유저의 현재 근무 및 휴가 상태를 가져오는 API 함수 응답 데이터 타입 정의 */
+export type userCurrentStatusResponse = {
+    /** 타깃(현재) 날짜 */
+    targetDate: string
+    /** 타깃(현재) 날짜에 대한 스케쥴 */
+    targetDayWorkSchedule: {
+        /** 날짜 */
+        date: string
+        /** 근무 기록 */
+        workRecords: object[] // ? -> 추후 타입체크 필요
+        /** 휴가 내역 */
+        timeOffs: userCurrentStatusTimeOffs[]
+    }
+    /** 현재 진행 중인 근무 기록 */
+    onGoingRecordPack?: {
+        /** 근무 시작 기록 */
+        startRecord: userCurrentStatusRecords
+        /** 근무 유형 전환 기록(?) */
+        switchRecords: userCurrentStatusRecords[] // ? -> 우선 userCurrentStatusRecords 타입으로 / 추후 타입체크 필요
+        /** 휴게 기록 */
+        restRecords: [
+            {
+                /** 휴게 시작 */
+                restStartRecord: userCurrentStatusRecords
+                /** 휴게 종료 */
+                restStopRecord: userCurrentStatusRecords
+            },
+        ]
+        /** 근무 중 여부 */
+        onGoing: boolean
+    }
+    /** 적용 타임 존 */
+    appliedZoneId: string
 }
