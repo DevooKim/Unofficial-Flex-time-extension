@@ -43,21 +43,24 @@ const badgeColorVariant = {
  */
 
 const StatusInfo = ({ 현재근무상태, 오늘일한시간 }: StatusProps) => (
-    // <div className={`flex items-start 등등 여기에스타일 ${statusTextColorVariant[현재근무상태]}`}>
-    <div className={`${statusTextColorVariant[현재근무상태]}`}>
-        <DotIcon
-            className={dotIconColorVariant[현재근무상태]}
-            width="6"
-            height="6"
-        />
-        {현재근무상태}
-        <Badge
-            className="!rounded-[13px]"
-            color={badgeColorVariant[현재근무상태]}
-            size="md"
+    <div className={`flex items-start ${statusTextColorVariant[현재근무상태]}`}>
+        <div
+            className={`flex items-center justify-between gap-2 ${statusTextColorVariant[현재근무상태]}`}
         >
-            {오늘일한시간}
-        </Badge>
+            <DotIcon
+                className={dotIconColorVariant[현재근무상태]}
+                width="6"
+                height="6"
+            />
+            <div className="text-h4">{현재근무상태}</div>
+            <Badge
+                className="!rounded-[13px]"
+                color={badgeColorVariant[현재근무상태]}
+                size="md"
+            >
+                <div className="text-subtitle-2"> {오늘일한시간}</div>
+            </Badge>
+        </div>
     </div>
 )
 
@@ -83,20 +86,32 @@ const WorkingStatus = () => {
         now: baseTimeData.today,
     })
 
+    // const 현재근무상태 = '퇴근'
     const 출근시간 = formatAmPm(_출근시간)
     const 퇴근시간 = formatAmPm(_퇴근시간)
     const 오늘일한시간 = hourToString(_오늘일한시간)
 
     return (
-        <div className={`여기에스타일 ${boxColorVariant[현재근무상태]}`}>
+        <div
+            className={`flex flex-col p-5 gap-3 rounded-lg ${boxColorVariant[현재근무상태]}`}
+        >
+            <h1>{현재근무상태}</h1>
             <StatusInfo
                 현재근무상태={현재근무상태}
                 오늘일한시간={오늘일한시간}
             />
-            <div>출근시간: {출근시간}</div>
-            <div>퇴근시간: {퇴근시간}</div>
+            {현재근무상태 === '출근전' && (
+                <div className="text-h6 text-info">
+                    출근했다면 flex에서 근무 시작을 눌러 주세요!
+                </div>
+            )}
+            <div className="text-h6">
+                {출근시간} ~ {퇴근시간}
+            </div>
         </div>
     )
 }
+// 퇴근시간이 없으면 노출 안되어야 함...
+// 출근전에는 다른 내용이 노출되어야 함...
 
 export default WorkingStatus
