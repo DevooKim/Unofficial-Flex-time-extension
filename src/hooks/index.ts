@@ -3,6 +3,7 @@ import useCopyToClipboard from './useCopyToClipboard'
 import useFetchClockData from './useFetchClockData'
 import useFetchScheduleData from './useFetchScheduleData'
 import useGetTargetDate from './useGetTargetDate'
+import useMyFloating from './useMyFloating'
 import useOpenFlex from './useOpenFlex'
 import useToggle from './useToggle'
 
@@ -14,4 +15,5 @@ export {
     useCaptureHandler,
     useCopyToClipboard,
     useOpenFlex,
+    useMyFloating,
 }
