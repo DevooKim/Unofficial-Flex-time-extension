@@ -16,6 +16,7 @@ type ButtonToggleGroupItemProps = React.DetailedHTMLProps<
 type ButtonToggleGroupProps = {
     fullWidth?: boolean
     children: React.ReactNode
+    defaultIndex?: number
 }
 
 const ButtonToggleGroupItem = ({
@@ -44,9 +45,13 @@ const ButtonToggleGroupItem = ({
     )
 }
 
-const ButtonToggleGroup = ({ fullWidth, children }: ButtonToggleGroupProps) => {
+const ButtonToggleGroup = ({
+    fullWidth,
+    defaultIndex = 0,
+    children,
+}: ButtonToggleGroupProps) => {
     const ref = useRef<HTMLUListElement>(null)
-    const [activeIndex, setActiveIndex] = useState(0)
+    const [activeIndex, setActiveIndex] = useState(defaultIndex)
     const [maskRect, setMaskRect] = useState<DOMRect | null>(null)
 
     useEffect(() => {
@@ -63,6 +68,10 @@ const ButtonToggleGroup = ({ fullWidth, children }: ButtonToggleGroupProps) => {
 
         setMaskRect(rectList[activeIndex])
     }, [activeIndex])
+
+    useEffect(() => {
+        setActiveIndex(defaultIndex)
+    }, [defaultIndex])
 
     return (
         <div
