@@ -15,50 +15,19 @@ import { parseClockData } from '@src/utils/parseClockData'
 import { parseScheduleData } from '@src/utils/parseScheduleData'
 import { hourToString } from '@src/utils/utils.time'
 
+interface ProgressBarProps {
+    근무시간총합: number
+    최소근무시간: number
+    남은근무시간: number
+    휴가시간: number
+}
 const ProgressBar = ({
     근무시간총합,
     최소근무시간,
     남은근무시간,
     휴가시간 = 0,
-}: {
-    근무시간총합: number
-    최소근무시간: number
-    남은근무시간: number
-    휴가시간: number
-}) => {
+}: ProgressBarProps) => {
     const [viewWorkedTime, setViewWorkedTime] = useState(true)
-
-    const {
-        floating: viewModeFloating,
-        floatingInteraction: viewModeFloatingInteraction,
-        arrowRef: viewModeFloatingArrowRef,
-        isOpen: isViewModeFloatingOpen,
-    } = useMyFloating({ placement: 'top' })
-    const {
-        floating: vacationTimeFloating,
-        floatingInteraction: vacationTimeFloatingInteraction,
-        arrowRef: vacationTimeFloatingArrowRef,
-        isOpen: isVacationTimeFloatingOpen,
-    } = useMyFloating({})
-    const {
-        floating: workTimeFloating,
-        floatingInteraction: workTimeFloatingInteraction,
-        arrowRef: workTimeFloatingArrowRef,
-        isOpen: isWorkTimeFloatingOpen,
-    } = useMyFloating({})
-    const {
-        floating: overtimeFloating,
-        floatingInteraction: overtimeFloatingInteraction,
-        arrowRef: overtimeFloatingArrowRef,
-        isOpen: isOvertimeFloatingOpen,
-    } = useMyFloating({})
-
-    const {
-        floating: remainingTimeFloating,
-        floatingInteraction: remainingTimeFloatingInteraction,
-        arrowRef: remainingTimeFloatingArrowRef,
-        isOpen: isRemainingTimeFloatingOpen,
-    } = useMyFloating({})
 
     const 초과근무시간 = Math.max(근무시간총합 - 최소근무시간, 0)
 
@@ -70,6 +39,53 @@ const ProgressBar = ({
         남은근무시간 >= 0
             ? `${hourToString(남은근무시간)} 남음`
             : '시간을 다 채웠어요'
+
+    const viewModeTooltip = useMyFloating({
+        placement: 'top',
+        delay: { open: 250 },
+    })
+    const vacationTimeTooltip = useMyFloating({
+        delay: { open: 250 },
+    })
+    const workTimeTooltip = useMyFloating({
+        delay: { open: 250 },
+    })
+    const overtimeTooltip = useMyFloating({
+        delay: { open: 250 },
+    })
+    const remainingTimeTooltip = useMyFloating({
+        delay: { open: 250 },
+    })
+
+    const floatingElements = [
+        {
+            isOpen: viewModeTooltip.isOpen,
+            floating: viewModeTooltip,
+            content: viewWorkedTime
+                ? '남은 시간으로 보기'
+                : '채운 시간으로 보기',
+        },
+        {
+            isOpen: workTimeTooltip.isOpen,
+            floating: workTimeTooltip,
+            content: `근무: ${hourToString(근무시간총합 - 초과근무시간)}`,
+        },
+        {
+            isOpen: overtimeTooltip.isOpen,
+            floating: overtimeTooltip,
+            content: `초과: ${hourToString(초과근무시간)}`,
+        },
+        {
+            isOpen: remainingTimeTooltip.isOpen,
+            floating: remainingTimeTooltip,
+            content: `남은: ${hourToString(남은근무시간)}`,
+        },
+        {
+            isOpen: vacationTimeTooltip.isOpen,
+            floating: vacationTimeTooltip,
+            content: `연차: ${hourToString(휴가시간)}`,
+        },
+    ]
     return (
         <>
             <div className="mb-1 flex items-center justify-between">
@@ -80,10 +96,7 @@ const ProgressBar = ({
                             : remainingTimeText}
                     </h4>
 
-                    <div
-                        ref={viewModeFloating.refs.setReference}
-                        {...viewModeFloatingInteraction.getReferenceProps()}
-                    >
+                    <div ref={viewModeTooltip.floating.refs.setReference}>
                         <IconButton
                             className="ml-1 h-6 w-6 rounded-lg bg-gray-100"
                             icon={<TransferIcon />}
@@ -98,119 +111,58 @@ const ProgressBar = ({
                     <div
                         className="h-2 bg-blue-200"
                         style={{ width: vacationTimeBarWidth }}
-                        ref={vacationTimeFloating.refs.setReference}
-                        {...vacationTimeFloatingInteraction.getReferenceProps()}
+                        ref={vacationTimeTooltip.floating.refs.setReference}
                     />
                 ) : null}
                 <div
                     className="h-2 bg-blue-500"
                     style={{ width: workTimeBarWidth || 0 }}
-                    ref={workTimeFloating.refs.setReference}
-                    {...workTimeFloatingInteraction.getReferenceProps()}
+                    ref={workTimeTooltip.floating.refs.setReference}
                 />
                 {초과근무시간 ? (
                     <div
                         className="h-2 bg-red-400"
                         style={{ width: overtimeBarWidth }}
-                        ref={overtimeFloating.refs.setReference}
-                        {...overtimeFloatingInteraction.getReferenceProps()}
+                        ref={overtimeTooltip.floating.refs.setReference}
                     />
                 ) : null}
                 {남은근무시간 ? (
                     <div
                         className="h-2 bg-gray-200"
                         style={{ width: remainingTimeBarWidth }}
-                        ref={remainingTimeFloating.refs.setReference}
-                        {...remainingTimeFloatingInteraction.getReferenceProps()}
+                        ref={remainingTimeTooltip.floating.refs.setReference}
                     />
                 ) : null}
             </div>
             <FloatingPortal>
-                {isViewModeFloatingOpen && (
-                    <div
-                        ref={viewModeFloating.refs.setFloating}
-                        className="tooltip z-10"
-                        style={viewModeFloating.floatingStyles}
-                        {...viewModeFloatingInteraction.getFloatingProps()}
-                    >
-                        <FloatingArrow
-                            ref={viewModeFloatingArrowRef}
-                            context={viewModeFloating.context}
-                        />
-                        {viewWorkedTime
-                            ? '남은 시간으로 보기'
-                            : '채운 시간으로 보기'}
-                    </div>
-                )}
-                {isVacationTimeFloatingOpen && (
-                    <div
-                        ref={vacationTimeFloating.refs.setFloating}
-                        className="tooltip z-10"
-                        style={vacationTimeFloating.floatingStyles}
-                        {...vacationTimeFloatingInteraction.getFloatingProps()}
-                    >
-                        <FloatingArrow
-                            ref={vacationTimeFloatingArrowRef}
-                            context={vacationTimeFloating.context}
-                        />
-                        연차: {hourToString(휴가시간)}
-                    </div>
-                )}
-                {isWorkTimeFloatingOpen && (
-                    <div
-                        ref={workTimeFloating.refs.setFloating}
-                        className="tooltip z-10"
-                        style={workTimeFloating.floatingStyles}
-                        {...workTimeFloatingInteraction.getFloatingProps()}
-                    >
-                        <FloatingArrow
-                            ref={workTimeFloatingArrowRef}
-                            context={workTimeFloating.context}
-                        />
-                        근무: {hourToString(근무시간총합 - 초과근무시간)}
-                    </div>
-                )}
-                {isOvertimeFloatingOpen && (
-                    <div
-                        ref={overtimeFloating.refs.setFloating}
-                        className="tooltip z-10"
-                        style={overtimeFloating.floatingStyles}
-                        {...overtimeFloatingInteraction.getFloatingProps()}
-                    >
-                        <FloatingArrow
-                            ref={overtimeFloatingArrowRef}
-                            context={overtimeFloating.context}
-                        />
-                        초과: {hourToString(초과근무시간)}
-                    </div>
-                )}
-                {isRemainingTimeFloatingOpen && (
-                    <div
-                        ref={remainingTimeFloating.refs.setFloating}
-                        className="tooltip z-10"
-                        style={remainingTimeFloating.floatingStyles}
-                        {...remainingTimeFloatingInteraction.getFloatingProps()}
-                    >
-                        <FloatingArrow
-                            ref={remainingTimeFloatingArrowRef}
-                            context={remainingTimeFloating.context}
-                        />
-                        남은: {hourToString(남은근무시간)}
-                    </div>
+                {floatingElements.map(
+                    ({ isOpen, floating, content }, i) =>
+                        isOpen && (
+                            <div
+                                key={i}
+                                ref={floating.floating.refs.setFloating}
+                                className="tooltip z-10"
+                                style={floating.floating.floatingStyles}
+                            >
+                                <FloatingArrow
+                                    ref={floating.arrowRef}
+                                    context={floating.floating.context}
+                                />
+                                {content}
+                            </div>
+                        )
                 )}
             </FloatingPortal>
         </>
     )
 }
-const TimeCard = ({
-    icon,
-    title,
-    text,
-}: {
+
+interface TimeCardProps {
     icon: string
     title: string
     text: string
-}) => (
+}
+const TimeCard = ({ icon, title, text }: TimeCardProps) => (
     <div className="flex items-center gap-5 px-4 py-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 ">
             <h3
@@ -272,11 +224,11 @@ const WorkingRecord = () => {
 
     const {
         floating,
-        floatingInteraction,
         arrowRef,
         isOpen: isFloatingOpen,
     } = useMyFloating({
         placement: 'top',
+        delay: { open: 250 },
     })
 
     if (scheduleLoading || clockLoading) return <Skeleton />
@@ -301,10 +253,7 @@ const WorkingRecord = () => {
             <div className="p-4">
                 <div className="mb-2 flex text-xs text-hint">
                     이번 달 최소 근무 시간
-                    <div
-                        ref={floating.refs.setReference}
-                        {...floatingInteraction.getReferenceProps()}
-                    >
+                    <div ref={floating.refs.setReference}>
                         <HelpCircleIcon className="ml-1" />
                     </div>
                 </div>
@@ -331,7 +280,6 @@ const WorkingRecord = () => {
                         ref={floating.refs.setFloating}
                         className="tooltip z-10"
                         style={floating.floatingStyles}
-                        {...floatingInteraction.getFloatingProps()}
                     >
                         <FloatingArrow
                             ref={arrowRef}
