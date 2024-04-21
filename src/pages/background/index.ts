@@ -162,31 +162,31 @@ const fetchPrimaryWorkspaceCustomer = async () => {
     console.log('this is main function')
     const userIdHash = await fetchUserIdHash()
     console.log(userIdHash)
-    const workingData = await fetchWorkingData({
-        userIdHash,
-    })
-    console.log(workingData)
-    const scheduleData = await fetchScheduleData({
-        userIdHash,
-        timeStampFrom: new Date('2024-02-28').getTime(),
-        timeStampTo: new Date('2024-02-28').getTime(),
-    })
-    console.log(scheduleData)
+    // const workingData = await fetchWorkingData({
+    //     userIdHash,
+    // })
+    // console.log(workingData)
+    // const scheduleData = await fetchScheduleData({
+    //     userIdHash,
+    //     timeStampFrom: new Date('2024-02-28').getTime(),
+    //     timeStampTo: new Date('2024-02-28').getTime(),
+    // })
+    // console.log(scheduleData)
 
     const myCurrentStatus = await getUserCurrentStatus({ userIdHash })
     // const typeTest = myCurrentStatus.onGoingRecordPack?.restRecords.map(d => d.restStartRecord.eventType === "REST_START")
     console.log({ myCurrentStatus })
 
-    const currentSession = await getCurrentSession()
-    console.log(currentSession)
+    // const currentSession = await getCurrentSession()
+    // console.log(currentSession)
 
-    const users = await searchUsers({
-        customerIdHash: currentSession.customer.customerIdHash,
-    })
-    console.log(users)
+    // const users = await searchUsers({
+    //     customerIdHash: currentSession.customer.customerIdHash,
+    // })
+    // console.log(users)
 
-    const primaryWorkspaceCustomer = await fetchPrimaryWorkspaceCustomer()
-    console.log(primaryWorkspaceCustomer)
+    // const primaryWorkspaceCustomer = await fetchPrimaryWorkspaceCustomer()
+    // console.log(primaryWorkspaceCustomer)
 })()
 
 Browser.commands.onCommand.addListener((command) => {
