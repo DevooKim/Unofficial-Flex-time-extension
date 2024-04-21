@@ -200,6 +200,20 @@ type userCurrentStatusTimeOffs = {
     timeOffPolicyId: string
     /** 휴가 유형 */
     timeOffPolicyType: 'ANNUAL' | 'CUSTOM'
+    /** 휴가 시작 시간 */
+    blockTimeFrom: {
+        /** 적용 타임 존 */
+        zoneId: string
+        /** 타임스탬프 */
+        timeStamp: EpochTimeStamp
+    }
+    /** 휴가 종료 시간 */
+    blockTimeTo: {
+        /** 적용 타임 존 */
+        zoneId: string
+        /** 타임스탬프 */
+        timeStamp: EpochTimeStamp
+    }
     /** 승인 상태 */
     approval: {
         /** 승인 상태 */
@@ -217,9 +231,9 @@ type userCurrentStatusTimeOffs = {
     usedPaidMinutes: number
     /** 휴게 시간 */
     restMinutes: number
-    /** 휴기 사용 상태 */
+    /** 휴가 사용 상태 */
     timeOffUseStatus: 'APPROVAL_COMPLETED'
-    /** 휴기 등록 단위 */
+    /** 휴가 등록 단위 */
     timeOffRegisterUnit: 'DAY' | 'HALF_DAY_AM' | 'HALF_DAY_PM'
 }
 
@@ -237,8 +251,16 @@ type userCurrentStatusRecords = {
     zoneId: string
 }
 
+export type userCurrentStatusLabel =
+    | '출근전'
+    | '근무중'
+    | '퇴근'
+    | '휴게중'
+    | '휴가중'
+
 /** 특정 유저의 현재 근무 및 휴가 상태를 가져오는 API 함수 응답 데이터 타입 정의 */
 export type userCurrentStatusResponse = {
+    status: userCurrentStatusLabel
     /** 타깃(현재) 날짜 */
     targetDate: string
     /** 타깃(현재) 날짜에 대한 스케쥴 */
@@ -257,14 +279,16 @@ export type userCurrentStatusResponse = {
         /** 근무 유형 전환 기록(?) */
         switchRecords: userCurrentStatusRecords[] // ? -> 우선 userCurrentStatusRecords 타입으로 / 추후 타입체크 필요
         /** 휴게 기록 */
-        restRecords: [
-            {
-                /** 휴게 시작 */
-                restStartRecord: userCurrentStatusRecords
-                /** 휴게 종료 */
-                restStopRecord: userCurrentStatusRecords
-            },
-        ]
+        restRecords:
+            | [
+                  {
+                      /** 휴게 시작 */
+                      restStartRecord: userCurrentStatusRecords
+                      /** 휴게 종료 */
+                      restStopRecord: userCurrentStatusRecords
+                  },
+              ]
+            | []
         /** 근무 중 여부 */
         onGoing: boolean
     }
