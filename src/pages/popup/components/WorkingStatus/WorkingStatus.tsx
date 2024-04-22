@@ -47,11 +47,6 @@ const StatusInfo = ({ 현재근무상태, 오늘일한시간 }: StatusProps) => 
         <div
             className={`flex items-center justify-between gap-2 ${statusTextColorVariant[현재근무상태]}`}
         >
-            <DotIcon
-                className={dotIconColorVariant[현재근무상태]}
-                width="6"
-                height="6"
-            />
             <div className="text-h4">{현재근무상태}</div>
             <Badge
                 className="!rounded-[13px]"
@@ -95,7 +90,6 @@ const WorkingStatus = () => {
         <div
             className={`flex flex-col p-5 gap-3 rounded-lg ${boxColorVariant[현재근무상태]}`}
         >
-            <h1>{현재근무상태}</h1>
             <StatusInfo
                 현재근무상태={현재근무상태}
                 오늘일한시간={오늘일한시간}
@@ -105,9 +99,14 @@ const WorkingStatus = () => {
                     출근했다면 flex에서 근무 시작을 눌러 주세요!
                 </div>
             )}
-            <div className="text-h6">
-                {출근시간} ~ {퇴근시간}
-            </div>
+            {현재근무상태 === '퇴근' && (
+                <div className="text-h6">
+                    {출근시간} ~ {퇴근시간}
+                </div>
+            )}
+            {현재근무상태 === '근무중' && (
+                <div className="text-h6">{출근시간} ~ </div>
+            )}
         </div>
     )
 }
