@@ -66,8 +66,8 @@ export type myScheduleData = {
             minutes: number
             hours: number
         }[]
-        totalMinutes: number
-        totalHours: number
+        totalMinutes?: number
+        totalHours?: number
     }[]
     timestampTo: number
     timestampFrom: number
