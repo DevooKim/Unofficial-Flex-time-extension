@@ -1,5 +1,6 @@
 import { FloatingArrow, FloatingPortal } from '@floating-ui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Browser from 'webextension-polyfill'
 
 import IconButton from '@src/components/IconButton'
 import {
@@ -28,6 +29,15 @@ const ProgressBar = ({
     휴가시간 = 0,
 }: ProgressBarProps) => {
     const [viewWorkedTime, setViewWorkedTime] = useState(true)
+    const viewWorkedTimeToggle = () => setViewWorkedTime((prev) => !prev)
+
+    useEffect(() => {
+        Browser.runtime.onMessage.addListener((message) => {
+            if (message.type === 'toggle_time') {
+                viewWorkedTimeToggle()
+            }
+        })
+    }, [])
 
     const 초과근무시간 = Math.max(근무시간총합 - 최소근무시간, 0)
 
@@ -100,7 +110,7 @@ const ProgressBar = ({
                         <IconButton
                             className="ml-1 h-6 w-6 rounded-lg bg-gray-100"
                             icon={<TransferIcon />}
-                            onClick={() => setViewWorkedTime((prev) => !prev)}
+                            onClick={viewWorkedTimeToggle}
                         />
                     </div>
                 </div>

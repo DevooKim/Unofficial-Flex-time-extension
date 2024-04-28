@@ -21,9 +21,15 @@
         },
         "toggle_tab": {
             "suggested_key": {
-                "default": "Alt+Shift+W"
+                "default": "Alt+Shift+E"
             },
             "description": "근무-휴가 탭 전환"
+        },
+        "toggle_time": {
+            "suggested_key": {
+                "default": "Alt+Shift+T"
+            },
+            "description": "최소-남은 근무시간 전환"
         }
     },
     "permissions": ["tabs", "activeTab", "webRequest", "storage", "sidePanel"],

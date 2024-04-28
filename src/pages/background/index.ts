@@ -6,4 +6,10 @@ Browser.commands.onCommand.addListener((command) => {
             type: 'toggle_tab',
         })
     }
+
+    if (command === 'toggle_time') {
+        Browser.runtime.sendMessage({
+            type: 'toggle_time',
+        })
+    }
 })
