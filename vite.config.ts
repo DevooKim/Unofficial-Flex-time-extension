@@ -44,7 +44,7 @@ export default defineConfig({
         emptyOutDir: !isDev,
     },
     define: {
-        APP_VERSION: JSON.stringify(pkg.version),
+        APP_VERSION: JSON.stringify(`v${pkg.version}`),
         ASSET_NAME: JSON.stringify('unofficial-flex-extension.zip'),
     },
 })

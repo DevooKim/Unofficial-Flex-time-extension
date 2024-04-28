@@ -1,11 +1,14 @@
 export const isLatestVersion = (
-    currentVersion: string,
-    targetVersion: string
+    currentVersion: string, // v0.0.0
+    targetVersion: string // v0.0.0
 ) => {
-    const [currentMajor, currentMinor, currentPatch] = currentVersion
+    const _currentVersion = currentVersion.replace('v', '')
+    const _targetVersion = targetVersion.replace('v', '')
+
+    const [currentMajor, currentMinor, currentPatch] = _currentVersion
         .split('.')
         .map(Number)
-    const [targetMajor, targetMinor, targetPatch] = targetVersion
+    const [targetMajor, targetMinor, targetPatch] = _targetVersion
         .split('.')
         .map(Number)
 
