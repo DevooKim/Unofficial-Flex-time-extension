@@ -28,7 +28,7 @@ const useMyFloating = ({
     placement = 'bottom',
     offset = 8,
     delay = 0,
-}: myFloatingType) => {
+}: myFloatingType = {}) => {
     const [isOpen, setIsOpen] = useState(false)
     const arrowRef = useRef<SVGSVGElement>(null)
 

@@ -29,7 +29,7 @@ export default function App(): JSX.Element {
     return (
         <QueryClientProvider client={queryClient}>
             <VersionUpdateBar />
-            <div className="min-w-[350px] p-5">
+            <div className="min-w-[420px] p-5">
                 <QueryErrorResetBoundary>
                     {({ reset }) => (
                         <ErrorBoundary
