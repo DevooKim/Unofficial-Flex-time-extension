@@ -18,6 +18,11 @@ jobs:
                   node-version: 20
                   cache: 'yarn'
 
+            - name: env setting
+              run: |
+                  echo "VITE_GITHUB_OWNER=${{ github.repository_owner }}" >> .env
+                  echo "VITE_GITHUB_REPO=${{ github.repository }}" >> .env
+
             - name: Install dependencies
               run: yarn
 
