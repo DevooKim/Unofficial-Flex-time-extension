@@ -1,5 +1,4 @@
 import Badge from '@src/components/Badge'
-import DotIcon from '@src/icons/DotIcon'
 import { myClockData } from '@src/types'
 import { parseClockData } from '@src/utils/parseClockData'
 import { formatAmPm, hourToString } from '@src/utils/utils.time'
@@ -25,22 +24,11 @@ const statusTextColorVariant = {
     퇴근: 'text-warning',
 }
 
-const dotIconColorVariant = {
-    근무중: 'fill-primary',
-    출근전: 'fill-link',
-    퇴근: 'fill-warning',
-}
-
 const badgeColorVariant = {
     근무중: 'primary',
     출근전: 'info',
     퇴근: 'warning',
 } as const
-
-/**
- * @코드참고: src/pages/popup/components/Header/Header.tsx
- * @스타일참고: https://tailwindcss.com/docs/padding
- */
 
 const StatusInfo = ({ 현재근무상태, 오늘일한시간 }: StatusProps) => (
     <div className={`flex items-start ${statusTextColorVariant[현재근무상태]}`}>
@@ -81,7 +69,6 @@ const WorkingStatus = () => {
         now: baseTimeData.today,
     })
 
-    // const 현재근무상태 = '퇴근'
     const 출근시간 = formatAmPm(_출근시간)
     const 퇴근시간 = formatAmPm(_퇴근시간)
     const 오늘일한시간 = hourToString(_오늘일한시간)
@@ -110,7 +97,5 @@ const WorkingStatus = () => {
         </div>
     )
 }
-// 퇴근시간이 없으면 노출 안되어야 함...
-// 출근전에는 다른 내용이 노출되어야 함...
 
 export default WorkingStatus
