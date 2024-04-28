@@ -14,10 +14,16 @@ const publicDir = resolve(__dirname, 'public')
 
 const isDev = process.env.NODE_ENV === 'development'
 
+function extractSemanticVersion(version: string): string | null {
+    const match = version.match(/(\d+\.\d+\.\d+)/)
+    return match ? match[0] : null
+}
+
 const extensionManifest = {
     ...manifest,
     name: isDev ? `DEV: ${manifest.name}` : manifest.name,
-    version: pkg.version,
+    version: extractSemanticVersion(pkg.version),
+    version_name: pkg.version,
 }
 
 export default defineConfig({
