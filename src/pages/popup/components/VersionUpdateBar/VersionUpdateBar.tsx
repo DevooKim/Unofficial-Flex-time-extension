@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useFetchLatestVersion } from '@src/pages/popup/hooks/queries/useFetchLatestVersion'
+import { isLatestVersion } from '@src/utils/checkVersion'
 
 const OWNER = import.meta.env.VITE_GITHUB_OWNER
 const REPO = import.meta.env.VITE_GITHUB_REPO
@@ -10,7 +11,9 @@ const VersionUpdateBar = () => {
     const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
-        setIsOpen(latestVersion.data && APP_VERSION !== latestVersion.data)
+        if (latestVersion.data) {
+            setIsOpen(!isLatestVersion(APP_VERSION, latestVersion.data))
+        }
     }, [latestVersion.data, latestVersion.isFetching])
 
     const download = () => {
@@ -23,7 +26,7 @@ const VersionUpdateBar = () => {
     return (
         <>
             {isOpen && (
-                <div className="w-full h-5 bg-warning/[.32] border border-black flex justify-between items-center">
+                <div className="flex h-5 w-full items-center justify-between border border-black bg-warning/[.32]">
                     <span>새로운 버전이 있습니다! - {latestVersion.data}</span>
                     <div className="flex gap-2">
                         <button onClick={download}>다운로드</button>
