@@ -1,6 +1,6 @@
+import { ManifestV3Export, crx } from '@crxjs/vite-plugin'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import { crx, ManifestV3Export } from '@crxjs/vite-plugin'
 
 import manifest from './manifest.json'
 import pkg from './package.json'
@@ -12,7 +12,7 @@ const utilsDir = resolve(root, 'utils')
 const outDir = resolve(__dirname, 'dist')
 const publicDir = resolve(__dirname, 'public')
 
-const isDev = process.env.__DEV__ === 'true'
+const isDev = process.env.NODE_ENV === 'development'
 
 const extensionManifest = {
     ...manifest,
@@ -42,5 +42,9 @@ export default defineConfig({
         outDir,
         sourcemap: isDev,
         emptyOutDir: !isDev,
+    },
+    define: {
+        APP_VERSION: JSON.stringify(pkg.version),
+        ASSET_NAME: JSON.stringify('unofficial-flex-extension.zip'),
     },
 })
