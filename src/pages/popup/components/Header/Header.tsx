@@ -9,10 +9,9 @@ import { parseClockData } from '@src/utils/parseClockData'
 import { parseScheduleData } from '@src/utils/parseScheduleData'
 
 import { useBaseTimeContext } from '@popup/contexts/BaseTimeContext'
+import { useFetchClockData } from '@popup/hooks/queries/useFetchClockData'
 import { useFetchScheduleData } from '@popup/hooks/queries/useFetchScheduleData'
 import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
-
-import { useFetchClockData } from '../../hooks/queries/useFetchClockData'
 
 const Header = () => {
     const { baseTimeData } = useBaseTimeContext()
