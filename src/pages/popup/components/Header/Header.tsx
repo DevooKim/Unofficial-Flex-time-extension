@@ -13,6 +13,7 @@ import { useBaseTimeContext } from '@popup/contexts/BaseTimeContext'
 import { useFetchClockData } from '@popup/hooks/queries/useFetchClockData'
 import { useFetchScheduleData } from '@popup/hooks/queries/useFetchScheduleData'
 import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
+
 import { useFetchLatestVersion } from '../../hooks/queries/useFetchLatestVersion'
 
 const Header = () => {
@@ -47,7 +48,9 @@ const Header = () => {
         getFloatingInteraction: getUpdateFloatingInteraction,
         arrowRef: updateFloatingArrowRef,
         isOpen: isUpdateFloatingOpen,
-    } = useMyFloating({})
+    } = useMyFloating({
+        placement: 'bottom-end',
+    })
 
     const updateFloatingInteraction = getUpdateFloatingInteraction()
 
@@ -104,7 +107,7 @@ const Header = () => {
                         {...flexFloatingInteraction.getReferenceProps()}
                     >
                         <IconButton
-                            icon={<GlobalIcon className="w-6 h-6 fill-link" />}
+                            icon={<GlobalIcon className="h-6 w-6 fill-link" />}
                             onClick={openFlex}
                         />
                     </div>
@@ -115,7 +118,7 @@ const Header = () => {
                     >
                         <IconButton
                             icon={
-                                <StarFillIcon className="w-6 h-6 fill-link" />
+                                <StarFillIcon className="h-6 w-6 fill-link" />
                             }
                             onClick={() => refetch()}
                         />
