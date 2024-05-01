@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import {
     createContext,
     useCallback,
@@ -19,9 +19,10 @@ type BaseTimeProviderProps = {
 
 type BaseTimeContextType = {
     baseTimeData: BaseTimeData
-    refreshBaseTimeForce: () => void
-    refreshBaseTimeIfInvalid: () => void
+    updateCacheData: () => void
 }
+
+type CACHE_KEY = 'baseTimeData' | 'cacheTime'
 
 const BaseTimeContext = createContext<BaseTimeContextType>(
     {} as BaseTimeContextType
@@ -30,9 +31,27 @@ const BaseTimeContext = createContext<BaseTimeContextType>(
 export const useBaseTimeContext = (): BaseTimeContextType =>
     useContext(BaseTimeContext)
 
-const isValidCache = (cacheTime: number, day: Dayjs) =>
+const isValidCache = (cacheTime: number) =>
     cacheTime &&
-    dayjs(cacheTime).diff(Number(day.valueOf()), 'second') <= CACHE_TIME_SEC
+    dayjs(Number(dayjs().second(0).millisecond(0).valueOf())).diff(
+        cacheTime,
+        'second'
+    ) < CACHE_TIME_SEC
+
+const cache = {
+    get: (key: CACHE_KEY) =>
+        new Promise((resolve) => {
+            chrome.storage.session.get(key, (result) => {
+                resolve(result[key])
+            })
+        }),
+    set: (key: CACHE_KEY, value: unknown) =>
+        new Promise((resolve) => {
+            chrome.storage.session.set({ [key]: value }, () => {
+                resolve(value)
+            })
+        }),
+}
 
 const BaseTimeProvider = ({ children }: BaseTimeProviderProps) => {
     const [baseTimeData, setBaseTimeData] = useState<BaseTimeData>(
@@ -41,8 +60,27 @@ const BaseTimeProvider = ({ children }: BaseTimeProviderProps) => {
 
     const [loading, setLoading] = useState(true)
 
-    const updateCacheData = useCallback((day: Dayjs) => {
-        const now = Number(day.valueOf())
+    useEffect(() => {
+        const a = async () => {
+            const cacheTime = (await cache.get('cacheTime')) as number
+
+            if (isValidCache(cacheTime)) {
+                const cacheTimeData = (await cache.get(
+                    'baseTimeData'
+                )) as BaseTimeData
+
+                setBaseTimeData({ ...cacheTimeData, isCached: true })
+                setLoading(false)
+            } else {
+                updateCacheData()
+            }
+        }
+
+        a()
+    }, [])
+
+    const updateCacheData = useCallback(() => {
+        const day = dayjs().second(0).millisecond(0)
 
         setLoading(true)
         const firstDay = day.startOf('month')
@@ -55,48 +93,12 @@ const BaseTimeProvider = ({ children }: BaseTimeProviderProps) => {
             lastDay: Number(lastDay.valueOf()),
         }
 
-        chrome.storage.session.set({ baseTimeData: data })
-        chrome.storage.session.set({ cacheTime: now })
+        cache.set('baseTimeData', data)
+        cache.set('cacheTime', Number(day.valueOf()))
+
         setBaseTimeData({ ...data, isCached: false })
         setLoading(false)
     }, [])
-
-    const refreshBaseTimeForce = useCallback(() => {
-        const day: Dayjs = dayjs().second(0).millisecond(0)
-        updateCacheData(day)
-    }, [updateCacheData])
-
-    const refreshBaseTimeIfInvalid = useCallback(() => {
-        const day: Dayjs = dayjs().second(0).millisecond(0)
-
-        chrome.storage.session.get('cacheTime', (result) => {
-            const cacheTime = result.cacheTime
-
-            if (isValidCache(cacheTime, day)) {
-                updateCacheData(day)
-            }
-        })
-    }, [updateCacheData])
-
-    useEffect(() => {
-        const day: Dayjs = dayjs().second(0).millisecond(0)
-
-        chrome.storage.session.get('cacheTime', (result) => {
-            const cacheTime = result.cacheTime
-
-            if (isValidCache(cacheTime, day)) {
-                chrome.storage.session.get('baseTimeData', (cacheTimeData) => {
-                    setBaseTimeData({
-                        ...cacheTimeData.baseTimeData,
-                        isCached: true,
-                    })
-                    setLoading(false)
-                })
-            } else {
-                updateCacheData(day)
-            }
-        })
-    }, [updateCacheData])
 
     if (loading) return <LoadingUI />
 
@@ -104,8 +106,7 @@ const BaseTimeProvider = ({ children }: BaseTimeProviderProps) => {
         <BaseTimeContext.Provider
             value={{
                 baseTimeData,
-                refreshBaseTimeForce,
-                refreshBaseTimeIfInvalid,
+                updateCacheData,
             }}
         >
             {children}
