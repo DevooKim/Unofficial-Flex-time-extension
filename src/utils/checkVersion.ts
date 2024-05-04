@@ -2,7 +2,6 @@ export const isLatestVersion = (
     currentVersion: string, // v0.0.0
     targetVersion: string // v0.0.0
 ) => {
-    return false
     const _currentVersion = currentVersion.replace('v', '')
     const _targetVersion = targetVersion.replace('v', '')
 
