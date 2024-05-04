@@ -66,7 +66,7 @@ const WorkingStatus = () => {
         오늘일한시간: _오늘일한시간,
     } = parseClockData({
         data: clockData,
-        now: baseTimeData.today,
+        now: baseTimeData.now,
     })
 
     const 출근시간 = formatAmPm(_출근시간)
@@ -75,7 +75,7 @@ const WorkingStatus = () => {
 
     return (
         <div
-            className={`flex flex-col p-5 gap-3 rounded-lg ${boxColorVariant[현재근무상태]}`}
+            className={`flex flex-col gap-3 rounded-lg p-5 ${boxColorVariant[현재근무상태]}`}
         >
             <StatusInfo
                 현재근무상태={현재근무상태}
