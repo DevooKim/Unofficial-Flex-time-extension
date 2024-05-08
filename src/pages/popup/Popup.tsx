@@ -1,25 +1,58 @@
-import { blueGrey } from '@mui/material/colors'
-import { Container } from '@mui/system'
+import {
+    QueryClient,
+    QueryClientProvider,
+    QueryErrorResetBoundary,
+} from '@tanstack/react-query'
+import React from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 
-import WorkingTimeResult from './components/WorkingTimeResult'
+import Header from './components/Header'
 import InActive from './components/InActive'
-
-import { useFetchUserIdHash } from './hooks'
-
+import UserData from './components/UserData'
+import VersionUpdateBar from './components/VersionUpdateBar'
 import BaseTimeProvider from './contexts/BaseTimeContext'
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            gcTime: Infinity,
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+            retry: false,
+        },
+    },
+})
+
 export default function App(): JSX.Element {
-    const { data: userIdHash, isError } = useFetchUserIdHash()
+    // const { data: userIdHash, isError } = useFetchUserIdHash()
 
     return (
-        <Container sx={{ minWidth: '350px', p: 1.5, background: blueGrey[50] }}>
-            <BaseTimeProvider>
-                {isError ? (
-                    <InActive />
-                ) : (
-                    <WorkingTimeResult userIdHash={userIdHash} />
-                )}
-            </BaseTimeProvider>
-        </Container>
+        <QueryClientProvider client={queryClient}>
+            <VersionUpdateBar />
+            <div className="min-w-[420px] p-5">
+                <QueryErrorResetBoundary>
+                    {({ reset }) => (
+                        <ErrorBoundary
+                            onReset={() => {}}
+                            fallbackRender={({ resetErrorBoundary }) => (
+                                <InActive />
+                            )}
+                        >
+                            <React.Suspense fallback={<h1>loading</h1>}>
+                                <BaseTimeProvider>
+                                    {/* <WorkingTimeResult
+                                        userIdHash={userIdHash}
+                                    /> */}
+                                    <div className="flex flex-col gap-4">
+                                        <Header />
+                                        <UserData />
+                                    </div>
+                                </BaseTimeProvider>
+                            </React.Suspense>
+                        </ErrorBoundary>
+                    )}
+                </QueryErrorResetBoundary>
+            </div>
+        </QueryClientProvider>
     )
 }

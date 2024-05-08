@@ -1,14 +1,15 @@
-import isEmpty from 'lodash/isEmpty'
 import dayjs from 'dayjs'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isEmpty from 'lodash/isEmpty'
+
 import {
-    flexDayInfo,
-    flexScheduleData,
-    flexPaidSummary,
-    myScheduleData,
-    myClockData,
     BaseTimeData,
+    flexDayInfo,
+    flexPaidSummary,
+    flexScheduleData,
     flexUnpaidSummary,
+    myClockData,
+    myScheduleData,
 } from '../types'
 
 dayjs.extend(isSameOrAfter)
@@ -107,11 +108,11 @@ const 휴가정보구하기 = (
 
 export const parseScheduleData = ({
     data,
-    baseTimeData,
+    today,
     clockData,
 }: {
     data: flexScheduleData
-    baseTimeData: BaseTimeData
+    today: BaseTimeData['today']
     clockData: myClockData
 }): myScheduleData => {
     const days = data.days
@@ -150,7 +151,6 @@ export const parseScheduleData = ({
         .filter(({ timeOffs }) => !isEmpty(timeOffs))
         .map((day) => 휴가정보구하기(휴가IdMap, day))
 
-    const { today } = baseTimeData
     const offset = clockData.현재근무상태 === '퇴근' ? 60 * 60 * 24 * 1000 : 0
 
     const filterDays = ({ date }: { date: string }) =>
@@ -161,6 +161,11 @@ export const parseScheduleData = ({
         .filter(filterDays)
         .reduce((acc, cur) => acc + cur.totalHours / 8, 0)
 
+    const 이번달휴가일수 = 휴가list.reduce(
+        (acc, cur) => acc + cur.totalHours / 8,
+        0
+    )
+
     const 남은근무일 = 남은워킹데이 - 오늘이후휴가일수
     const 남은평균근무시간 = 남은근무시간 / 남은근무일 || 0
 
@@ -169,7 +174,7 @@ export const parseScheduleData = ({
 
     const 남은근무시간_지금기준 =
         clockData.현재근무상태 === '근무중'
-            ? 남은근무시간 - clockData.오늘일한시간
+            ? Math.max(남은근무시간 - clockData.오늘일한시간, 0)
             : 남은근무시간
     const 남은평균근무시간_지금기준 =
         남은근무시간_지금기준 / 남은근무일_지금기준 || 0
@@ -184,6 +189,8 @@ export const parseScheduleData = ({
         휴가정보list: 휴가list,
         timestampTo: period.applyTimeRangeTo,
         timestampFrom: period.applyTimeRangeFrom,
+        이번달휴가일수,
+        오늘이후휴가일수,
         지금기준: {
             남은근무일: 남은근무일_지금기준,
             남은근무시간: 남은근무시간_지금기준,

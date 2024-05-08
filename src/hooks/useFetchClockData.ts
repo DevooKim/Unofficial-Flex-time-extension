@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
+import { useCallback, useEffect, useState } from 'react'
 import browser from 'webextension-polyfill'
 
-import { flexClockData } from '../types'
 import { useBaseTimeContext } from '../pages/popup/contexts/BaseTimeContext'
+import { flexClockData } from '../types'
 
 const fetch = async (
     userIdHash: string,

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import browser from 'webextension-polyfill'
+
 interface UseFetchUserIdHashType {
     data: string
     isError: boolean

@@ -6,19 +6,22 @@ on:
 jobs:
     build:
         name: Build
-        timeout-minutes: 15
+        timeout-minutes: 5
         runs-on: ubuntu-latest
         steps:
             - name: Check out code
               uses: actions/checkout@v4
-              with:
-                  fetch-depth: 2
 
             - name: Setup Node.js environment
               uses: actions/setup-node@v4
               with:
                   node-version: 20
                   cache: 'yarn'
+
+            - name: env setting
+              run: |
+                  echo "VITE_GITHUB_OWNER=${{ github.repository_owner }}" >> .env
+                  echo "VITE_GITHUB_REPO=${{ github.repository }}" >> .env
 
             - name: Install dependencies
               run: yarn

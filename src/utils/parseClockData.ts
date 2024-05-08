@@ -1,5 +1,6 @@
-import { flexClockData, myClockData } from '../types'
 import dayjs from 'dayjs'
+
+import { flexClockData, myClockData } from '../types'
 
 const 현재근무정보구하기 = ({
     now,

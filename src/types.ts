@@ -1,11 +1,6 @@
-export enum Sender {
-    React,
-    Content,
-}
-
 export interface ChromeMessage {
-    from: Sender
-    message: any
+    type: string
+    payload?: object
 }
 
 export interface BaseTimeData {
@@ -62,6 +57,8 @@ export type myScheduleData = {
     남은근무일: number
     남은근무시간: number
     남은평균근무시간: number
+    이번달휴가일수: number
+    오늘이후휴가일수: number
     휴가정보list: {
         date: string
         infos: {
@@ -69,8 +66,8 @@ export type myScheduleData = {
             minutes: number
             hours: number
         }[]
-        totalMinutes: number
-        totalHours: number
+        totalMinutes?: number
+        totalHours?: number
     }[]
     timestampTo: number
     timestampFrom: number

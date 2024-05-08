@@ -1,7 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-
+import {
+    ArrowBackIosNew,
+    ArrowForwardIos,
+    CenterFocusWeak,
+    ContentCopy,
+    Download,
+    FiberManualRecord,
+    Language,
+} from '@mui/icons-material'
 import {
     Alert,
     Divider,
@@ -11,44 +16,36 @@ import {
     Snackbar,
     Tooltip,
 } from '@mui/material'
-import { Box } from '@mui/system'
-
 import {
-    yellow,
-    pink,
-    lightGreen,
-    lime,
-    lightBlue,
     blue,
     indigo,
+    lightBlue,
+    lightGreen,
+    lime,
+    pink,
+    yellow,
 } from '@mui/material/colors'
-import {
-    ArrowBackIosNew,
-    ArrowForwardIos,
-    FiberManualRecord,
-    CenterFocusWeak,
-    Download,
-    ContentCopy,
-    Language,
-} from '@mui/icons-material'
+import { Box } from '@mui/system'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import { useEffect, useMemo, useState } from 'react'
 
-import {
-    useFetchScheduleData,
-    useGetTargetDate,
-    useFetchClockData,
-    useCaptureHandler,
-    useCopyToClipboard,
-    useOpenFlex,
-} from '../hooks'
-
-import { hourToString } from '@utils/utils.time'
 import { parseClockData } from '@utils/parseClockData'
 import { parseScheduleData } from '@utils/parseScheduleData'
-import { useBaseTimeContext } from '../contexts/BaseTimeContext'
+import { hourToString } from '@utils/utils.time'
 
+import { useBaseTimeContext } from '../contexts/BaseTimeContext'
+import {
+    useCaptureHandler,
+    useCopyToClipboard,
+    useFetchClockData,
+    useFetchScheduleData,
+    useGetTargetDate,
+    useOpenFlex,
+} from '../hooks'
 import DatePicker from './DatePicker'
-import TimeResult, { IItem } from './TimeResult'
 import LoadingUI from './LoadingUI'
+import TimeResult, { IItem } from './TimeResult'
 
 dayjs.extend(utc)
 
@@ -120,7 +117,7 @@ const WorkingTimeResult = ({ userIdHash }: { userIdHash: string }) => {
 
     const myScheduleData = parseScheduleData({
         data: scheduleData,
-        baseTimeData,
+        today: baseTimeData.today,
         clockData: myClockData,
     })
 
