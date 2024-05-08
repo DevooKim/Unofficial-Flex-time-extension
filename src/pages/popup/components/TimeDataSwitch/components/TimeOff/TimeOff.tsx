@@ -54,7 +54,7 @@ interface TimeOffHeaderProps {
 const TimeOffHeader = (props: TimeOffHeaderProps) => {
     const { 이번달휴가일수 } = props
     return (
-        <header className="flex gap-x-5 px-3 py-2">
+        <header className="flex px-3 py-2 gap-x-5">
             <VocationIcon className="" />
             <div className="flex flex-col gap-y-1">
                 <span className="text-xs text-hint">이번 달 휴가 일수</span>
@@ -83,11 +83,11 @@ interface TimeOffMainProps {
 const TimeOffMain = (props: TimeOffMainProps) => {
     const { 휴가정보list } = props
     return (
-        <main className="py-2 pl-[88px] pr-4">
+        <main className="pl-[88px] pr-4 py-2">
             <ul className="flex flex-col">
                 {휴가정보list.map((휴가정보) => (
                     <li
-                        className="mb-2 flex flex-col text-sm text-alternative"
+                        className="flex flex-col mb-2 text-sm text-alternative"
                         key={휴가정보.date}
                     >
                         <span>{휴가정보.date}</span>
@@ -95,7 +95,7 @@ const TimeOffMain = (props: TimeOffMainProps) => {
                             {휴가정보.infos.map((info) => (
                                 <li
                                     key={info.name}
-                                    className="list-inside list-disc"
+                                    className="list-disc list-inside"
                                 >
                                     {info.hours === 0
                                         ? ''
