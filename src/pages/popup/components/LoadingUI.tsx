@@ -1,9 +1,3 @@
-import { Box, CircularProgress } from '@mui/material'
-
-const LoadingUI = () => (
-    <Box display="flex" justifyContent="center">
-        <CircularProgress />
-    </Box>
-)
+const LoadingUI = () => <></>
 
 export default LoadingUI
