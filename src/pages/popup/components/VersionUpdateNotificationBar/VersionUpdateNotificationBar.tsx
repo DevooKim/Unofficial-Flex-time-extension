@@ -6,7 +6,7 @@ import { isLatestVersion } from '@src/utils/checkVersion'
 const OWNER = import.meta.env.VITE_GITHUB_OWNER
 const REPO = import.meta.env.VITE_GITHUB_REPO
 
-const VersionUpdateBar = () => {
+const VersionUpdateNotificationBar = () => {
     const latestVersion = useFetchLatestVersion()
     const [isOpen, setIsOpen] = useState(false)
 
@@ -38,4 +38,4 @@ const VersionUpdateBar = () => {
     )
 }
 
-export default VersionUpdateBar
+export default VersionUpdateNotificationBar

@@ -1,0 +1,3 @@
+import VersionUpdateNotificationBar from './VersionUpdateNotificationBar'
+
+export default VersionUpdateNotificationBar

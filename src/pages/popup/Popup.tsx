@@ -9,7 +9,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import Header from './components/Header'
 import InActive from './components/InActive'
 import UserData from './components/UserData'
-import VersionUpdateBar from './components/VersionUpdateBar'
+import VersionUpdateNotificationBar from './components/VersionUpdateBar'
 import BaseTimeProvider from './contexts/BaseTimeContext'
 
 const queryClient = new QueryClient({
@@ -28,7 +28,7 @@ export default function App(): JSX.Element {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <VersionUpdateBar />
+            <VersionUpdateNotificationBar />
             <div className="min-w-[420px] p-5">
                 <QueryErrorResetBoundary>
                     {({ reset }) => (
