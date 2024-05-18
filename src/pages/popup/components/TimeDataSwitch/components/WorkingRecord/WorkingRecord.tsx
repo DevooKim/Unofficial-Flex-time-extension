@@ -11,10 +11,11 @@ import {
 } from '@src/hooks'
 import { HelpCircleIcon, TransferIcon } from '@src/icons'
 import { useBaseTimeContext } from '@src/pages/popup/contexts/BaseTimeContext'
-import { useFetchUserIdHash } from '@src/pages/popup/hooks'
 import { parseClockData } from '@src/utils/parseClockData'
 import { parseScheduleData } from '@src/utils/parseScheduleData'
 import { hourToString } from '@src/utils/utils.time'
+
+import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
 
 interface ProgressBarProps {
     근무시간총합: number
@@ -98,7 +99,7 @@ const ProgressBar = ({
     ]
     return (
         <>
-            <div className="flex items-center justify-between mb-1">
+            <div className="mb-1 flex items-center justify-between">
                 <div className="flex items-center">
                     <h4 className="text-xl font-bold">
                         {viewWorkedTime
@@ -108,7 +109,7 @@ const ProgressBar = ({
 
                     <div ref={viewModeTooltip.floating.refs.setReference}>
                         <IconButton
-                            className="w-6 h-6 ml-1 bg-gray-100 rounded-lg"
+                            className="ml-1 h-6 w-6 rounded-lg bg-gray-100"
                             icon={<TransferIcon />}
                             onClick={viewWorkedTimeToggle}
                         />
@@ -151,7 +152,7 @@ const ProgressBar = ({
                             <div
                                 key={i}
                                 ref={floating.floating.refs.setFloating}
-                                className="z-10 tooltip"
+                                className="tooltip z-10"
                                 style={floating.floating.floatingStyles}
                             >
                                 <FloatingArrow
@@ -174,9 +175,9 @@ interface TimeCardProps {
 }
 const TimeCard = ({ icon, title, text }: TimeCardProps) => (
     <div className="flex items-center gap-5 px-4 py-3">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-lg ">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 ">
             <h3
-                className="font-bold text-2xl/9"
+                className="text-2xl/9 font-bold"
                 style={{
                     textShadow: '-1px 2px 2px rgba(173, 173, 180, 1)',
                 }}
@@ -194,7 +195,7 @@ const TimeCard = ({ icon, title, text }: TimeCardProps) => (
 const Skeleton = () => (
     <div>
         <div className="p-4">
-            <div className="flex mb-2 text-xs text-hint">
+            <div className="mb-2 flex text-xs text-hint">
                 이번 달 최소 근무 시간
                 <HelpCircleIcon className="ml-1" />
             </div>
@@ -261,7 +262,7 @@ const WorkingRecord = () => {
     return (
         <div>
             <div className="p-4">
-                <div className="flex mb-2 text-xs text-hint">
+                <div className="mb-2 flex text-xs text-hint">
                     이번 달 최소 근무 시간
                     <div ref={floating.refs.setReference}>
                         <HelpCircleIcon className="ml-1" />
@@ -291,7 +292,7 @@ const WorkingRecord = () => {
                 {isFloatingOpen && (
                     <div
                         ref={floating.refs.setFloating}
-                        className="z-10 tooltip"
+                        className="tooltip z-10"
                         style={floating.floatingStyles}
                     >
                         <FloatingArrow
