@@ -20,4 +20,6 @@ export const isLatestVersion = (
 
     if (currentPatch < targetPatch) return false
     if (currentPatch > targetPatch) return true
+
+    return true
 }
