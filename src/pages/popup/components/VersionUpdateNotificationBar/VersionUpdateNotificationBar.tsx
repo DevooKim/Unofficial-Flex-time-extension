@@ -5,6 +5,17 @@ import { isLatestVersion } from '@src/utils/checkVersion'
 
 const OWNER = import.meta.env.VITE_GITHUB_OWNER
 const REPO = import.meta.env.VITE_GITHUB_REPO
+const DISMISSED_DATE_KEY = 'version-update-dismissed-date'
+
+const getTodayDateString = () => {
+    const today = new Date()
+    return today.toISOString().split('T')[0] // YYYY-MM-DD 형식
+}
+
+const isDismissedToday = () => {
+    const dismissedDate = localStorage.getItem(DISMISSED_DATE_KEY)
+    return dismissedDate === getTodayDateString()
+}
 
 const VersionUpdateNotificationBar = () => {
     const { data, isLoading, isError, error } = useFetchLatestVersion()
@@ -13,9 +24,12 @@ const VersionUpdateNotificationBar = () => {
     useEffect(() => {
         if (data) {
             const needsUpdate = !isLatestVersion(APP_VERSION, data)
-            setIsOpen(needsUpdate)
+            const wasDismissedToday = isDismissedToday()
 
-            if (needsUpdate) {
+            // 업데이트가 필요하고 오늘 닫은 적이 없으면 표시
+            setIsOpen(needsUpdate && !wasDismissedToday)
+
+            if (needsUpdate && !wasDismissedToday) {
                 console.info(
                     `New version available: ${data} (current: ${APP_VERSION})`
                 )
@@ -38,6 +52,8 @@ const VersionUpdateNotificationBar = () => {
     }
 
     const handleClose = () => {
+        // 오늘 날짜를 저장하여 자정까지 알림 표시 안 함
+        localStorage.setItem(DISMISSED_DATE_KEY, getTodayDateString())
         setIsOpen(false)
     }
 
