@@ -41,10 +41,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Run standard-version
+      - name: Run standard-version (skip tag creation)
         run: |
           TYPE="${{ github.event.inputs.version_type }}"
-          yarn standard-version --release-as $TYPE
+          yarn standard-version --release-as $TYPE --skip.tag
 
       - name: Update manifest.json version
         run: |
@@ -61,10 +61,8 @@ jobs:
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "New version: $NEW_VERSION"
 
-      - name: Push changes and tags
-        run: |
-          git push origin main
-          git push --tags
+      - name: Push changes
+        run: git push origin main
 
       - name: Extract changelog for this version
         id: changelog
