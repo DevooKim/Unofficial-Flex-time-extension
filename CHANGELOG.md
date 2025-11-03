@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.3](https://github.com/DevooKim/Flex-time-extension/compare/v3.1.2...v3.1.3) (2025-11-03)
+
+
+### Bug Fixes
+
+* improve version update notification logic to prevent repeated alerts ([3caf036](https://github.com/DevooKim/Flex-time-extension/commit/3caf0364b1d5b5d46bcb813f50250af823e03693))
+
 ### [3.1.2](https://github.com/DevooKim/Flex-time-extension/compare/v3.1.1...v3.1.2) (2025-11-03)
 
 
