@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.5](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.1.3...v3.1.5) (2025-11-03)
+
+
+### Features
+
+* add version bumping logic and update release workflow ([d7294cc](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/d7294ccac7b29f364e0c4f80e3209fdd6e4c46d9))
+
+
+### Bug Fixes
+
+* remove redundant release scripts from package.json and streamline versioning process in release workflow ([c36a746](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/c36a746eb1fc4798a1b37e25f5d2592a8f444ac9))
+
 ### [3.1.4](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.1.3...v3.1.4) (2025-11-03)
 
 
