@@ -1,13 +1,15 @@
 import { FloatingArrow, FloatingPortal } from '@floating-ui/react'
+import { CircularProgress, Snackbar } from '@mui/material'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 
 import IconButton from '@src/components/IconButton'
 import { useOpenFlex } from '@src/hooks'
 import useMyFloating from '@src/hooks/useMyFloating'
-import GlobalIcon from '@src/icons/GlobalIcon'
+import DownloadIcon from '@src/icons/DownloadIcon'
+import OpenInBrowser from '@src/icons/OpenInBrowser'
 import SettingsIcon from '@src/icons/SettingsIcon'
-import StarFillIcon from '@src/icons/StarFillIcon'
+import { isLatestVersion } from '@src/utils/checkVersion'
 import { parseClockData } from '@src/utils/parseClockData'
 import { parseScheduleData } from '@src/utils/parseScheduleData'
 
@@ -25,8 +27,36 @@ const Header = () => {
     const { workingHours } = useWorkingHoursContext()
     const { openFlex } = useOpenFlex()
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState('')
+    const [isCheckingUpdate, setIsCheckingUpdate] = useState(false)
 
-    const { refetch } = useFetchLatestVersion()
+    const { refetch, isFetching } = useFetchLatestVersion()
+
+    const handleCheckUpdate = async () => {
+        setIsCheckingUpdate(true)
+        try {
+            const result = await refetch()
+
+            if (result.isError) {
+                setSnackbarMessage('업데이트 확인에 실패했습니다')
+            } else if (result.data) {
+                const needsUpdate = !isLatestVersion(APP_VERSION, result.data)
+                if (needsUpdate) {
+                    setSnackbarMessage(
+                        `새 버전이 있습니다! ${APP_VERSION} → ${result.data}`
+                    )
+                } else {
+                    setSnackbarMessage(
+                        `최신 버전을 사용 중입니다 (${APP_VERSION})`
+                    )
+                }
+            }
+        } catch (error) {
+            setSnackbarMessage('업데이트 확인에 실패했습니다')
+        } finally {
+            setIsCheckingUpdate(false)
+        }
+    }
 
     const {
         floating: dateFloating,
@@ -38,15 +68,21 @@ const Header = () => {
     const dateFloatingInteraction = getDateFloatingInteraction()
 
     const {
+        floating: settingsFloating,
+        getFloatingInteraction: getSettingsFloatingInteraction,
+        arrowRef: settingsFloatingArrowRef,
+        isOpen: isSettingsFloatingOpen,
+    } = useMyFloating({})
+
+    const settingsFloatingInteraction = getSettingsFloatingInteraction()
+
+    const {
         floating: flexFloating,
         getFloatingInteraction: getFlexFloatingInteraction,
         arrowRef: flexFloatingArrowRef,
         isOpen: isFlexFloatingOpen,
-    } = useMyFloating({
-        delay: {
-            open: 750,
-        },
-    })
+    } = useMyFloating({})
+
     const flexFloatingInteraction = getFlexFloatingInteraction()
 
     const {
@@ -108,17 +144,27 @@ const Header = () => {
                 </div>
 
                 <div className="flex items-center gap-1">
-                    <IconButton
-                        icon={<SettingsIcon className="h-6 w-6 fill-link" />}
-                        onClick={() => setIsSettingsOpen(true)}
-                    />
+                    <div
+                        ref={settingsFloating.refs.setReference}
+                        className="flex"
+                        {...settingsFloatingInteraction.getReferenceProps()}
+                    >
+                        <IconButton
+                            icon={
+                                <SettingsIcon className="h-6 w-6 fill-link" />
+                            }
+                            onClick={() => setIsSettingsOpen(true)}
+                        />
+                    </div>
                     <div
                         ref={flexFloating.refs.setReference}
                         className="flex"
                         {...flexFloatingInteraction.getReferenceProps()}
                     >
                         <IconButton
-                            icon={<GlobalIcon className="h-6 w-6 fill-link" />}
+                            icon={
+                                <OpenInBrowser className="h-6 w-6 fill-link" />
+                            }
                             onClick={openFlex}
                         />
                     </div>
@@ -129,9 +175,17 @@ const Header = () => {
                     >
                         <IconButton
                             icon={
-                                <StarFillIcon className="h-6 w-6 fill-link" />
+                                isCheckingUpdate || isFetching ? (
+                                    <CircularProgress
+                                        size={24}
+                                        className="text-link"
+                                    />
+                                ) : (
+                                    <DownloadIcon className="h-6 w-6 fill-link" />
+                                )
                             }
-                            onClick={() => refetch()}
+                            onClick={handleCheckUpdate}
+                            disabled={isCheckingUpdate || isFetching}
                         />
                     </div>
                 </div>
@@ -148,6 +202,20 @@ const Header = () => {
                                 context={dateFloating.context}
                             />
                             남은 근무일
+                        </div>
+                    )}
+                    {isSettingsFloatingOpen && (
+                        <div
+                            ref={settingsFloating.refs.setFloating}
+                            className="tooltip"
+                            style={settingsFloating.floatingStyles}
+                            {...settingsFloatingInteraction.getFloatingProps()}
+                        >
+                            <FloatingArrow
+                                ref={settingsFloatingArrowRef}
+                                context={settingsFloating.context}
+                            />
+                            설정
                         </div>
                     )}
                     {isFlexFloatingOpen && (
@@ -183,6 +251,13 @@ const Header = () => {
             <WorkingHoursSettingsModal
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
+            />
+            <Snackbar
+                open={!!snackbarMessage}
+                autoHideDuration={3000}
+                onClose={() => setSnackbarMessage('')}
+                message={snackbarMessage}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             />
         </div>
     )

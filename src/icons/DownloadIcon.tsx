@@ -2,18 +2,15 @@ type DownloadIconProps = React.SVGProps<SVGSVGElement>
 
 const DownloadIcon = (props: DownloadIconProps) => (
     <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 0 24 24"
+        width="24px"
+        fill="#e3e3e3"
         {...props}
     >
-        <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M13.5 6.25H11V2H5V6.25H2.5L8 12.25L13.5 6.25ZM2.5 14.5H13.5V13.2H2.5V14.5Z"
-        />
+        <path d="M0 0h24v24H0V0z" fill="none" />
+        <path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z" />
     </svg>
 )
 
