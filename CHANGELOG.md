@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.1](https://github.com/DevooKim/Flex-time-extension/compare/v3.1.0...v3.1.1) (2025-11-03)
+
+
+### Bug Fixes
+
+* update upload-artifact action to v4 for improved functionality ([0d6c29f](https://github.com/DevooKim/Flex-time-extension/commit/0d6c29f8236c295a6b7a76319f585b01c4144be2))
+
 ## [3.1.0](https://github.com/DevooKim/Flex-time-extension/compare/v3.0.0...v3.1.0) (2025-11-03)
 
 
