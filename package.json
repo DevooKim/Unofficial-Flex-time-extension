@@ -6,6 +6,7 @@
         "_build": "rm -rf ./unofficial-flex-extension && rm -rf ./unofficial-flex-extension.zip && craco build && zip -r unofficial-flex-extension.zip ./unofficial-flex-extension",
         "build": "vite build",
         "build:dev": "NODE_ENV=development vite build --mode development",
+        "build:firefox": "cp manifest.firefox.json manifest.json && vite build && web-ext build --source-dir=dist --artifacts-dir=. --overwrite-dest --filename='unofficial-flex-extension-{version}-firefox.xpi' && git checkout manifest.json",
         "dev": "nodemon",
         "prepare": "husky install"
     },
@@ -63,7 +64,8 @@
         "ts-jest": "^28.0.4",
         "typescript": "^5.3.3",
         "vite": "^5.1.7",
-        "vitest": "^1.4.0"
+        "vitest": "^1.4.0",
+        "web-ext": "^8.9.0"
     },
     "msw": {
         "workerDirectory": [

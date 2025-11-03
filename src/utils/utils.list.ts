@@ -1,4 +1,2 @@
-export const filterCount = <T>(
-    list: T[],
-    iteratees: (item: T) => Boolean
-): number => list.filter(iteratees).length
+export const filterCount = <T>(list: T[], iter: (item: T) => boolean): number =>
+    list.filter(iter).length

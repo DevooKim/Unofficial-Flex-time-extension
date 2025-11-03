@@ -9,7 +9,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import Header from './components/Header'
 import InActive from './components/InActive'
 import UserData from './components/UserData'
-import VersionUpdateNotificationBar from './components/VersionUpdateBar'
+import VersionUpdateNotificationBar from './components/VersionUpdateNotificationBar'
 import BaseTimeProvider from './contexts/BaseTimeContext'
 
 const queryClient = new QueryClient({
