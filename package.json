@@ -7,9 +7,6 @@
         "build": "vite build",
         "build:dev": "NODE_ENV=development vite build --mode development",
         "build:chrome": "vite build && cd dist && zip -r ../unofficial-flex-extension-chrome.zip . && cd ..",
-        "release:patch": "standard-version --release-as patch && git push --follow-tags origin main",
-        "release:minor": "standard-version --release-as minor && git push --follow-tags origin main",
-        "release:major": "standard-version --release-as major && git push --follow-tags origin main",
         "dev": "nodemon",
         "prepare": "husky install"
     },

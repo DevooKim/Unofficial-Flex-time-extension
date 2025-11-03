@@ -36,62 +36,45 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Get current version
-        id: current_version
-        run: |
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Calculate new version
-        id: new_version
-        run: |
-          CURRENT="${{ steps.current_version.outputs.current }}"
-          TYPE="${{ github.event.inputs.version_type }}"
-
-          IFS='.' read -r -a version_parts <<< "$CURRENT"
-          major="${version_parts[0]}"
-          minor="${version_parts[1]}"
-          patch="${version_parts[2]}"
-
-          if [ "$TYPE" = "major" ]; then
-            major=$((major + 1))
-            minor=0
-            patch=0
-          elif [ "$TYPE" = "minor" ]; then
-            minor=$((minor + 1))
-            patch=0
-          else
-            patch=$((patch + 1))
-          fi
-
-          NEW_VERSION="${major}.${minor}.${patch}"
-          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "New version will be: $NEW_VERSION"
-
-      - name: Update package.json version
-        run: |
-          NEW_VERSION="${{ steps.new_version.outputs.version }}"
-          npm version $NEW_VERSION --no-git-tag-version
-
-      - name: Update manifest.json version
-        run: |
-          NEW_VERSION="${{ steps.new_version.outputs.version }}"
-          jq --arg version "$NEW_VERSION" '.version = $version' manifest.json > manifest.tmp.json
-          mv manifest.tmp.json manifest.json
-
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit version changes
+      - name: Run standard-version
         run: |
-          NEW_VERSION="${{ steps.new_version.outputs.version }}"
-          git add package.json manifest.json
-          git commit -m "chore: release v${NEW_VERSION}"
-          git tag "v${NEW_VERSION}"
+          TYPE="${{ github.event.inputs.version_type }}"
+          yarn standard-version --release-as $TYPE
+
+      - name: Update manifest.json version
+        run: |
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          jq --arg version "$NEW_VERSION" '.version = $version' manifest.json > manifest.tmp.json
+          mv manifest.tmp.json manifest.json
+          git add manifest.json
+          git commit --amend --no-edit
+
+      - name: Get new version
+        id: new_version
+        run: |
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+
+      - name: Push changes and tags
+        run: |
           git push origin main
-          git push origin "v${NEW_VERSION}"
+          git push --tags
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION="${{ steps.new_version.outputs.version }}"
+          # CHANGELOG.md에서 현재 버전의 내용만 추출
+          CHANGELOG=$(sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' | tail -n +2)
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Setup environment variables
         run: |
@@ -113,9 +96,9 @@ jobs:
         with:
           tag_name: v${{ steps.new_version.outputs.version }}
           name: Release v${{ steps.new_version.outputs.version }}
+          body: ${{ steps.changelog.outputs.content }}
           draft: false
           prerelease: false
-          generate_release_notes: true
           files: unofficial-flex-extension-${{ steps.new_version.outputs.version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
