@@ -32,7 +32,7 @@ const VersionUpdateNotificationBar = () => {
 
     const handleDownload = () => {
         window.open(
-            `https://github.com/${OWNER}/${REPO}/releases/latest/download/${ASSET_NAME}`,
+            `https://github.com/${OWNER}/${REPO}/releases/latest`,
             '_blank'
         )
     }
