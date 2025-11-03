@@ -3,7 +3,8 @@ import utc from 'dayjs/plugin/utc'
 
 dayjs.extend(utc)
 
-export const dayToMinutes = (day: number): number => day * 8 * 60
+export const dayToMinutes = (day: number, workingHoursPerDay = 8): number =>
+    day * workingHoursPerDay * 60
 
 export const safeDivision = (
     denominator: number,

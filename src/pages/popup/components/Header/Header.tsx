@@ -1,24 +1,30 @@
 import { FloatingArrow, FloatingPortal } from '@floating-ui/react'
 import dayjs from 'dayjs'
+import { useState } from 'react'
 
 import IconButton from '@src/components/IconButton'
 import { useOpenFlex } from '@src/hooks'
 import useMyFloating from '@src/hooks/useMyFloating'
 import GlobalIcon from '@src/icons/GlobalIcon'
+import SettingsIcon from '@src/icons/SettingsIcon'
 import StarFillIcon from '@src/icons/StarFillIcon'
 import { parseClockData } from '@src/utils/parseClockData'
 import { parseScheduleData } from '@src/utils/parseScheduleData'
 
 import { useBaseTimeContext } from '@popup/contexts/BaseTimeContext'
+import { useWorkingHoursContext } from '@popup/contexts/WorkingHoursContext'
 import { useFetchClockData } from '@popup/hooks/queries/useFetchClockData'
 import { useFetchScheduleData } from '@popup/hooks/queries/useFetchScheduleData'
 import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
 
 import { useFetchLatestVersion } from '../../hooks/queries/useFetchLatestVersion'
+import WorkingHoursSettingsModal from '../WorkingHoursSettingsModal'
 
 const Header = () => {
     const { baseTimeData } = useBaseTimeContext()
+    const { workingHours } = useWorkingHoursContext()
     const { openFlex } = useOpenFlex()
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
     const { refetch } = useFetchLatestVersion()
 
@@ -78,6 +84,7 @@ const Header = () => {
         data: scheduleData,
         today: baseTimeData.today,
         clockData: myClockData,
+        workingHoursPerDay: workingHours,
     })
 
     return (
@@ -101,6 +108,10 @@ const Header = () => {
                 </div>
 
                 <div className="flex items-center gap-1">
+                    <IconButton
+                        icon={<SettingsIcon className="h-6 w-6 fill-link" />}
+                        onClick={() => setIsSettingsOpen(true)}
+                    />
                     <div
                         ref={flexFloating.refs.setReference}
                         className="flex"
@@ -169,6 +180,10 @@ const Header = () => {
                     )}
                 </FloatingPortal>
             </div>
+            <WorkingHoursSettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+            />
         </div>
     )
 }

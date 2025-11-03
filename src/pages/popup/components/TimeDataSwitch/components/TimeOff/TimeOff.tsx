@@ -1,5 +1,6 @@
 import VocationIcon from '@src/icons/VocationIcon'
 import { useBaseTimeContext } from '@src/pages/popup/contexts/BaseTimeContext'
+import { useWorkingHoursContext } from '@src/pages/popup/contexts/WorkingHoursContext'
 import { parseClockData } from '@src/utils/parseClockData'
 import { parseScheduleData } from '@src/utils/parseScheduleData'
 
@@ -10,6 +11,7 @@ import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
 const TimeOff = () => {
     // NOTE: Flex API를 요청하기 위한 기본 시간 데이터가 담겨 있음
     const { baseTimeData } = useBaseTimeContext()
+    const { workingHours } = useWorkingHoursContext()
 
     // NOTE: Flex API를 요청하기 위한 유저 아이디 해시가 담겨 있음
     const { data: userIdHash } = useFetchUserIdHash()
@@ -38,6 +40,7 @@ const TimeOff = () => {
         data: scheduleData,
         today: baseTimeData.today,
         clockData: myClockData,
+        workingHoursPerDay: workingHours,
     })
 
     return (
@@ -54,7 +57,7 @@ interface TimeOffHeaderProps {
 const TimeOffHeader = (props: TimeOffHeaderProps) => {
     const { 이번달휴가일수 } = props
     return (
-        <header className="flex px-3 py-2 gap-x-5">
+        <header className="flex gap-x-5 px-3 py-2">
             <VocationIcon className="" />
             <div className="flex flex-col gap-y-1">
                 <span className="text-xs text-hint">이번 달 휴가 일수</span>
@@ -83,11 +86,11 @@ interface TimeOffMainProps {
 const TimeOffMain = (props: TimeOffMainProps) => {
     const { 휴가정보list } = props
     return (
-        <main className="pl-[88px] pr-4 py-2">
+        <main className="py-2 pl-[88px] pr-4">
             <ul className="flex flex-col">
                 {휴가정보list.map((휴가정보) => (
                     <li
-                        className="flex flex-col mb-2 text-sm text-alternative"
+                        className="mb-2 flex flex-col text-sm text-alternative"
                         key={휴가정보.date}
                     >
                         <span>{휴가정보.date}</span>
@@ -95,7 +98,7 @@ const TimeOffMain = (props: TimeOffMainProps) => {
                             {휴가정보.infos.map((info) => (
                                 <li
                                     key={info.name}
-                                    className="list-disc list-inside"
+                                    className="list-inside list-disc"
                                 >
                                     {info.hours === 0
                                         ? ''

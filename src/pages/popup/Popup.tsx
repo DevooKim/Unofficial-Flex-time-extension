@@ -11,6 +11,7 @@ import InActive from './components/InActive'
 import UserData from './components/UserData'
 import VersionUpdateNotificationBar from './components/VersionUpdateNotificationBar'
 import BaseTimeProvider from './contexts/BaseTimeContext'
+import WorkingHoursProvider from './contexts/WorkingHoursContext'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -39,15 +40,17 @@ export default function App(): JSX.Element {
                             )}
                         >
                             <React.Suspense fallback={<h1>loading</h1>}>
-                                <BaseTimeProvider>
-                                    {/* <WorkingTimeResult
+                                <WorkingHoursProvider>
+                                    <BaseTimeProvider>
+                                        {/* <WorkingTimeResult
                                         userIdHash={userIdHash}
                                     /> */}
-                                    <div className="flex flex-col gap-4">
-                                        <Header />
-                                        <UserData />
-                                    </div>
-                                </BaseTimeProvider>
+                                        <div className="flex flex-col gap-4">
+                                            <Header />
+                                            <UserData />
+                                        </div>
+                                    </BaseTimeProvider>
+                                </WorkingHoursProvider>
                             </React.Suspense>
                         </ErrorBoundary>
                     )}

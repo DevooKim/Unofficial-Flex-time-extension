@@ -61,10 +61,12 @@ const 근무시간계산하기 = (
 const 남은근무시간계산하기 = ({
     워킹데이,
     근무시간총합,
+    workingHoursPerDay,
 }: {
     워킹데이: number
     근무시간총합: number
-}): number => Math.max(워킹데이 * 8 - 근무시간총합, 0)
+    workingHoursPerDay: number
+}): number => Math.max(워킹데이 * workingHoursPerDay - 근무시간총합, 0)
 
 /**
  * 연차 정보
@@ -110,10 +112,12 @@ export const parseScheduleData = ({
     data,
     today,
     clockData,
+    workingHoursPerDay = 8,
 }: {
     data: flexScheduleData
     today: BaseTimeData['today']
     clockData: myClockData
+    workingHoursPerDay?: number
 }): myScheduleData => {
     const days = data.days
     const period = data.period
@@ -137,6 +141,7 @@ export const parseScheduleData = ({
     const 남은근무시간 = 남은근무시간계산하기({
         워킹데이,
         근무시간총합,
+        workingHoursPerDay,
     })
 
     const 휴가IdMap = timeOffResults.reduce(
@@ -159,10 +164,10 @@ export const parseScheduleData = ({
     const 남은워킹데이 = 워킹데이계산하기(days.filter(filterDays))
     const 오늘이후휴가일수 = 휴가list
         .filter(filterDays)
-        .reduce((acc, cur) => acc + cur.totalHours / 8, 0)
+        .reduce((acc, cur) => acc + cur.totalHours / workingHoursPerDay, 0)
 
     const 이번달휴가일수 = 휴가list.reduce(
-        (acc, cur) => acc + cur.totalHours / 8,
+        (acc, cur) => acc + cur.totalHours / workingHoursPerDay,
         0
     )
 
@@ -181,7 +186,7 @@ export const parseScheduleData = ({
 
     return {
         워킹데이,
-        최소근무시간: 워킹데이 * 8,
+        최소근무시간: 워킹데이 * workingHoursPerDay,
         근무시간총합,
         남은근무일,
         남은근무시간,
