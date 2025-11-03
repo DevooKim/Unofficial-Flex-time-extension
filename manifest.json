@@ -49,5 +49,6 @@
     },
     "background": {
         "service_worker": "src/pages/background/index.ts"
-    }
+    },
+    "version": "3.1.0"
 }
