@@ -123,3 +123,92 @@ export type myClockData = {
     퇴근시간: number
     오늘일한시간: number
 }
+
+export type WorkRuleActor = {
+    customerIdHash: string
+    userIdHash: string
+    interfaceType: string
+}
+
+export type CurrentWorkRule = {
+    workRule: {
+        customerIdHash: string
+        userIdHash: string
+        dateFrom: string
+        dateTo: string
+        customerWorkRuleId: string
+        userWorkRuleId: string
+        userWorkRuleActor: WorkRuleActor
+        eventTimeStamp: number
+    }
+}
+
+export type RecommendedRestTimeRange = {
+    from: string
+    to: string
+}
+
+export type WeekWorkingHourRule = {
+    dayOfWeek: string
+    agreedWorkingMinutes: number
+    usualWorkingMinutes: number
+    dayWorkingType: string
+    recommendedRestTimeRanges: RecommendedRestTimeRange[]
+    regularWorkDay: boolean
+}
+
+export type WorkRecordRule = {
+    customerIdHash: string
+    customerWorkRecordRuleId: string
+    recordRuleName: string
+    checkWorkDensity: boolean
+    onTimeRecord: {
+        bufferMinutes: number
+        recordType: string
+        enabled: boolean
+    }
+    realTimeRecord: {
+        enabled: boolean
+        restEnabled: boolean
+    }
+    autoWorkPlanEnabled: boolean
+    possibleOverStatutoryWorkingMinutes: boolean
+    possibleEarlyWorkStart: boolean
+    forceMinimumRestTime: boolean
+    allowLackOfWeeklyHolidays: boolean
+    possibleAutoWorkStop: boolean
+    skipWorkClockConfirm: boolean
+    workClockStopPreference: string
+    gpsBasedCommuteRestrictionEnabled: boolean
+}
+
+export type WorkingPeriodRule = {
+    unit: string
+    count: number
+    beginDate: string
+}
+
+export type WorkRule = {
+    customerIdHash: string
+    customerWorkRuleId: string
+    workRecordRule: WorkRecordRule
+    ruleName: string
+    controlType: string
+    workingHourType: string
+    autoConversionEnabled: boolean
+    workingPeriodRule: WorkingPeriodRule
+    primary: boolean
+    hidden: boolean
+    workingHourCalculationStrategy: string
+    weekWorkingHourRule: WeekWorkingHourRule[]
+    baseAgreedDayWorkingMinutes: number
+    applyAllHolidaysIfShortHoursPartTimer: boolean
+    useRegardedOverWork: boolean
+    exceedStatutoryWorkingMinutesSettingEnabled: boolean
+    distributePeriodOverToDay: boolean
+    schedulingEnabled: boolean
+}
+
+export type WorkRuleInfo = {
+    workRules: WorkRule[]
+}

@@ -20,6 +20,7 @@ type BaseTimeProviderProps = {
 type BaseTimeContextType = {
     baseTimeData: BaseTimeData
     updateCacheData: () => void
+    refreshBaseTimeIfInvalid: () => void
 }
 
 type CACHE_KEY = 'baseTimeData' | 'cacheTime'
@@ -100,6 +101,14 @@ const BaseTimeProvider = ({ children }: BaseTimeProviderProps) => {
         setLoading(false)
     }, [])
 
+    const refreshBaseTimeIfInvalid = useCallback(async () => {
+        const cacheTime = (await cache.get('cacheTime')) as number
+
+        if (!isValidCache(cacheTime)) {
+            updateCacheData()
+        }
+    }, [updateCacheData])
+
     if (loading) return <LoadingUI />
 
     return (
@@ -107,6 +116,7 @@ const BaseTimeProvider = ({ children }: BaseTimeProviderProps) => {
             value={{
                 baseTimeData,
                 updateCacheData,
+                refreshBaseTimeIfInvalid,
             }}
         >
             {children}
