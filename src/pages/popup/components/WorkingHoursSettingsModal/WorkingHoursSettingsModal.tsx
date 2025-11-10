@@ -11,7 +11,8 @@ const WorkingHoursSettingsModal = ({
     isOpen,
     onClose,
 }: WorkingHoursSettingsModalProps) => {
-    const { workingHours, updateWorkingHours } = useWorkingHoursContext()
+    const { workingHours, updateWorkingHours, resetWorkingHours } =
+        useWorkingHoursContext()
     const [localHours, setLocalHours] = useState(workingHours)
 
     if (!isOpen) return null
@@ -23,6 +24,11 @@ const WorkingHoursSettingsModal = ({
 
     const handleCancel = () => {
         setLocalHours(workingHours)
+        onClose()
+    }
+
+    const handleReset = () => {
+        resetWorkingHours()
         onClose()
     }
 
@@ -48,20 +54,31 @@ const WorkingHoursSettingsModal = ({
                         }
                         className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
                     />
+                    <p className="mt-2 text-paragraph-xs text-gray-500">
+                        초기화하면 근무규칙의 기본 근무시간으로 되돌아갑니다.
+                    </p>
                 </div>
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-between gap-2">
                     <button
-                        onClick={handleCancel}
-                        className="rounded bg-gray-200 px-4 py-2 text-paragraph-sm hover:bg-gray-300"
+                        onClick={handleReset}
+                        className="rounded bg-orange-500 px-4 py-2 text-paragraph-sm text-white hover:bg-orange-600"
                     >
-                        취소
+                        초기화
                     </button>
-                    <button
-                        onClick={handleSave}
-                        className="rounded bg-blue-500 px-4 py-2 text-paragraph-sm text-white hover:bg-blue-600"
-                    >
-                        저장
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={handleCancel}
+                            className="rounded bg-gray-200 px-4 py-2 text-paragraph-sm hover:bg-gray-300"
+                        >
+                            취소
+                        </button>
+                        <button
+                            onClick={handleSave}
+                            className="rounded bg-blue-500 px-4 py-2 text-paragraph-sm text-white hover:bg-blue-600"
+                        >
+                            저장
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
