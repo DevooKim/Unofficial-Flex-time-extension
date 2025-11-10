@@ -132,7 +132,9 @@ const Header = () => {
         workingHoursPerDay: workingHours,
     })
 
-    const primaryWorkRule = workRuleInfo?.workRules?.find((rule) => rule.primary)
+    const primaryWorkRule = workRuleInfo?.workRules?.find(
+        (rule) => rule.primary
+    )
     const ruleName = primaryWorkRule?.ruleName || ''
     const baseAgreedDayWorkingMinutes =
         primaryWorkRule?.baseAgreedDayWorkingMinutes || 0
@@ -160,50 +162,51 @@ const Header = () => {
                         </div>
                     </div>
 
-                <div className="flex items-center gap-1">
-                    <div
-                        ref={settingsFloating.refs.setReference}
-                        className="flex"
-                        {...settingsFloatingInteraction.getReferenceProps()}
-                    >
-                        <IconButton
-                            icon={
-                                <SettingsIcon className="h-6 w-6 fill-link" />
-                            }
-                            onClick={() => setIsSettingsOpen(true)}
-                        />
-                    </div>
-                    <div
-                        ref={flexFloating.refs.setReference}
-                        className="flex"
-                        {...flexFloatingInteraction.getReferenceProps()}
-                    >
-                        <IconButton
-                            icon={
-                                <OpenInBrowser className="h-6 w-6 fill-link" />
-                            }
-                            onClick={openFlex}
-                        />
-                    </div>
-                    <div
-                        ref={updateFloating.refs.setReference}
-                        className="flex"
-                        {...updateFloatingInteraction.getReferenceProps()}
-                    >
-                        <IconButton
-                            icon={
-                                isCheckingUpdate || isFetching ? (
-                                    <CircularProgress
-                                        size={24}
-                                        className="text-link"
-                                    />
-                                ) : (
-                                    <DownloadIcon className="h-6 w-6 fill-link" />
-                                )
-                            }
-                            onClick={handleCheckUpdate}
-                            disabled={isCheckingUpdate || isFetching}
-                        />
+                    <div className="flex items-center gap-1">
+                        <div
+                            ref={settingsFloating.refs.setReference}
+                            className="flex"
+                            {...settingsFloatingInteraction.getReferenceProps()}
+                        >
+                            <IconButton
+                                icon={
+                                    <SettingsIcon className="h-6 w-6 fill-link" />
+                                }
+                                onClick={() => setIsSettingsOpen(true)}
+                            />
+                        </div>
+                        <div
+                            ref={flexFloating.refs.setReference}
+                            className="flex"
+                            {...flexFloatingInteraction.getReferenceProps()}
+                        >
+                            <IconButton
+                                icon={
+                                    <OpenInBrowser className="h-6 w-6 fill-link" />
+                                }
+                                onClick={openFlex}
+                            />
+                        </div>
+                        <div
+                            ref={updateFloating.refs.setReference}
+                            className="flex"
+                            {...updateFloatingInteraction.getReferenceProps()}
+                        >
+                            <IconButton
+                                icon={
+                                    isCheckingUpdate || isFetching ? (
+                                        <CircularProgress
+                                            size={24}
+                                            className="text-link"
+                                        />
+                                    ) : (
+                                        <DownloadIcon className="h-6 w-6 fill-link" />
+                                    )
+                                }
+                                onClick={handleCheckUpdate}
+                                disabled={isCheckingUpdate || isFetching}
+                            />
+                        </div>
                     </div>
                 </div>
                 <FloatingPortal>
@@ -265,13 +268,15 @@ const Header = () => {
                     )}
                 </FloatingPortal>
                 {ruleName && (
-                    <div className="flex items-center gap-2 text-paragraph-xs text-alternative">
+                    <div className="text-paragraph-xs flex items-center gap-2 text-alternative">
                         <div className="flex items-center gap-1">
                             <span className="font-semibold">근무규칙:</span>
                             <span>{ruleName}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <span className="font-semibold">일일 근무시간:</span>
+                            <span className="font-semibold">
+                                일일 근무시간:
+                            </span>
                             <span>{baseAgreedDayWorkingHours}시간</span>
                         </div>
                         <div className="flex items-center gap-1">
