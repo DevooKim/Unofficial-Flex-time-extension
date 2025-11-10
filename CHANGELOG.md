@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.1.6...v3.2.0) (2025-11-10)
+
+
+### Features
+
+* 설정 모달에 근무 규칙 정보 추가 ([#35](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/35)) ([4f00f62](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/4f00f624366050217206c3ffe6f7ccf6743aa4c0))
+
+
+### Bug Fixes
+
+* update release workflow to skip tag creation and streamline push process ([0a254f7](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/0a254f7e47ab31d209bd748b370bf570b9b36dea))
+
 ### [3.1.6](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.1.3...v3.1.6) (2025-11-03)
 
 
