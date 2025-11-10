@@ -189,65 +189,65 @@ const Header = () => {
                         />
                     </div>
                 </div>
-                <FloatingPortal>
-                    {isDateFloatingOpen && (
-                        <div
-                            ref={dateFloating.refs.setFloating}
-                            className="tooltip"
-                            style={dateFloating.floatingStyles}
-                            {...dateFloatingInteraction.getFloatingProps()}
-                        >
-                            <FloatingArrow
-                                ref={dateFloatingArrowRef}
-                                context={dateFloating.context}
-                            />
-                            남은 근무일
-                        </div>
-                    )}
-                    {isSettingsFloatingOpen && (
-                        <div
-                            ref={settingsFloating.refs.setFloating}
-                            className="tooltip"
-                            style={settingsFloating.floatingStyles}
-                            {...settingsFloatingInteraction.getFloatingProps()}
-                        >
-                            <FloatingArrow
-                                ref={settingsFloatingArrowRef}
-                                context={settingsFloating.context}
-                            />
-                            설정
-                        </div>
-                    )}
-                    {isFlexFloatingOpen && (
-                        <div
-                            ref={flexFloating.refs.setFloating}
-                            className="tooltip"
-                            style={flexFloating.floatingStyles}
-                            {...flexFloatingInteraction.getFloatingProps()}
-                        >
-                            <FloatingArrow
-                                ref={flexFloatingArrowRef}
-                                context={flexFloating.context}
-                            />
-                            flex로 이동
-                        </div>
-                    )}
-                    {isUpdateFloatingOpen && (
-                        <div
-                            ref={updateFloating.refs.setFloating}
-                            className="tooltip"
-                            style={updateFloating.floatingStyles}
-                            {...updateFloatingInteraction.getFloatingProps()}
-                        >
-                            <FloatingArrow
-                                ref={updateFloatingArrowRef}
-                                context={updateFloating.context}
-                            />
-                            업데이트 확인
-                        </div>
-                    )}
-                </FloatingPortal>
             </div>
+            <FloatingPortal>
+                {isDateFloatingOpen && (
+                    <div
+                        ref={dateFloating.refs.setFloating}
+                        className="tooltip"
+                        style={dateFloating.floatingStyles}
+                        {...dateFloatingInteraction.getFloatingProps()}
+                    >
+                        <FloatingArrow
+                            ref={dateFloatingArrowRef}
+                            context={dateFloating.context}
+                        />
+                        남은 근무일
+                    </div>
+                )}
+                {isSettingsFloatingOpen && (
+                    <div
+                        ref={settingsFloating.refs.setFloating}
+                        className="tooltip"
+                        style={settingsFloating.floatingStyles}
+                        {...settingsFloatingInteraction.getFloatingProps()}
+                    >
+                        <FloatingArrow
+                            ref={settingsFloatingArrowRef}
+                            context={settingsFloating.context}
+                        />
+                        설정
+                    </div>
+                )}
+                {isFlexFloatingOpen && (
+                    <div
+                        ref={flexFloating.refs.setFloating}
+                        className="tooltip"
+                        style={flexFloating.floatingStyles}
+                        {...flexFloatingInteraction.getFloatingProps()}
+                    >
+                        <FloatingArrow
+                            ref={flexFloatingArrowRef}
+                            context={flexFloating.context}
+                        />
+                        flex로 이동
+                    </div>
+                )}
+                {isUpdateFloatingOpen && (
+                    <div
+                        ref={updateFloating.refs.setFloating}
+                        className="tooltip"
+                        style={updateFloating.floatingStyles}
+                        {...updateFloatingInteraction.getFloatingProps()}
+                    >
+                        <FloatingArrow
+                            ref={updateFloatingArrowRef}
+                            context={updateFloating.context}
+                        />
+                        업데이트 확인
+                    </div>
+                )}
+            </FloatingPortal>
             <WorkingHoursSettingsModal
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
