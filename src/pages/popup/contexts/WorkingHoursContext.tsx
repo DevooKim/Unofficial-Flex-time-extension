@@ -15,6 +15,11 @@ type WorkingHoursContextType = {
     workingHours: number
     updateWorkingHours: (hours: number) => void
     resetWorkingHours: () => void
+    workRuleInfo?: {
+        ruleName: string
+        baseAgreedDayWorkingMinutes: number
+        dateFrom: string
+    }
 }
 
 const WorkingHoursContext = createContext<WorkingHoursContextType>(
@@ -49,6 +54,14 @@ const WorkingHoursProvider = ({ children }: WorkingHoursProviderProps) => {
                 workingHours,
                 updateWorkingHours,
                 resetWorkingHours,
+                workRuleInfo: primaryWorkRule
+                    ? {
+                          ruleName: primaryWorkRule.ruleName,
+                          baseAgreedDayWorkingMinutes:
+                              primaryWorkRule.baseAgreedDayWorkingMinutes,
+                          dateFrom: currentWorkRule?.workRule?.dateFrom || '',
+                      }
+                    : undefined,
             }}
         >
             {children}
