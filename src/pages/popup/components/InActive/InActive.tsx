@@ -11,6 +11,7 @@ const InActive = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 p: 2,
+                height: '100vh',
             }}
         >
             <Button variant="contained" onClick={openFlex}>
