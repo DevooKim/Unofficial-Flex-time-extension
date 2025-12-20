@@ -48,9 +48,29 @@ export default defineConfig({
         outDir,
         sourcemap: isDev,
         emptyOutDir: !isDev,
+        rollupOptions: {
+            onwarn(warning, warn) {
+                if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+                    return
+                }
+                if (warning.code === 'SOURCEMAP_ERROR') {
+                    return
+                }
+                warn(warning)
+            },
+        },
     },
     define: {
         APP_VERSION: JSON.stringify(`v${pkg.version}`),
         ASSET_NAME: JSON.stringify('unofficial-flex-extension.zip'),
+    },
+    server: {
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+        },
+        cors: true,
     },
 })
