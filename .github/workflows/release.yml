@@ -27,14 +27,13 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 24
-          cache: 'yarn'
+          bun-version: 1.3.3
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Configure Git
         run: |
@@ -44,11 +43,11 @@ jobs:
       - name: Run standard-version (skip tag creation)
         run: |
           TYPE="${{ github.event.inputs.version_type }}"
-          yarn standard-version --release-as $TYPE --skip.tag
+          bunx standard-version --release-as $TYPE --skip.tag
 
       - name: Update manifest.json version
         run: |
-          NEW_VERSION=$(node -p "require('./package.json').version")
+          NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
           jq --arg version "$NEW_VERSION" '.version = $version' manifest.json > manifest.tmp.json
           mv manifest.tmp.json manifest.json
           git add manifest.json
@@ -57,7 +56,7 @@ jobs:
       - name: Get new version
         id: new_version
         run: |
-          NEW_VERSION=$(node -p "require('./package.json').version")
+          NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "New version: $NEW_VERSION"
 
@@ -81,7 +80,7 @@ jobs:
           echo "VITE_GITHUB_REPO=$REPO_NAME" >> .env
 
       - name: Build Chrome extension
-        run: yarn build:chrome
+        run: bun run build:chrome
 
       - name: Rename artifacts
         run: |
