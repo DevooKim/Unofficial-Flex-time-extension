@@ -42,9 +42,6 @@ export default function App(): JSX.Element {
                             <React.Suspense fallback={<PopupSkeleton />}>
                                 <WorkingHoursProvider>
                                     <BaseTimeProvider>
-                                        {/* <WorkingTimeResult
-                                        userIdHash={userIdHash}
-                                    /> */}
                                         <div className="flex flex-col gap-4 p-5">
                                             <Header />
                                             <UserData />

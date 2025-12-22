@@ -3,13 +3,15 @@
     "version": "3.2.0",
     "private": true,
     "type": "module",
+    "engines": {
+        "node": ">=24"
+    },
     "scripts": {
         "_build": "rm -rf ./unofficial-flex-extension && rm -rf ./unofficial-flex-extension.zip && craco build && zip -r unofficial-flex-extension.zip ./unofficial-flex-extension",
         "build": "vite build",
         "build:dev": "NODE_ENV=development vite build --mode development",
         "build:chrome": "vite build && cd dist && zip -r ../unofficial-flex-extension-chrome.zip . && cd ..",
         "dev": "vite",
-        "dev:build": "nodemon",
         "prepare": "husky install"
     },
     "dependencies": {
@@ -24,7 +26,6 @@
         "axios": "^1.6.7",
         "classnames": "^2.5.1",
         "dayjs": "^1.11.6",
-        "html2canvas": "^1.4.1",
         "lodash": "^4.17.21",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
@@ -55,20 +56,16 @@
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.5",
         "husky": "^8.0.1",
-        "jest": "^28.1.0",
         "jsdom": "^24.0.0",
         "lint-staged": "^13.0.2",
-        "nodemon": "^3.1.0",
         "postcss": "^8.4.35",
         "postcss-nested": "^6.0.1",
         "prettier": "^3.2.5",
         "prettier-plugin-tailwindcss": "^0.5.12",
         "standard-version": "^9.5.0",
         "tailwindcss": "^3.4.1",
-        "ts-jest": "^28.0.4",
         "typescript": "^5.3.3",
         "vite": "^5.4.6",
-        "vitest": "^1.4.0",
         "web-ext": "^8.9.0"
     },
     "msw": {
@@ -76,5 +73,5 @@
             "public"
         ]
     },
-    "packageManager": "yarn@4.1.1"
+    "packageManager": "yarn@4.12.0"
 }
