@@ -37,5 +37,5 @@ export const useFetchWorkRuleInfo = (
                 return workRuleInfo
             }
         },
-        enabled: !!customerIdHash && !!customerWorkRuleId,
+        // enabled: !!customerIdHash && !!customerWorkRuleId,
     })

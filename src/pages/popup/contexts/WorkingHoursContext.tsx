@@ -37,9 +37,8 @@ const WorkingHoursProvider = ({ children }: WorkingHoursProviderProps) => {
         currentWorkRule?.workRule?.customerWorkRuleId || ''
     )
 
-    const primaryWorkRule = workRuleInfo?.workRules?.find(
-        (rule) => rule.primary
-    )
+    const primaryWorkRule = workRuleInfo?.workRules?.[0]
+
     const baseAgreedDayWorkingMinutes =
         primaryWorkRule?.baseAgreedDayWorkingMinutes
 
