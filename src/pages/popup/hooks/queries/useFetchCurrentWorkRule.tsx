@@ -27,5 +27,4 @@ export const useFetchCurrentWorkRule = (userIdHash: string) =>
                 return workRule
             }
         },
-        enabled: !!userIdHash,
     })
