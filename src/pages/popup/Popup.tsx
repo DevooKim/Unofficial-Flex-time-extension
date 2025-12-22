@@ -6,6 +6,8 @@ import {
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 
+import { PopupSkeleton } from '@src/components/Skeleton'
+
 import Header from './components/Header'
 import InActive from './components/InActive'
 import UserData from './components/UserData'
@@ -30,22 +32,20 @@ export default function App(): JSX.Element {
     return (
         <QueryClientProvider client={queryClient}>
             <VersionUpdateNotificationBar />
-            <div className="min-w-[420px] p-5">
+            <div className="min-w-[420px]">
                 <QueryErrorResetBoundary>
-                    {({ reset }) => (
+                    {() => (
                         <ErrorBoundary
                             onReset={() => {}}
-                            fallbackRender={({ resetErrorBoundary }) => (
-                                <InActive />
-                            )}
+                            FallbackComponent={InActive}
                         >
-                            <React.Suspense fallback={<h1>loading</h1>}>
+                            <React.Suspense fallback={<PopupSkeleton />}>
                                 <WorkingHoursProvider>
                                     <BaseTimeProvider>
                                         {/* <WorkingTimeResult
                                         userIdHash={userIdHash}
                                     /> */}
-                                        <div className="flex flex-col gap-4">
+                                        <div className="flex flex-col gap-4 p-5">
                                             <Header />
                                             <UserData />
                                         </div>

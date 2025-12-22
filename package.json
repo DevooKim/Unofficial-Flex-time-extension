@@ -2,12 +2,14 @@
     "name": "unofficial-flex-extension",
     "version": "3.2.0",
     "private": true,
+    "type": "module",
     "scripts": {
         "_build": "rm -rf ./unofficial-flex-extension && rm -rf ./unofficial-flex-extension.zip && craco build && zip -r unofficial-flex-extension.zip ./unofficial-flex-extension",
         "build": "vite build",
         "build:dev": "NODE_ENV=development vite build --mode development",
         "build:chrome": "vite build && cd dist && zip -r ../unofficial-flex-extension-chrome.zip . && cd ..",
-        "dev": "nodemon",
+        "dev": "vite",
+        "dev:build": "nodemon",
         "prepare": "husky install"
     },
     "dependencies": {
@@ -17,7 +19,7 @@
         "@mui/icons-material": "^5.8.2",
         "@mui/material": "^5.8.2",
         "@mui/system": "^5.15.13",
-        "@mui/x-date-pickers": "^5.0.8",
+        "@mui/x-date-pickers": "^8.22.0",
         "@tanstack/react-query": "^5.24.1",
         "axios": "^1.6.7",
         "classnames": "^2.5.1",
@@ -31,7 +33,7 @@
         "webextension-polyfill": "^0.10.0"
     },
     "devDependencies": {
-        "@crxjs/vite-plugin": "^1.0.14",
+        "@crxjs/vite-plugin": "2.0.0-beta.33",
         "@tanstack/eslint-plugin-query": "^5.20.1",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@types/chrome": "^0.0.256",
@@ -65,7 +67,7 @@
         "tailwindcss": "^3.4.1",
         "ts-jest": "^28.0.4",
         "typescript": "^5.3.3",
-        "vite": "^5.1.7",
+        "vite": "^5.4.6",
         "vitest": "^1.4.0",
         "web-ext": "^8.9.0"
     },
