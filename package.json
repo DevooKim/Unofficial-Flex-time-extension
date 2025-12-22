@@ -3,6 +3,9 @@
     "version": "3.2.0",
     "private": true,
     "type": "module",
+    "engines": {
+        "node": ">=24"
+    },
     "scripts": {
         "_build": "rm -rf ./unofficial-flex-extension && rm -rf ./unofficial-flex-extension.zip && craco build && zip -r unofficial-flex-extension.zip ./unofficial-flex-extension",
         "build": "vite build",
