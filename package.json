@@ -12,7 +12,6 @@
         "build:dev": "NODE_ENV=development vite build --mode development",
         "build:chrome": "vite build && cd dist && zip -r ../unofficial-flex-extension-chrome.zip . && cd ..",
         "dev": "vite",
-        "dev:build": "nodemon",
         "prepare": "husky install"
     },
     "dependencies": {
@@ -61,7 +60,6 @@
         "jest": "^28.1.0",
         "jsdom": "^24.0.0",
         "lint-staged": "^13.0.2",
-        "nodemon": "^3.1.0",
         "postcss": "^8.4.35",
         "postcss-nested": "^6.0.1",
         "prettier": "^3.2.5",
