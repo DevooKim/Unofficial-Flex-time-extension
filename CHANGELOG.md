@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.2.0...v3.3.0) (2025-12-22)
+
+
+### Features
+
+* manifest.json 변경 시에만 amend 커밋 수행 ([cda520c](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/cda520c142a4bc63ff206e4b9ad761669341d0fa))
+* update node24 ([#39](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/39)) ([fff4532](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/fff4532a6503ac28ccb4c5dabcc3bf8f2e09697a))
+* 연차 캘린더뷰 및 UX 개선 ([#38](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/38)) ([1c2216c](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/1c2216c91b8341301fafdbab73dd5df04955612f))
+
+
+### Bug Fixes
+
+* 수정된 작업 규칙 로직 및 쿼리 활성화 조건 주석 처리 ([#41](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/41)) ([f283acf](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/f283acf594e8640608f9268c9d2045fd7e7f8c0c))
+
 ## [3.2.0](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.1.6...v3.2.0) (2025-11-10)
 
 
