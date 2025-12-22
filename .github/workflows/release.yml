@@ -50,8 +50,13 @@ jobs:
           NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
           jq --arg version "$NEW_VERSION" '.version = $version' manifest.json > manifest.tmp.json
           mv manifest.tmp.json manifest.json
-          git add manifest.json
-          git commit --amend --no-edit
+          # 변경 사항이 있을 때만 amend 커밋 시도 (훅 비활성화)
+          if git diff --quiet HEAD -- manifest.json; then
+            echo "manifest.json unchanged; skipping amend commit"
+          else
+            git add manifest.json
+            HUSKY=0 git commit --amend --no-edit --no-verify
+          fi
 
       - name: Get new version
         id: new_version
