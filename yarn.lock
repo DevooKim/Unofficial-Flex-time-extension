@@ -7114,6 +7114,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash@npm:^4.17.23":
+  version: 4.17.23
+  resolution: "lodash@npm:4.17.23"
+  checksum: 10c0/1264a90469f5bb95d4739c43eb6277d15b6d9e186df4ac68c3620443160fc669e2f14c11e7d8b2ccf078b81d06147c01a8ccced9aab9f9f63d50dcf8cace6bf6
+  languageName: node
+  linkType: hard
+
 "log-update@npm:^5.0.1":
   version: 5.0.1
   resolution: "log-update@npm:5.0.1"
@@ -10115,7 +10122,7 @@ __metadata:
     jest: "npm:^28.1.0"
     jsdom: "npm:^24.0.0"
     lint-staged: "npm:^13.0.2"
-    lodash: "npm:^4.17.21"
+    lodash: "npm:^4.17.23"
     nodemon: "npm:^3.1.0"
     postcss: "npm:^8.4.35"
     postcss-nested: "npm:^6.0.1"
