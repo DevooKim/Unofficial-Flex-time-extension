@@ -205,7 +205,7 @@ const Skeleton = () => (
                 휴가시간={0}
             />
         </div>
-        <TimeCard icon="📊" title="누적 근무 차이" text={'0시간 0분'} />
+        <TimeCard icon="📊" title="현재 부족한 시간은?" text={'0시간 0분'} />
         <TimeCard
             icon="⌛"
             title="지금 퇴근하면?"
@@ -281,7 +281,7 @@ const WorkingRecord = () => {
             </div>
             <TimeCard
                 icon="📊"
-                title="누적 근무 차이"
+                title="현재 부족한 시간은?"
                 text={
                     누적근무차이 >= 0
                         ? `${hourToString(누적근무차이)} 여유`
