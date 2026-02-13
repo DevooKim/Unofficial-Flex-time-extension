@@ -71,6 +71,7 @@ export type myScheduleData = {
     }[]
     timestampTo: number
     timestampFrom: number
+    누적근무차이: number
     지금기준: {
         남은근무일: number
         남은근무시간: number
