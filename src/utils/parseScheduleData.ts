@@ -186,7 +186,7 @@ export const parseScheduleData = ({
     const 오늘이전워킹데이 = 워킹데이계산하기(오늘이전Days)
 
     /** 누적 근무 차이 (양수: 초과/여유, 음수: 부족) */
-    const 누적근무차이 = 실제근무시간 - 오늘이전워킹데이 * workingHoursPerDay
+    const 누적근무차이 = 실제근무시간 - 오늘이전워킹데이 * 8
 
     return {
         워킹데이,
