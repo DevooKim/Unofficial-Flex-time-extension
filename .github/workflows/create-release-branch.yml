@@ -1,0 +1,34 @@
+name: Create Release Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_branch:
+        description: 'Release branch name (e.g. release/3.4.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  create_release_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and push release branch
+        run: |
+          RELEASE_BRANCH="${{ github.event.inputs.release_branch }}"
+          git checkout -b "$RELEASE_BRANCH"
+          git push origin "$RELEASE_BRANCH"

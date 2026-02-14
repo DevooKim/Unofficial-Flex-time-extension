@@ -1,31 +1,22 @@
-name: Release
+name: Create GitHub Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version_type:
-        description: 'Version bump type'
-        required: true
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
+  push:
+    branches:
+      - master
 
 permissions:
-  contents: write  # Release 생성 및 커밋을 위한 권한
+  contents: write
 
 jobs:
   release:
-    name: Create Release
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout master branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -35,48 +26,31 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Configure Git
+      - name: Read and validate versions
+        id: versions
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Run standard-version (skip tag creation)
-        run: |
-          TYPE="${{ github.event.inputs.version_type }}"
-          bunx standard-version --release-as $TYPE --skip.tag
-
-      - name: Update manifest.json version
-        run: |
-          NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
-          jq --arg version "$NEW_VERSION" '.version = $version' manifest.json > manifest.tmp.json
-          mv manifest.tmp.json manifest.json
-          # 변경 사항이 있을 때만 amend 커밋 시도 (훅 비활성화)
-          if git diff --quiet HEAD -- manifest.json; then
-            echo "manifest.json unchanged; skipping amend commit"
-          else
-            git add manifest.json
-            HUSKY=0 git commit --amend --no-edit --no-verify
+          PACKAGE_VERSION=$(bun -e "console.log(require('./package.json').version)")
+          MANIFEST_VERSION=$(jq -r '.version' manifest.json)
+          if [ "$PACKAGE_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "Version mismatch: package.json=$PACKAGE_VERSION, manifest.json=$MANIFEST_VERSION"
+            exit 1
           fi
+          echo "version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Get new version
-        id: new_version
-        run: |
-          NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
-          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "New version: $NEW_VERSION"
-
-      - name: Push changes
-        run: git push origin main
+          if [[ "$PACKAGE_VERSION" == *-* ]]; then
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Extract changelog for this version
         id: changelog
         run: |
-          VERSION="${{ steps.new_version.outputs.version }}"
-          # CHANGELOG.md에서 현재 버전의 내용만 추출
+          VERSION="${{ steps.versions.outputs.version }}"
           CHANGELOG=$(sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' | tail -n +2)
-          echo "content<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "content<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Setup environment variables
         run: |
@@ -87,26 +61,19 @@ jobs:
       - name: Build Chrome extension
         run: bun run build:chrome
 
-      - name: Rename artifacts
+      - name: Rename artifact
         run: |
-          VERSION="${{ steps.new_version.outputs.version }}"
+          VERSION="${{ steps.versions.outputs.version }}"
           mv unofficial-flex-extension-chrome.zip unofficial-flex-extension-${VERSION}.zip
 
-      - name: Create Release
-        id: create_release
+      - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.new_version.outputs.version }}
-          name: Release v${{ steps.new_version.outputs.version }}
+          tag_name: v${{ steps.versions.outputs.version }}
+          name: Release v${{ steps.versions.outputs.version }}
           body: ${{ steps.changelog.outputs.content }}
           draft: false
-          prerelease: false
-          files: unofficial-flex-extension-${{ steps.new_version.outputs.version }}.zip
+          prerelease: ${{ steps.versions.outputs.is_prerelease }}
+          files: unofficial-flex-extension-${{ steps.versions.outputs.version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Chrome artifact for review
-        uses: actions/upload-artifact@v4
-        with:
-          name: extension-v${{ steps.new_version.outputs.version }}
-          path: unofficial-flex-extension-${{ steps.new_version.outputs.version }}.zip
