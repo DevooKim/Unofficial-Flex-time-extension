@@ -159,10 +159,10 @@ export const parseScheduleData = ({
     const 남은워킹데이 = 워킹데이계산하기(days.filter(filterDays))
     const 오늘이후휴가일수 = 휴가list
         .filter(filterDays)
-        .reduce((acc, cur) => acc + cur.totalHours / 8, 0)
+        .reduce((acc, cur) => acc + (cur.totalHours || 0) / 8, 0)
 
     const 이번달휴가일수 = 휴가list.reduce(
-        (acc, cur) => acc + cur.totalHours / 8,
+        (acc, cur) => acc + (cur.totalHours || 0) / 8,
         0
     )
 
@@ -185,8 +185,13 @@ export const parseScheduleData = ({
     )
     const 오늘이전워킹데이 = 워킹데이계산하기(오늘이전Days)
 
+    /** 오늘 이전의 연차 시간 계산 */
+    const 오늘이전연차시간 = 휴가list
+        .filter(({ date }) => dayjs(date).isBefore(dayjs(today)))
+        .reduce((acc, cur) => acc + (cur.totalHours || 0), 0)
+
     /** 누적 근무 차이 (양수: 초과/여유, 음수: 부족) */
-    const 누적근무차이 = 실제근무시간 - 오늘이전워킹데이 * 8
+    const 누적근무차이 = 실제근무시간 + 오늘이전연차시간 - 오늘이전워킹데이 * 8
 
     return {
         워킹데이,
