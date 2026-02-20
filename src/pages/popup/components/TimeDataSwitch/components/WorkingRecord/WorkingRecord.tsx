@@ -206,6 +206,7 @@ const Skeleton = () => (
                 휴가시간={0}
             />
         </div>
+        <TimeCard icon="📊" title="현재 부족한 시간은?" text={'0시간 0분'} />
         <TimeCard
             icon="⌛"
             title="지금 퇴근하면?"
@@ -254,6 +255,7 @@ const WorkingRecord = () => {
         남은평균근무시간,
         남은근무시간,
         휴가정보list,
+        누적근무차이,
     } = parseScheduleData({
         data: scheduleData,
         today: baseTimeData.today,
@@ -280,6 +282,15 @@ const WorkingRecord = () => {
                     )}
                 />
             </div>
+            <TimeCard
+                icon="📊"
+                title="현재 부족한 시간은?"
+                text={
+                    누적근무차이 >= 0
+                        ? `${hourToString(누적근무차이)} 여유`
+                        : `${hourToString(Math.abs(누적근무차이))} 부족`
+                }
+            />
             <TimeCard
                 icon="⌛"
                 title="지금 퇴근하면?"
