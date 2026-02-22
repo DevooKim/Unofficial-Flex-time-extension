@@ -27,10 +27,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout develop
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: main
           fetch-depth: 0
 
       - name: Setup Bun
@@ -52,7 +52,7 @@ jobs:
           TYPE="${{ github.event.inputs.release_version_type }}"
           WORK_BRANCH="release/_tmp_${GITHUB_RUN_ID}"
 
-          git checkout -b "$WORK_BRANCH" origin/develop
+          git checkout -b "$WORK_BRANCH" origin/main
           HUSKY=0 bunx standard-version --release-as "$TYPE" --skip.tag
 
           NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
@@ -114,7 +114,7 @@ jobs:
               '',
               `Release branch: \`${head}\``,
               '',
-              'Automated release branch created from develop.',
+              'Automated release branch created from main.',
             ].join('\n');
 
             const existing = await github.paginate(github.rest.pulls.list, {
