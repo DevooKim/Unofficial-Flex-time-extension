@@ -30,6 +30,11 @@ jobs:
       - name: Merge release branch into master
         run: |
           RELEASE_BRANCH="${{ github.event.inputs.release_branch }}"
+          if [ "${RELEASE_BRANCH#release/}" = "$RELEASE_BRANCH" ]; then
+            echo "Only release/* branches can be merged into master."
+            exit 1
+          fi
+
           git fetch origin "$RELEASE_BRANCH"
           git merge --no-ff "origin/$RELEASE_BRANCH" -m "chore(release): merge $RELEASE_BRANCH into master"
 

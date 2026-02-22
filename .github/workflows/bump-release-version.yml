@@ -3,6 +3,14 @@ name: Bump Version on Release Branch
 on:
   workflow_dispatch:
     inputs:
+      release_type:
+        description: 'Release type'
+        required: true
+        type: choice
+        default: stable
+        options:
+          - stable
+          - beta
       release_branch:
         description: 'Release branch name (e.g. release/3.4.0)'
         required: true
@@ -54,8 +62,34 @@ jobs:
 
       - name: Bump version
         run: |
+          RELEASE_TYPE="${{ github.event.inputs.release_type }}"
           TYPE="${{ github.event.inputs.version_type }}"
           PRERELEASE_IDENTIFIER="${{ github.event.inputs.prerelease_identifier }}"
+          RELEASE_BRANCH="${{ github.event.inputs.release_branch }}"
+
+          if [ "$RELEASE_TYPE" = "stable" ] && [ "${RELEASE_BRANCH#release/}" = "$RELEASE_BRANCH" ]; then
+            echo "Stable releases must use a branch prefixed with 'release/'."
+            exit 1
+          fi
+
+          if [ "$RELEASE_TYPE" = "beta" ] && [ "${RELEASE_BRANCH#beta/}" = "$RELEASE_BRANCH" ]; then
+            echo "Beta releases must use a branch prefixed with 'beta/'."
+            exit 1
+          fi
+
+          if [ "$RELEASE_TYPE" = "stable" ] && [[ "$TYPE" == pre* ]]; then
+            echo "Stable releases cannot use pre-release bump types."
+            exit 1
+          fi
+
+          if [ "$RELEASE_TYPE" = "beta" ] && [[ "$TYPE" != pre* ]]; then
+            echo "Beta releases must use one of pre* version types."
+            exit 1
+          fi
+
+          if [ -z "$PRERELEASE_IDENTIFIER" ]; then
+            PRERELEASE_IDENTIFIER=beta
+          fi
 
           if [[ "$TYPE" == pre* ]]; then
             bunx standard-version --release-as "$TYPE" --prerelease "$PRERELEASE_IDENTIFIER" --skip.tag
