@@ -1,22 +1,18 @@
-name: Create GitHub Release
+name: Release from develop
 
 on:
-  push:
-    branches:
-      - master
-      - 'beta/**'
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
   release:
+    name: Release from develop
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout master branch
+      - name: Checkout develop
         uses: actions/checkout@v4
         with:
+          ref: develop
           fetch-depth: 0
 
       - name: Setup Bun
@@ -27,48 +23,72 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version automatically
+        run: bunx standard-version --skip.tag
+
+      - name: Sync manifest.json version
+        run: |
+          NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
+          jq --arg version "$NEW_VERSION" '.version = $version' manifest.json > manifest.tmp.json
+          mv manifest.tmp.json manifest.json
+
+          if ! git diff --quiet HEAD -- manifest.json; then
+            git add manifest.json
+            HUSKY=0 git commit --amend --no-edit --no-verify
+          fi
+
+      - name: Push develop
+        run: git push origin develop
+
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Setup Bun for master build
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.3
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Merge develop into master
+        run: |
+          git fetch origin develop
+          git merge --no-ff origin/develop -m "chore(release): merge develop into master"
+
       - name: Read and validate versions
         id: versions
         run: |
-          if [ "${{ github.ref_name }}" != "master" ] && [[ "${{ github.ref_name }}" != beta/* ]]; then
-            echo "Unsupported branch for release: ${{ github.ref_name }}"
-            exit 1
-          fi
-
           PACKAGE_VERSION=$(bun -e "console.log(require('./package.json').version)")
           MANIFEST_VERSION=$(jq -r '.version' manifest.json)
+
           if [ "$PACKAGE_VERSION" != "$MANIFEST_VERSION" ]; then
             echo "Version mismatch: package.json=$PACKAGE_VERSION, manifest.json=$MANIFEST_VERSION"
             exit 1
           fi
 
-          if [ "${{ github.ref_name }}" = "master" ]; then
-            if [[ "$PACKAGE_VERSION" == *-* ]]; then
-              echo "Release branch is master but version is prerelease: $PACKAGE_VERSION"
-              exit 1
-            fi
-            echo "release_channel=stable" >> "$GITHUB_OUTPUT"
-            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
-            echo "release_name=Release v${PACKAGE_VERSION}" >> "$GITHUB_OUTPUT"
-          else
-            if [[ "$PACKAGE_VERSION" != *-* ]]; then
-              echo "Beta branch requires prerelease version: $PACKAGE_VERSION"
-              exit 1
-            fi
-            echo "release_channel=beta" >> "$GITHUB_OUTPUT"
-            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
-            echo "release_name=Beta release v${PACKAGE_VERSION}" >> "$GITHUB_OUTPUT"
-          fi
-
           echo "version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v${PACKAGE_VERSION}" >> "$GITHUB_OUTPUT"
-
+          echo "tag=v$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Extract changelog for this version
         id: changelog
         run: |
           VERSION="${{ steps.versions.outputs.version }}"
-          CHANGELOG=$(sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' | tail -n +2)
+          CHANGELOG=$(sed -n "/## \\[${VERSION}\\]/,/## \\[/p" CHANGELOG.md | sed '$d' | tail -n +2)
+
+          if [ -z "$CHANGELOG" ]; then
+            echo "No changelog entry found for version $VERSION"
+            exit 1
+          fi
+
           echo "content<<EOF" >> "$GITHUB_OUTPUT"
           echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
@@ -76,8 +96,7 @@ jobs:
       - name: Setup environment variables
         run: |
           echo "VITE_GITHUB_OWNER=${{ github.repository_owner }}" >> .env
-          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-          echo "VITE_GITHUB_REPO=$REPO_NAME" >> .env
+          echo "VITE_GITHUB_REPO=${{ github.event.repository.name }}" >> .env
 
       - name: Build Chrome extension
         run: bun run build:chrome
@@ -87,7 +106,7 @@ jobs:
           VERSION="${{ steps.versions.outputs.version }}"
           mv unofficial-flex-extension-chrome.zip unofficial-flex-extension-${VERSION}.zip
 
-      - name: Skip if release already exists
+      - name: Check release exists
         id: release_exists
         run: |
           TAG="${{ steps.versions.outputs.tag }}"
@@ -99,19 +118,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Push master
+        run: git push origin master
+
       - name: Create release
         if: steps.release_exists.outputs.release_exists == 'false'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.versions.outputs.tag }}
-          name: ${{ steps.versions.outputs.release_name }}
+          name: Release ${{ steps.versions.outputs.tag }}
           body: ${{ steps.changelog.outputs.content }}
           draft: false
-          prerelease: ${{ steps.versions.outputs.is_prerelease }}
+          prerelease: false
           files: unofficial-flex-extension-${{ steps.versions.outputs.version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Skip release creation
-        if: steps.release_exists.outputs.release_exists == 'true'
-        run: echo "Release ${{ steps.versions.outputs.tag }} already exists. Skipping."
