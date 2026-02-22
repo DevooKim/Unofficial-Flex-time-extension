@@ -104,8 +104,28 @@ jobs:
             const { owner, repo } = context.repo;
             const head = process.env.RELEASE_BRANCH;
             const version = process.env.VERSION;
-            const title = `chore(release): merge ${head} into master`;
+            let base = 'master';
+            try {
+              await github.rest.repos.getBranch({
+                owner,
+                repo,
+                branch: base,
+              });
+            } catch (error) {
+              base = 'main';
+              try {
+                await github.rest.repos.getBranch({
+                  owner,
+                  repo,
+                  branch: base,
+                });
+              } catch (mainError) {
+                throw new Error(`No valid release target branch found. Tried: master, main. (${error.message}, ${mainError.message})`);
+              }
+            }
+
             const headWithOwner = `${owner}:${head}`;
+            const title = `chore(release): merge ${head} into ${base}`;
             const body = [
               `## Release ${version}`,
               '',
@@ -118,7 +138,7 @@ jobs:
               owner,
               repo,
               state: 'open',
-              base: 'master',
+              base,
               head: headWithOwner,
               per_page: 100,
             });
@@ -137,7 +157,7 @@ jobs:
               repo,
               title,
               head,
-              base: 'master',
+              base,
               body,
             });
 
