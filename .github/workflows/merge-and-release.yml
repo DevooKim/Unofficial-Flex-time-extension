@@ -1,19 +1,21 @@
-name: Merge release branch and create release
+name: Create release after master merge
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      - 'release/*'
+      - master
 
 permissions:
   contents: write
 
 jobs:
   merge_and_release:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.title, 'chore(release): merge ') && endsWith(github.event.pull_request.title, ' into master')
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout master
+      - name: Checkout merged master
         uses: actions/checkout@v4
         with:
           ref: master
@@ -31,15 +33,6 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
-
-      - name: Merge release branch into master
-        run: |
-          RELEASE_BRANCH="${{ github.ref_name }}"
-          git fetch origin "$RELEASE_BRANCH"
-          git merge --no-ff "origin/$RELEASE_BRANCH" -m "chore(release): merge $RELEASE_BRANCH into master"
-
-      - name: Push master
-        run: git push origin master
 
       - name: Read and validate versions
         id: versions
