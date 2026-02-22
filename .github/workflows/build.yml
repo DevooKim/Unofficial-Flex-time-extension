@@ -2,6 +2,12 @@ name: Build and Zip Extension
 
 on:
     workflow_dispatch:
+        inputs:
+            branch:
+                description: 'Build branch (default: develop)'
+                required: false
+                default: develop
+                type: string
 
 jobs:
     build:
@@ -11,6 +17,8 @@ jobs:
         steps:
             - name: Check out code
               uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.inputs.branch }}
 
             - name: Setup Bun
               uses: oven-sh/setup-bun@v2
