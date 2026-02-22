@@ -92,7 +92,7 @@ jobs:
           name: unofficial-flex-extension-${{ steps.release.outputs.version }}
           path: unofficial-flex-extension-${{ steps.release.outputs.version }}.zip
 
-      - name: Create pull request to master
+      - name: Create pull request to main
         id: create_pr
         uses: actions/github-script@v7
         env:
@@ -104,25 +104,8 @@ jobs:
             const { owner, repo } = context.repo;
             const head = process.env.RELEASE_BRANCH;
             const version = process.env.VERSION;
-            let base = 'master';
-            try {
-              await github.rest.repos.getBranch({
-                owner,
-                repo,
-                branch: base,
-              });
-            } catch (error) {
-              base = 'main';
-              try {
-                await github.rest.repos.getBranch({
-                  owner,
-                  repo,
-                  branch: base,
-                });
-              } catch (mainError) {
-                throw new Error(`No valid release target branch found. Tried: master, main. (${error.message}, ${mainError.message})`);
-              }
-            }
+            const { data: repoData } = await github.rest.repos.get({ owner, repo });
+            const base = repoData.default_branch || 'main';
 
             const headWithOwner = `${owner}:${head}`;
             const title = `chore(release): merge ${head} into ${base}`;
