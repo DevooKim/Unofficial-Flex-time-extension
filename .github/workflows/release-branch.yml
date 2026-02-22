@@ -140,13 +140,6 @@ jobs:
               body,
             });
 
-            await github.rest.issues.addLabels({
-              owner,
-              repo,
-              issue_number: pr.data.number,
-              labels: ['release'],
-            });
-
             console.log(`Created PR: ${pr.data.html_url}`);
             core.setOutput('pr_url', pr.data.html_url);
             core.setOutput('pr_number', String(pr.data.number));
