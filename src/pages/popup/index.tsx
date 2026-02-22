@@ -4,6 +4,19 @@ import '@src/styles/tailwind.css'
 
 import Popup from '@popup/Popup'
 
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch((error) => {
+                console.error(
+                    '[PWA] Service Worker registration failed:',
+                    error
+                )
+            })
+        })
+    }
+}
+
 // async function enableMocking() {
 //     console.log(process.env.NODE_ENV)
 //     if (process.env.NODE_ENV !== 'development') {
@@ -18,6 +31,8 @@ import Popup from '@popup/Popup'
 // }
 
 function init() {
+    registerServiceWorker()
+
     const rootContainer = document.querySelector('#__root')
     if (!rootContainer) throw new Error("Can't find Popup root element")
     const root = createRoot(rootContainer)

@@ -1,0 +1,33 @@
+{
+  "name": "Unofficial Flex Extension",
+  "short_name": "Flex Time",
+  "description": "근무시간 및 잔여 근무시간을 확인할 수 있는 비공식 Flex 도구",
+  "lang": "ko-KR",
+  "start_url": "/pages/popup/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icons/icon16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ]
+}
