@@ -1,0 +1,92 @@
+name: Release branch from develop
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version_type:
+        description: '버전 bump 타입'
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+      release_build_script:
+        description: '릴리스 빌드 스크립트'
+        required: false
+        default: build:chrome
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  create_release_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.3
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create release branch and bump version
+        id: release
+        run: |
+          TYPE="${{ github.event.inputs.release_version_type }}"
+          WORK_BRANCH="release/_tmp_${GITHUB_RUN_ID}"
+
+          git checkout -b "$WORK_BRANCH" origin/develop
+          HUSKY=0 bunx standard-version --release-as "$TYPE" --skip.tag
+
+          NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
+          RELEASE_BRANCH="release/$NEW_VERSION"
+
+          if git ls-remote --exit-code --heads origin "$RELEASE_BRANCH" > /dev/null 2>&1; then
+            echo "Release branch already exists: $RELEASE_BRANCH"
+            exit 1
+          fi
+
+          NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
+          jq --arg version "$NEW_VERSION" '.version = $version' manifest.json > manifest.tmp.json
+          mv manifest.tmp.json manifest.json
+
+          if ! git diff --quiet HEAD -- manifest.json; then
+            git add manifest.json
+            HUSKY=0 git commit --amend --no-edit --no-verify
+          fi
+
+          git branch -m "$RELEASE_BRANCH"
+          git push origin "$RELEASE_BRANCH"
+
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "release_branch=$RELEASE_BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Build extension
+        run: bun run ${{ github.event.inputs.release_build_script }}
+
+      - name: Rename artifact
+        run: |
+          VERSION="${{ steps.release.outputs.version }}"
+          mv unofficial-flex-extension-chrome.zip unofficial-flex-extension-${VERSION}.zip
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unofficial-flex-extension-${{ steps.release.outputs.version }}
+          path: unofficial-flex-extension-${{ steps.release.outputs.version }}.zip

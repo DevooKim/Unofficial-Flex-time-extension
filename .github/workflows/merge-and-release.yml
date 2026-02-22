@@ -1,19 +1,28 @@
-name: Release from develop
+name: Merge release branch and create release
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'release/*'
+
+permissions:
+  contents: write
 
 jobs:
-  release:
-    name: Release from develop
+  merge_and_release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout develop
+      - name: Checkout master
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: master
           fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -23,46 +32,14 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Configure Git
+      - name: Merge release branch into master
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          RELEASE_BRANCH="${{ github.ref_name }}"
+          git fetch origin "$RELEASE_BRANCH"
+          git merge --no-ff "origin/$RELEASE_BRANCH" -m "chore(release): merge $RELEASE_BRANCH into master"
 
-      - name: Bump version automatically
-        run: bunx standard-version --skip.tag
-
-      - name: Sync manifest.json version
-        run: |
-          NEW_VERSION=$(bun -e "console.log(require('./package.json').version)")
-          jq --arg version "$NEW_VERSION" '.version = $version' manifest.json > manifest.tmp.json
-          mv manifest.tmp.json manifest.json
-
-          if ! git diff --quiet HEAD -- manifest.json; then
-            git add manifest.json
-            HUSKY=0 git commit --amend --no-edit --no-verify
-          fi
-
-      - name: Push develop
-        run: git push origin develop
-
-      - name: Checkout master
-        uses: actions/checkout@v4
-        with:
-          ref: master
-          fetch-depth: 0
-
-      - name: Setup Bun for master build
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.3
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Merge develop into master
-        run: |
-          git fetch origin develop
-          git merge --no-ff origin/develop -m "chore(release): merge develop into master"
+      - name: Push master
+        run: git push origin master
 
       - name: Read and validate versions
         id: versions
@@ -117,9 +94,6 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push master
-        run: git push origin master
 
       - name: Create release
         if: steps.release_exists.outputs.release_exists == 'false'
