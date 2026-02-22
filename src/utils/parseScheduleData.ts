@@ -184,6 +184,21 @@ export const parseScheduleData = ({
     const 남은평균근무시간_지금기준 =
         남은근무시간_지금기준 / 남은근무일_지금기준 || 0
 
+    /** 오늘 이전의 워킹데이 계산 (이번달 시작부터 어제까지) */
+    const 오늘이전Days = days.filter(({ date }) =>
+        dayjs(date).isBefore(dayjs(today))
+    )
+    const 오늘이전워킹데이 = 워킹데이계산하기(오늘이전Days)
+
+    /** 오늘 이전의 연차 시간 계산 */
+    const 오늘이전연차시간 = 휴가list
+        .filter(({ date }) => dayjs(date).isBefore(dayjs(today)))
+        .reduce((acc, cur) => acc + (cur.totalHours || 0), 0)
+
+    /** 누적 근무 차이 (양수: 초과/여유, 음수: 부족) */
+    const 누적근무차이 =
+        실제근무시간 + 오늘이전연차시간 - 오늘이전워킹데이 * workingHoursPerDay
+
     return {
         워킹데이,
         최소근무시간: 워킹데이 * workingHoursPerDay,
@@ -196,6 +211,7 @@ export const parseScheduleData = ({
         timestampFrom: period.applyTimeRangeFrom,
         이번달휴가일수,
         오늘이후휴가일수,
+        누적근무차이,
         지금기준: {
             남은근무일: 남은근무일_지금기준,
             남은근무시간: 남은근무시간_지금기준,
