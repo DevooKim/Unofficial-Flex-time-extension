@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.3.0...v3.4.0) (2026-02-22)
+
+
+### Features
+
+* **release:** conflict-resolved PR-based release flow ([#62](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/62)) ([2731082](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/2731082ac0fb7114cdbe6f2d5fd174e461972808))
+* **release:** recreate PR-based release workflow flow ([#63](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/63)) ([5bfe38b](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/5bfe38bb909fff31240880381c975ecad0d7cd66))
+* 누적 근무 차이 표시 기능 추가 (main 기준) ([#58](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/58)) ([ce6c07a](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/ce6c07a7e1faa63b4a19cb85afe5788c553c6245))
+
+
+### Bug Fixes
+
+* **release:** support main/master branch targets for release PR ([#64](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/64)) ([c98301f](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/c98301f17b45940b7234466c3f58a1a42ed20eb0))
+* **workflows:** target release PRs to repository default branch (main) ([#65](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/65)) ([1c64214](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/1c64214c36a160842cd67ec59ef1ac27b6571e8e))
+* **workflows:** update release branch to use main instead of develop ([a83def4](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/a83def4234d382951c47458661573d5693668aa3))
+* **workflows:** update workflow names for clarity ([7c40397](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/7c40397b89cc9906c4a892c318a829c3223f646d))
+
 ## [3.3.0](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.2.0...v3.3.0) (2025-12-22)
 
 
