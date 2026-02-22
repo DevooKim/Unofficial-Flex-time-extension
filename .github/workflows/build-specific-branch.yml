@@ -1,4 +1,4 @@
-name: [액션3] Build specific branch
+name: Build specific branch
 
 on:
   workflow_dispatch:
