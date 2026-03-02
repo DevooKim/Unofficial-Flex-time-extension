@@ -195,9 +195,15 @@ export const parseScheduleData = ({
         .filter(({ date }) => dayjs(date).isBefore(dayjs(today)))
         .reduce((acc, cur) => acc + (cur.totalHours || 0), 0)
 
+    const 근무중추가시간 =
+        clockData.현재근무상태 === '근무중' ? clockData.오늘일한시간 : 0
+
     /** 누적 근무 차이 (양수: 초과/여유, 음수: 부족) */
     const 누적근무차이 =
-        실제근무시간 + 오늘이전연차시간 - 오늘이전워킹데이 * workingHoursPerDay
+        실제근무시간 +
+        오늘이전연차시간 +
+        근무중추가시간 -
+        오늘이전워킹데이 * workingHoursPerDay
 
     return {
         워킹데이,
