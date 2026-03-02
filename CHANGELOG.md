@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.1](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.4.0...v3.4.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* include ongoing work time in deficit calculation ([#69](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/69)) ([e14fb03](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/e14fb03c2f00e41f9bff843bd9c2b2de4cf9d076))
+
 ## [3.4.0](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.3.0...v3.4.0) (2026-02-22)
 
 
