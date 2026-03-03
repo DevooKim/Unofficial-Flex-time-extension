@@ -205,6 +205,17 @@ export const parseScheduleData = ({
         근무중추가시간 -
         오늘이전워킹데이 * workingHoursPerDay
 
+    const 어제까지근무차이 = 누적근무차이 - 근무중추가시간
+    const 근무중기준추가시간 =
+        clockData.현재근무상태 === '근무중'
+            ? clockData.오늘일한시간 - workingHoursPerDay
+            : 0
+
+    const 부족시간차이 = {
+        미포함: 어제까지근무차이,
+        포함: 어제까지근무차이 + 근무중기준추가시간,
+    }
+
     return {
         워킹데이,
         최소근무시간: 워킹데이 * workingHoursPerDay,
@@ -218,6 +229,7 @@ export const parseScheduleData = ({
         이번달휴가일수,
         오늘이후휴가일수,
         누적근무차이,
+        부족시간차이,
         지금기준: {
             남은근무일: 남은근무일_지금기준,
             남은근무시간: 남은근무시간_지금기준,

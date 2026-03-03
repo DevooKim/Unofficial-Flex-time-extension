@@ -1,7 +1,9 @@
 import { FloatingArrow, FloatingPortal } from '@floating-ui/react'
+import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import Browser from 'webextension-polyfill'
 
+import ButtonToggleGroup from '@src/components/ButtonToggleGroup'
 import IconButton from '@src/components/IconButton'
 import {
     useFetchClockData,
@@ -172,8 +174,9 @@ interface TimeCardProps {
     icon: string
     title: string
     text: string
+    titleAction?: ReactNode
 }
-const TimeCard = ({ icon, title, text }: TimeCardProps) => (
+const TimeCard = ({ icon, title, text, titleAction }: TimeCardProps) => (
     <div className="flex items-center gap-5 px-4 py-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 ">
             <h3
@@ -186,7 +189,10 @@ const TimeCard = ({ icon, title, text }: TimeCardProps) => (
             </h3>
         </div>
         <div className="flex flex-col">
-            <p className="text-hint">{title}</p>
+            <div className="flex items-center gap-2">
+                <p className="text-hint">{title}</p>
+                {titleAction}
+            </div>
             <h4 className="text-xl">{text}</h4>
         </div>
     </div>
@@ -221,6 +227,7 @@ const Skeleton = () => (
 )
 
 const WorkingRecord = () => {
+    const [isIncludingCurrentWork, setIsIncludingCurrentWork] = useState(false)
     const { data: userIdHash } = useFetchUserIdHash()
     const { targetTimeStamp } = useGetTargetDate()
     const { baseTimeData } = useBaseTimeContext()
@@ -255,13 +262,17 @@ const WorkingRecord = () => {
         남은평균근무시간,
         남은근무시간,
         휴가정보list,
-        누적근무차이,
+        부족시간차이,
     } = parseScheduleData({
         data: scheduleData,
         today: baseTimeData.today,
         clockData: myClockData,
         workingHoursPerDay: workingHours,
     })
+
+    const 현재부족시간차이 = isIncludingCurrentWork
+        ? 부족시간차이.포함
+        : 부족시간차이.미포함
 
     return (
         <div>
@@ -285,10 +296,28 @@ const WorkingRecord = () => {
             <TimeCard
                 icon="📊"
                 title="현재 부족한 시간은?"
+                titleAction={
+                    <ButtonToggleGroup
+                        defaultIndex={isIncludingCurrentWork ? 1 : 0}
+                    >
+                        <ButtonToggleGroup.Item
+                            className="px-2 py-0.5 text-[10px]"
+                            onClick={() => setIsIncludingCurrentWork(false)}
+                        >
+                            미포함
+                        </ButtonToggleGroup.Item>
+                        <ButtonToggleGroup.Item
+                            className="px-2 py-0.5 text-[10px]"
+                            onClick={() => setIsIncludingCurrentWork(true)}
+                        >
+                            포함
+                        </ButtonToggleGroup.Item>
+                    </ButtonToggleGroup>
+                }
                 text={
-                    누적근무차이 >= 0
-                        ? `${hourToString(누적근무차이)} 여유`
-                        : `${hourToString(Math.abs(누적근무차이))} 부족`
+                    현재부족시간차이 >= 0
+                        ? `${hourToString(현재부족시간차이)} 여유`
+                        : `${hourToString(Math.abs(현재부족시간차이))} 부족`
                 }
             />
             <TimeCard
