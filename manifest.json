@@ -56,6 +56,6 @@
   "background": {
     "service_worker": "src/pages/background/index.ts"
   },
-  "version": "3.4.1",
+  "version": "3.4.2",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArNnPAX9ABbAVawPLnawjsV8uCu51YTZTnYi+P7nzWuqgZlkn0WuFmktmVpYz94Q6Pa2D1juE6O3BEGotBmxfyyys5df06sobylNx4gofZaZd46WbhWLTX70Wdouirwo7QKM3atbJvgQ3jkGo/DNwDDEQ9IX/DXxPINSn+50fxHm4DQHTM6oCm4EX7FT9Nd9S86eQhpXVBOGU50Nd99YFwRAwaEwTKmzhoQCeMnqlcc0+avhg3N8Tn+iA/PRN+Hw2fiKa3Obobz9UwWOoYnReeC15n5gQEIceXXKGZVRYgXnqCVM8ni4HqNUq51wnFRIUjJ4bGAUOq3uqdy52zInvUwIDAQAB"
 }
