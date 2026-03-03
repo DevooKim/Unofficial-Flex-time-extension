@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.2](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.4.1...v3.4.2) (2026-03-03)
+
+
+### Code Refactoring
+
+* move shortage time calculation into parseScheduleData ([#71](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/71)) ([4b47467](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/4b47467b75e17d0ae1429ac8919b91f727dcb783))
+
 ### [3.4.1](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.4.0...v3.4.1) (2026-03-02)
 
 
