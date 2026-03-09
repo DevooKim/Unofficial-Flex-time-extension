@@ -214,11 +214,6 @@ const Skeleton = () => (
         </div>
         <TimeCard icon="📊" title="현재 부족한 시간은?" text={'0시간 0분'} />
         <TimeCard
-            icon="⌛"
-            title="지금 퇴근하면?"
-            text={'0시간 0분 남았어요.'}
-        />
-        <TimeCard
             icon="👍"
             title="오늘 권장 근무 시간은?"
             text={'0시간 0분 정도 일하면 좋아요.'}
@@ -251,6 +246,15 @@ const WorkingRecord = () => {
         delay: { open: 250 },
     })
 
+    const {
+        floating: toggleFloating,
+        arrowRef: toggleArrowRef,
+        isOpen: isToggleFloatingOpen,
+    } = useMyFloating({
+        placement: 'top',
+        delay: { open: 250 },
+    })
+
     if (scheduleLoading || clockLoading) return <Skeleton />
 
     const myClockData = parseClockData({ data: clockData, now })
@@ -258,7 +262,6 @@ const WorkingRecord = () => {
     const {
         근무시간총합,
         최소근무시간,
-        지금기준,
         남은평균근무시간,
         남은근무시간,
         휴가정보list,
@@ -297,33 +300,30 @@ const WorkingRecord = () => {
                 icon="📊"
                 title="현재 부족한 시간은?"
                 titleAction={
-                    <ButtonToggleGroup
-                        defaultIndex={isIncludingCurrentWork ? 1 : 0}
-                    >
-                        <ButtonToggleGroup.Item
-                            className="px-2 py-0.5 text-[10px]"
-                            onClick={() => setIsIncludingCurrentWork(false)}
+                    <div ref={toggleFloating.refs.setReference}>
+                        <ButtonToggleGroup
+                            defaultIndex={isIncludingCurrentWork ? 1 : 0}
                         >
-                            미포함
-                        </ButtonToggleGroup.Item>
-                        <ButtonToggleGroup.Item
-                            className="px-2 py-0.5 text-[10px]"
-                            onClick={() => setIsIncludingCurrentWork(true)}
-                        >
-                            포함
-                        </ButtonToggleGroup.Item>
-                    </ButtonToggleGroup>
+                            <ButtonToggleGroup.Item
+                                className="px-2 py-0.5 text-[10px]"
+                                onClick={() => setIsIncludingCurrentWork(false)}
+                            >
+                                미포함
+                            </ButtonToggleGroup.Item>
+                            <ButtonToggleGroup.Item
+                                className="px-2 py-0.5 text-[10px]"
+                                onClick={() => setIsIncludingCurrentWork(true)}
+                            >
+                                포함
+                            </ButtonToggleGroup.Item>
+                        </ButtonToggleGroup>
+                    </div>
                 }
                 text={
                     현재부족시간차이 >= 0
                         ? `${hourToString(현재부족시간차이)} 여유`
                         : `${hourToString(Math.abs(현재부족시간차이))} 부족`
                 }
-            />
-            <TimeCard
-                icon="⌛"
-                title="지금 퇴근하면?"
-                text={`${hourToString(지금기준.남은근무시간)} 남았어요.`}
             />
             <TimeCard
                 icon="👍"
@@ -341,7 +341,20 @@ const WorkingRecord = () => {
                             ref={arrowRef}
                             context={floating.context}
                         />
-                        오늘을 제외한 근무 정보예요.
+                        오늘 근무 시간이 포함된 정보예요.
+                    </div>
+                )}
+                {isToggleFloatingOpen && (
+                    <div
+                        ref={toggleFloating.refs.setFloating}
+                        className="tooltip z-10"
+                        style={toggleFloating.floatingStyles}
+                    >
+                        <FloatingArrow
+                            ref={toggleArrowRef}
+                            context={toggleFloating.context}
+                        />
+                        오늘 진행 중인 근무 시간의 포함 여부를 선택해요.
                     </div>
                 )}
             </FloatingPortal>

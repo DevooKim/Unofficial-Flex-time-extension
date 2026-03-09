@@ -134,8 +134,12 @@ export const parseScheduleData = ({
         unpaidSummary
     )
 
-    /** 지금까지 총 근무시간 */
-    const 근무시간총합 = 실제근무시간 + 연차시간
+    /** 근무 중일 때 실시간 근무 시간 반영 */
+    const 근무중추가시간 =
+        clockData.현재근무상태 === '근무중' ? clockData.오늘일한시간 : 0
+
+    /** 지금까지 총 근무시간 (근무 중이면 오늘 일한 시간 포함) */
+    const 근무시간총합 = 실제근무시간 + 연차시간 + 근무중추가시간
 
     /** 남은 최소 근무시간 */
     const 남은근무시간 = 남은근무시간계산하기({
@@ -164,10 +168,13 @@ export const parseScheduleData = ({
     const 남은워킹데이 = 워킹데이계산하기(days.filter(filterDays))
     const 오늘이후휴가일수 = 휴가list
         .filter(filterDays)
-        .reduce((acc, cur) => acc + cur.totalHours / workingHoursPerDay, 0)
+        .reduce(
+            (acc, cur) => acc + (cur?.totalHours || 0) / workingHoursPerDay,
+            0
+        )
 
     const 이번달휴가일수 = 휴가list.reduce(
-        (acc, cur) => acc + cur.totalHours / workingHoursPerDay,
+        (acc, cur) => acc + (cur?.totalHours || 0) / workingHoursPerDay,
         0
     )
 
@@ -193,10 +200,7 @@ export const parseScheduleData = ({
     /** 오늘 이전의 연차 시간 계산 */
     const 오늘이전연차시간 = 휴가list
         .filter(({ date }) => dayjs(date).isBefore(dayjs(today)))
-        .reduce((acc, cur) => acc + (cur.totalHours || 0), 0)
-
-    const 근무중추가시간 =
-        clockData.현재근무상태 === '근무중' ? clockData.오늘일한시간 : 0
+        .reduce((acc, cur) => acc + (cur?.totalHours || 0), 0)
 
     /** 누적 근무 차이 (양수: 초과/여유, 음수: 부족) */
     const 누적근무차이 =
