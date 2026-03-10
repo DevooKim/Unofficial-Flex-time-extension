@@ -106,6 +106,22 @@ export type myTimeOffData = {
     휴가일수: number
 }
 
+export type myHolidayInfo = {
+    key: string
+    name: string
+    type: 'REST_DAY' | 'WEEKLY_HOLIDAY' | 'CUSTOM_HOLIDAY' | string
+    label: string
+}
+
+export type myHolidayDay = {
+    rawDate: string
+    infos: myHolidayInfo[]
+}
+
+export type myHolidayData = {
+    휴일정보list: myHolidayDay[]
+}
+
 export type flexClockData = {
     records: {
         appliedDate: string
