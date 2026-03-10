@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.6](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.4.5...v3.4.6) (2026-03-10)
+
+
+### Features
+
+* **time-off:** highlight holidays in calendar ([#78](https://github.com/DevooKim/Unofficial-Flex-time-extension/issues/78)) ([a7c125b](https://github.com/DevooKim/Unofficial-Flex-time-extension/commit/a7c125b814786baba3b919d65bccfdd5a3fdf637))
+
 ### [3.4.5](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.4.2...v3.4.5) (2026-03-10)
 
 
