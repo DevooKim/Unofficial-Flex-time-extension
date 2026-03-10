@@ -18,10 +18,11 @@ import { useMyFloating } from '@src/hooks'
 import VocationIcon from '@src/icons/VocationIcon'
 import { useBaseTimeContext } from '@src/pages/popup/contexts/BaseTimeContext'
 import { useWorkingHoursContext } from '@src/pages/popup/contexts/WorkingHoursContext'
-import { myTimeOffDay, myTimeOffInfo } from '@src/types'
+import { myHolidayDay, myTimeOffDay, myTimeOffInfo } from '@src/types'
 
 import { useFetchTimeOffUses } from '@popup/hooks/queries/useFetchTimeOffUses'
 import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
+import { useFetchWorkingDayAttributes } from '@popup/hooks/queries/useFetchWorkingDayAttributes'
 
 type ViewMode = 'list' | 'calendar'
 
@@ -76,6 +77,22 @@ const TimeOff = () => {
         휴가정보list: [],
         휴가일수: 0,
     }
+    const {
+        data: holidayData,
+        isFetching: isHolidayFetching,
+        isPending: isHolidayPending,
+    } = useFetchWorkingDayAttributes({
+        userIdHash,
+        from: calendarMonth
+            .startOf('month')
+            .startOf('week')
+            .format('YYYY-MM-DD'),
+        to: calendarMonth.endOf('month').endOf('week').format('YYYY-MM-DD'),
+        timezone: 'Asia/Seoul',
+    })
+    const resolvedHolidayData = holidayData || {
+        휴일정보list: [],
+    }
 
     const handleMonthChange = (nextMonth: Dayjs) => {
         startTransition(() => {
@@ -93,8 +110,14 @@ const TimeOff = () => {
             />
             <TimeOffMain
                 calendarMonth={calendarMonth}
-                isLoading={isFetching || isPending}
+                isLoading={
+                    isFetching ||
+                    isPending ||
+                    isHolidayFetching ||
+                    isHolidayPending
+                }
                 onMonthChange={handleMonthChange}
+                휴일정보list={resolvedHolidayData.휴일정보list}
                 휴가정보list={resolvedTimeOffData.휴가정보list}
                 viewMode={viewMode}
             />
@@ -156,12 +179,19 @@ interface TimeOffMainProps {
     calendarMonth: Dayjs
     isLoading: boolean
     onMonthChange: (nextMonth: Dayjs) => void
+    휴일정보list: myHolidayDay[]
     휴가정보list: myTimeOffDay[]
     viewMode: ViewMode
 }
 const TimeOffMain = (props: TimeOffMainProps) => {
-    const { calendarMonth, isLoading, onMonthChange, 휴가정보list, viewMode } =
-        props
+    const {
+        calendarMonth,
+        isLoading,
+        onMonthChange,
+        휴일정보list,
+        휴가정보list,
+        viewMode,
+    } = props
 
     if (viewMode === 'calendar') {
         return (
@@ -169,6 +199,7 @@ const TimeOffMain = (props: TimeOffMainProps) => {
                 calendarMonth={calendarMonth}
                 isLoading={isLoading}
                 onMonthChange={onMonthChange}
+                휴일정보list={휴일정보list}
                 휴가정보list={휴가정보list}
             />
         )
@@ -225,19 +256,30 @@ interface TimeOffCalendarViewProps {
     calendarMonth: Dayjs
     isLoading: boolean
     onMonthChange: (nextMonth: Dayjs) => void
+    휴일정보list: myHolidayDay[]
     휴가정보list: myTimeOffDay[]
 }
 
+type HolidayInfoMap = Map<string, myHolidayDay>
 type VacationInfoMap = Map<string, myTimeOffDay>
 
 const VacationDayWithTooltip = (
     props: PickersDayProps & {
+        holidayInfoMap: HolidayInfoMap
         vacationInfoMap: VacationInfoMap
     }
 ) => {
-    const { day, outsideCurrentMonth, vacationInfoMap, ...other } = props
+    const {
+        day,
+        outsideCurrentMonth,
+        holidayInfoMap,
+        vacationInfoMap,
+        ...other
+    } = props
 
     const dateStr = dayjs(day).format('YYYY-MM-DD')
+    const holidayDay = holidayInfoMap.get(dateStr)
+    const hasHoliday = !!holidayDay
     const vacationDay = vacationInfoMap.get(dateStr)
     const isVacation = !!vacationDay
     const dayDisplayType = vacationDay
@@ -263,8 +305,12 @@ const VacationDayWithTooltip = (
                     day={day}
                     outsideCurrentMonth={outsideCurrentMonth}
                     sx={{
+                        ...(hasHoliday && {
+                            color: '#d32f2f',
+                            fontWeight: 700,
+                        }),
                         ...(isVacation && {
-                            color: '#e91e63',
+                            color: hasHoliday ? '#d32f2f' : '#e91e63',
                             fontWeight: 'bold',
                             backgroundColor:
                                 dayDisplayType === 'full'
@@ -292,7 +338,7 @@ const VacationDayWithTooltip = (
                     }}
                 />
             </div>
-            {isVacation && isOpen && (
+            {(hasHoliday || isVacation) && isOpen && (
                 <FloatingPortal>
                     <div
                         ref={floating.refs.setFloating}
@@ -300,6 +346,17 @@ const VacationDayWithTooltip = (
                         style={floating.floatingStyles}
                         {...floatingInteraction.getFloatingProps()}
                     >
+                        {holidayDay?.infos.map((info) => (
+                            <div
+                                key={info.key}
+                                className="mb-1 text-[#fecaca] last:mb-0"
+                            >
+                                {info.label}
+                            </div>
+                        ))}
+                        {holidayDay && vacationDay && (
+                            <div className="my-1 border-t border-white/20" />
+                        )}
                         {vacationDay?.infos.map((info) => (
                             <div key={info.key} className="mb-1 last:mb-0">
                                 <div>{info.label}</div>
@@ -317,11 +374,18 @@ const VacationDayWithTooltip = (
     )
 }
 
-const createVacationDay = (vacationInfoMap: VacationInfoMap) => {
+const createVacationDay = ({
+    holidayInfoMap,
+    vacationInfoMap,
+}: {
+    holidayInfoMap: HolidayInfoMap
+    vacationInfoMap: VacationInfoMap
+}) => {
     const VacationDayComponent = (props: PickersDayProps) => {
         return (
             <VacationDayWithTooltip
                 {...props}
+                holidayInfoMap={holidayInfoMap}
                 vacationInfoMap={vacationInfoMap}
             />
         )
@@ -330,14 +394,27 @@ const createVacationDay = (vacationInfoMap: VacationInfoMap) => {
 }
 
 const TimeOffCalendarView = (props: TimeOffCalendarViewProps) => {
-    const { calendarMonth, isLoading, onMonthChange, 휴가정보list } = props
+    const {
+        calendarMonth,
+        isLoading,
+        onMonthChange,
+        휴일정보list,
+        휴가정보list,
+    } = props
 
+    const holidayInfoMap: HolidayInfoMap = new Map()
+    휴일정보list.forEach((휴일정보) => {
+        holidayInfoMap.set(휴일정보.rawDate, 휴일정보)
+    })
     const vacationInfoMap: VacationInfoMap = new Map()
     휴가정보list.forEach((휴가정보) => {
         vacationInfoMap.set(휴가정보.rawDate, 휴가정보)
     })
 
-    const VacationDay = createVacationDay(vacationInfoMap)
+    const VacationDay = createVacationDay({
+        holidayInfoMap,
+        vacationInfoMap,
+    })
 
     return (
         <main className="relative flex justify-center">
