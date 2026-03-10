@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.4](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.4.2...v3.4.4) (2026-03-10)
+
 ### [3.4.3](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.4.2...v3.4.3) (2026-03-10)
 
 ### [3.4.2](https://github.com/DevooKim/Unofficial-Flex-time-extension/compare/v3.4.1...v3.4.2) (2026-03-03)
