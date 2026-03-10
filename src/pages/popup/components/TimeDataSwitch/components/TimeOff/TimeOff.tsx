@@ -3,6 +3,7 @@ import {
     CalendarMonth as CalendarMonthIcon,
     FormatListBulleted as FormatListBulletedIcon,
 } from '@mui/icons-material'
+import { CircularProgress } from '@mui/material'
 import {
     DateCalendar,
     LocalizationProvider,
@@ -10,79 +11,91 @@ import {
     PickersDayProps,
 } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs'
-import { useState } from 'react'
+import dayjs, { Dayjs } from 'dayjs'
+import { startTransition, useState } from 'react'
 
 import { useMyFloating } from '@src/hooks'
 import VocationIcon from '@src/icons/VocationIcon'
 import { useBaseTimeContext } from '@src/pages/popup/contexts/BaseTimeContext'
 import { useWorkingHoursContext } from '@src/pages/popup/contexts/WorkingHoursContext'
-import { parseClockData } from '@src/utils/parseClockData'
-import { parseScheduleData } from '@src/utils/parseScheduleData'
+import { myTimeOffDay, myTimeOffInfo } from '@src/types'
 
-import { useFetchClockData } from '@popup/hooks/queries/useFetchClockData'
-import { useFetchScheduleData } from '@popup/hooks/queries/useFetchScheduleData'
+import { useFetchTimeOffUses } from '@popup/hooks/queries/useFetchTimeOffUses'
 import { useFetchUserIdHash } from '@popup/hooks/queries/useFetchUserIdHash'
 
 type ViewMode = 'list' | 'calendar'
 
-interface 휴가정보Type {
-    date: string
-    infos: {
-        name: string
-        minutes: number
-        hours: number
-    }[]
-    totalMinutes?: number
-    totalHours?: number
+const formatVacationDays = (days: number) =>
+    Number.isInteger(days) ? `${days}` : days.toFixed(1)
+
+const getDayDisplayType = (infos: myTimeOffInfo[]) => {
+    const hasFull = infos.some((info) => info.displayType === 'full')
+    const hasMorningHalf = infos.some(
+        (info) => info.displayType === 'morningHalf'
+    )
+    const hasAfternoonHalf = infos.some(
+        (info) => info.displayType === 'afternoonHalf'
+    )
+
+    if (hasFull || (hasMorningHalf && hasAfternoonHalf)) {
+        return 'full'
+    }
+
+    if (hasMorningHalf) {
+        return 'morningHalf'
+    }
+
+    if (hasAfternoonHalf) {
+        return 'afternoonHalf'
+    }
+
+    return 'full'
 }
 
 const TimeOff = () => {
-    // NOTE: Flex API를 요청하기 위한 기본 시간 데이터가 담겨 있음
     const { baseTimeData } = useBaseTimeContext()
     const { workingHours } = useWorkingHoursContext()
-
-    // NOTE: Flex API를 요청하기 위한 유저 아이디 해시가 담겨 있음
     const { data: userIdHash } = useFetchUserIdHash()
+    const [viewMode, setViewMode] = useState<ViewMode>('list')
+    const [calendarMonth, setCalendarMonth] = useState(() =>
+        dayjs(baseTimeData.today).startOf('month')
+    )
 
-    // NOTE: 나의 근무상태 데이터를 가져옴
-    const { data: clockData } = useFetchClockData({
+    const {
+        data: timeOffData,
+        isFetching,
+        isPending,
+    } = useFetchTimeOffUses({
         userIdHash,
-        timeStampFrom: baseTimeData.firstDay,
-        timestampTo: baseTimeData.lastDay,
-        isCached: baseTimeData.isCached,
-    })
-    // NOTE: 나의 근무상태 데이터를 파싱하여 사용하기 쉽게 만듬
-    const myClockData = parseClockData({
-        data: clockData,
-        now: baseTimeData.today,
-    })
-
-    // NOTE: 나의 스케줄 데이터를 가져옴
-    const { data: scheduleData } = useFetchScheduleData({
-        userIdHash,
-        timeStamp: baseTimeData.today,
-        isCached: baseTimeData.isCached,
-    })
-    // NOTE: 나의 스케줄 데이터를 파싱하여 사용하기 쉽게 만듬
-    const myScheduleData = parseScheduleData({
-        data: scheduleData,
-        today: baseTimeData.today,
-        clockData: myClockData,
+        timeStampFrom: calendarMonth.startOf('month').valueOf(),
+        timeStampTo: calendarMonth.endOf('month').valueOf(),
         workingHoursPerDay: workingHours,
     })
 
-    const [viewMode, setViewMode] = useState<ViewMode>('list')
+    const resolvedTimeOffData = timeOffData || {
+        휴가정보list: [],
+        휴가일수: 0,
+    }
+
+    const handleMonthChange = (nextMonth: Dayjs) => {
+        startTransition(() => {
+            setCalendarMonth(nextMonth.startOf('month'))
+        })
+    }
 
     return (
         <section className="mt-2">
             <TimeOffHeader
-                이번달휴가일수={myScheduleData.이번달휴가일수}
+                monthLabel={calendarMonth.format('M월')}
+                휴가일수={resolvedTimeOffData.휴가일수}
                 viewMode={viewMode}
                 onViewModeChange={setViewMode}
             />
             <TimeOffMain
-                휴가정보list={myScheduleData.휴가정보list}
+                calendarMonth={calendarMonth}
+                isLoading={isFetching || isPending}
+                onMonthChange={handleMonthChange}
+                휴가정보list={resolvedTimeOffData.휴가정보list}
                 viewMode={viewMode}
             />
         </section>
@@ -90,22 +103,25 @@ const TimeOff = () => {
 }
 
 interface TimeOffHeaderProps {
-    이번달휴가일수: number
+    monthLabel: string
+    휴가일수: number
     viewMode: ViewMode
     onViewModeChange: (mode: ViewMode) => void
 }
 const TimeOffHeader = (props: TimeOffHeaderProps) => {
-    const { 이번달휴가일수, viewMode, onViewModeChange } = props
+    const { monthLabel, 휴가일수, viewMode, onViewModeChange } = props
 
     return (
         <header className="flex items-center gap-x-5 px-3 py-2">
             <VocationIcon className="" />
             <div className="flex flex-1 flex-col gap-y-1">
-                <span className="text-xs text-hint">이번 달 휴가 일수</span>
+                <span className="text-xs text-hint">
+                    {monthLabel} 휴가 일수
+                </span>
                 <span className="text-lg text-alternative">
-                    {이번달휴가일수 === 0
-                        ? '사용한 연차가 없어요.'
-                        : `${이번달휴가일수}일 쉬어요.`}
+                    {휴가일수 === 0
+                        ? '등록된 휴가가 없어요.'
+                        : `${formatVacationDays(휴가일수)}일 쉬어요.`}
                 </span>
             </div>
             <div className="flex gap-x-1">
@@ -137,25 +153,45 @@ const TimeOffHeader = (props: TimeOffHeaderProps) => {
 }
 
 interface TimeOffMainProps {
-    휴가정보list: 휴가정보Type[]
+    calendarMonth: Dayjs
+    isLoading: boolean
+    onMonthChange: (nextMonth: Dayjs) => void
+    휴가정보list: myTimeOffDay[]
     viewMode: ViewMode
 }
 const TimeOffMain = (props: TimeOffMainProps) => {
-    const { 휴가정보list, viewMode } = props
+    const { calendarMonth, isLoading, onMonthChange, 휴가정보list, viewMode } =
+        props
 
     if (viewMode === 'calendar') {
-        return <TimeOffCalendarView 휴가정보list={휴가정보list} />
+        return (
+            <TimeOffCalendarView
+                calendarMonth={calendarMonth}
+                isLoading={isLoading}
+                onMonthChange={onMonthChange}
+                휴가정보list={휴가정보list}
+            />
+        )
     }
 
     return <TimeOffListView 휴가정보list={휴가정보list} />
 }
 
 interface TimeOffListViewProps {
-    휴가정보list: 휴가정보Type[]
+    휴가정보list: myTimeOffDay[]
 }
 
 const TimeOffListView = (props: TimeOffListViewProps) => {
     const { 휴가정보list } = props
+
+    if (휴가정보list.length === 0) {
+        return (
+            <main className="px-4 py-6 text-center text-sm text-hint">
+                이 달에 등록된 휴가가 없어요.
+            </main>
+        )
+    }
+
     return (
         <main className="py-2 pl-[88px] pr-4">
             <ul className="flex flex-col">
@@ -165,18 +201,16 @@ const TimeOffListView = (props: TimeOffListViewProps) => {
                         key={휴가정보.date}
                     >
                         <span>{휴가정보.date}</span>
-                        <ul className="flex-flex-col">
+                        <ul className="flex flex-col">
                             {휴가정보.infos.map((info) => (
                                 <li
-                                    key={info.name}
+                                    key={info.key}
                                     className="list-inside list-disc"
                                 >
-                                    {info.hours === 0
-                                        ? ''
-                                        : `${info.hours}시간`}{' '}
-                                    {info.minutes % 60 === 0
-                                        ? ''
-                                        : `${info.minutes}분`}
+                                    {info.label}
+                                    {info.timeRangeText
+                                        ? ` (${info.timeRangeText})`
+                                        : ''}
                                 </li>
                             ))}
                         </ul>
@@ -188,13 +222,14 @@ const TimeOffListView = (props: TimeOffListViewProps) => {
 }
 
 interface TimeOffCalendarViewProps {
-    휴가정보list: 휴가정보Type[]
+    calendarMonth: Dayjs
+    isLoading: boolean
+    onMonthChange: (nextMonth: Dayjs) => void
+    휴가정보list: myTimeOffDay[]
 }
 
-// 휴가 정보를 담는 Map 타입
-type VacationInfoMap = Map<string, 휴가정보Type['infos']>
+type VacationInfoMap = Map<string, myTimeOffDay>
 
-// 휴가일에 툴팁을 표시하는 Day 컴포넌트
 const VacationDayWithTooltip = (
     props: PickersDayProps & {
         vacationInfoMap: VacationInfoMap
@@ -203,8 +238,11 @@ const VacationDayWithTooltip = (
     const { day, outsideCurrentMonth, vacationInfoMap, ...other } = props
 
     const dateStr = dayjs(day).format('YYYY-MM-DD')
-    const vacationInfo = vacationInfoMap.get(dateStr)
-    const isVacation = !!vacationInfo
+    const vacationDay = vacationInfoMap.get(dateStr)
+    const isVacation = !!vacationDay
+    const dayDisplayType = vacationDay
+        ? getDayDisplayType(vacationDay.infos)
+        : 'full'
 
     const { floating, getFloatingInteraction, isOpen } = useMyFloating({
         placement: 'top',
@@ -226,18 +264,29 @@ const VacationDayWithTooltip = (
                     outsideCurrentMonth={outsideCurrentMonth}
                     sx={{
                         ...(isVacation && {
-                            backgroundColor: '#fce4ec',
                             color: '#e91e63',
                             fontWeight: 'bold',
+                            backgroundColor:
+                                dayDisplayType === 'full'
+                                    ? '#fce4ec'
+                                    : 'transparent',
+                            backgroundImage:
+                                dayDisplayType === 'morningHalf'
+                                    ? 'linear-gradient(to right, #fce4ec 50%, transparent 50%)'
+                                    : dayDisplayType === 'afternoonHalf'
+                                      ? 'linear-gradient(to right, transparent 50%, #fce4ec 50%)'
+                                      : 'none',
                             '&:hover': {
-                                backgroundColor: '#f8bbd9',
-                            },
-                            '&.Mui-selected': {
-                                backgroundColor: '#e91e63',
-                                color: '#fff',
-                                '&:hover': {
-                                    backgroundColor: '#c2185b',
-                                },
+                                backgroundColor:
+                                    dayDisplayType === 'full'
+                                        ? '#f8bbd9'
+                                        : 'transparent',
+                                backgroundImage:
+                                    dayDisplayType === 'morningHalf'
+                                        ? 'linear-gradient(to right, #f8bbd9 50%, transparent 50%)'
+                                        : dayDisplayType === 'afternoonHalf'
+                                          ? 'linear-gradient(to right, transparent 50%, #f8bbd9 50%)'
+                                          : 'none',
                             },
                         }),
                     }}
@@ -251,8 +300,15 @@ const VacationDayWithTooltip = (
                         style={floating.floatingStyles}
                         {...floatingInteraction.getFloatingProps()}
                     >
-                        {vacationInfo.map((info, index) => (
-                            <div key={index}>{info.name}</div>
+                        {vacationDay?.infos.map((info) => (
+                            <div key={info.key} className="mb-1 last:mb-0">
+                                <div>{info.label}</div>
+                                {info.timeRangeText && (
+                                    <div className="text-[11px] text-gray-200">
+                                        {info.timeRangeText}
+                                    </div>
+                                )}
+                            </div>
                         ))}
                     </div>
                 </FloatingPortal>
@@ -261,7 +317,6 @@ const VacationDayWithTooltip = (
     )
 }
 
-// VacationDayWithTooltip를 위한 wrapper 생성 함수
 const createVacationDay = (vacationInfoMap: VacationInfoMap) => {
     const VacationDayComponent = (props: PickersDayProps) => {
         return (
@@ -275,26 +330,23 @@ const createVacationDay = (vacationInfoMap: VacationInfoMap) => {
 }
 
 const TimeOffCalendarView = (props: TimeOffCalendarViewProps) => {
-    const { 휴가정보list } = props
+    const { calendarMonth, isLoading, onMonthChange, 휴가정보list } = props
 
-    // 휴가 날짜와 정보를 Map으로 변환
-    // date 형식: "2025-12-15 (월)"
     const vacationInfoMap: VacationInfoMap = new Map()
     휴가정보list.forEach((휴가정보) => {
-        // "2025-12-15 (월)" 형식에서 날짜 부분만 추출
-        const dateStr = 휴가정보.date.split(' ')[0] // "2025-12-15"
-        if (dateStr) {
-            vacationInfoMap.set(dateStr, 휴가정보.infos)
-        }
+        vacationInfoMap.set(휴가정보.rawDate, 휴가정보)
     })
 
     const VacationDay = createVacationDay(vacationInfoMap)
 
     return (
-        <main className="flex justify-center">
+        <main className="relative flex justify-center">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
                 <DateCalendar
                     readOnly
+                    value={null}
+                    referenceDate={calendarMonth}
+                    onMonthChange={onMonthChange}
                     slots={{
                         day: VacationDay,
                     }}
@@ -318,6 +370,11 @@ const TimeOffCalendarView = (props: TimeOffCalendarViewProps) => {
                     }}
                 />
             </LocalizationProvider>
+            {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/60">
+                    <CircularProgress size={28} className="text-link" />
+                </div>
+            )}
         </main>
     )
 }

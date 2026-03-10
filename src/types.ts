@@ -83,6 +83,29 @@ export type myScheduleData = {
     }
 }
 
+export type myTimeOffInfo = {
+    key: string
+    label: string
+    memo?: string
+    timeRangeText?: string
+    minutes: number
+    hours: number
+    displayType: 'full' | 'morningHalf' | 'afternoonHalf'
+}
+
+export type myTimeOffDay = {
+    rawDate: string
+    date: string
+    infos: myTimeOffInfo[]
+    totalMinutes: number
+    totalHours: number
+}
+
+export type myTimeOffData = {
+    휴가정보list: myTimeOffDay[]
+    휴가일수: number
+}
+
 export type flexClockData = {
     records: {
         appliedDate: string
