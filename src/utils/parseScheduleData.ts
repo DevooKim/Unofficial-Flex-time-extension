@@ -211,7 +211,9 @@ export const parseScheduleData = ({
 
     const 어제까지근무차이 = 누적근무차이 - 근무중추가시간
     const 근무중기준추가시간 =
-        clockData.현재근무상태 === '근무중' ? clockData.오늘일한시간 : 0
+        clockData.현재근무상태 === '근무중'
+            ? clockData.오늘일한시간 - workingHoursPerDay
+            : 0
 
     const 부족시간차이 = {
         미포함: 어제까지근무차이,
